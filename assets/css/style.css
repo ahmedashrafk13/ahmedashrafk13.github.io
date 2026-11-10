@@ -280,7 +280,7 @@ section[id] { scroll-margin-top: 70px; }
 .skills h3 { font-size: 1.05rem; }
 .skills p { color: var(--muted); font-size: 15px; margin-top: 6px; }
 @media (min-width: 760px) { .skills { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1100px) { .skills { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1100px) { .skills { grid-template-columns: repeat(4, 1fr); gap: 0 36px; } }
 
 /* contact */
 .contact { display: grid; gap: 48px; }
