@@ -40,7 +40,7 @@
   const navObs = new IntersectionObserver((entries) => entries.forEach((e) => {
     if (e.isIntersecting) navLinks.forEach((a) => a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + e.target.id)));
   }), { rootMargin: "-45% 0px -50% 0px" });
-  ["about", "experience", "projects", "leadgen", "workflows", "skills"].forEach((id) => { const s = document.getElementById(id); if (s) navObs.observe(s); });
+  ["skills", "about", "experience", "projects", "workflows"].forEach((id) => { const s = document.getElementById(id); if (s) navObs.observe(s); });
 
   /* ---------- platforms row ---------- */
   const LOGOS = [["n8n", "n8n"], ["make", "Make"], ["zapier", "Zapier"], ["claude", "Claude"], ["googlegemini", "Gemini"], ["supabase", "Supabase"], ["postgresql", "PostgreSQL"], ["airtable", "Airtable"], ["hubspot", "HubSpot"], ["whatsapp", "WhatsApp"], ["meta", "Meta"], ["elevenlabs-white", "ElevenLabs"], ["googlesheets", "Google Sheets"], ["python", "Python"], ["nodedotjs", "Node.js"]];
