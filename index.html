@@ -96,10 +96,10 @@
           </div>
         </div>
         <dl class="kpis" id="kpis">
-          <div><dd>&lt;10s</dd><dt>Response time on inbound messages</dt></div>
+          <div><dd>&lt;3s</dd><dt>Response time on inbound messages</dt></div>
           <div><dd>24/7</dd><dt>Unattended operation across channels</dt></div>
           <div><dd>0</dd><dt>Silent failures in production queues</dt></div>
-          <div><dd>100</dd><dt>n8n workflows in my library</dt></div>
+          <div><dd>100+</dd><dt>n8n workflows in my library</dt></div>
         </dl>
       </div>
     </section>
@@ -169,7 +169,7 @@
               <h3>AI Automation Engineer</h3>
               <p class="role__summary">I own the automation layer for multiple service-business clients: AI agents, voice agents, CRM workflows, reporting and internal knowledge tools.</p>
               <ul class="bullets">
-                <li>Built a multi-channel AI engagement system across WhatsApp, Instagram, Messenger and web chat that responds in under 10 seconds, 24/7.</li>
+                <li>Built a multi-channel AI engagement system across WhatsApp, Instagram, Messenger and web chat that responds in under 3 seconds, 24/7.</li>
                 <li>Engineered a queue-based architecture on n8n and Supabase with de-duplication, retries and error alerts, reaching zero message loss and zero silent failures under high volume.</li>
                 <li>Developed AI voice agents that answer calls and book, reschedule or cancel appointments live, then write summaries and transcripts back to the CRM.</li>
                 <li>Added missed-call text-back, urgent-call transfer and SMS and WhatsApp reminders to reduce no-shows.</li>
@@ -225,7 +225,7 @@
             <div><dt>Problem</dt><dd>Messages arrived after hours across five channels, and replies came hours later.</dd></div>
             <div><dt>Trigger</dt><dd>Any inbound message fires the GHL "Receive and Process DMs" workflow, which batches rapid messages into one payload for n8n.</dd></div>
             <div><dt>AI decision</dt><dd>A router picks the Website, Engagement or Follow-up agent. Each has its own knowledge and memory, and decides to reply, book or escalate.</dd></div>
-            <div><dt>Result</dt><dd>8.76 second measured reply, bookings written to the calendar, pipeline stages updated and clean hand-offs to staff.</dd></div>
+            <div><dt>Result</dt><dd>2.4 second median reply, bookings written to the calendar, pipeline stages updated and clean hand-offs to staff.</dd></div>
           </dl>
           <div class="gallery">
             <button type="button" data-lightbox="assets/img/work/ghl-receive-dms.webp" data-caption="Receive and Process DMs: routing for Live Chat, SMS, WhatsApp, Instagram and Messenger."><img src="assets/img/work/ghl-receive-dms.webp" width="1800" height="731" loading="lazy" alt="GoHighLevel workflow routing inbound messages by channel"><span>Inbound message router</span></button>
