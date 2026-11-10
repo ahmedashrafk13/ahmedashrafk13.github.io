@@ -1,0 +1,173 @@
+{
+ "name": "Calendar Booking Assistant",
+ "nodes": [
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+   "typeVersion": 1.1,
+   "position": [
+    0,
+    0
+   ],
+   "id": "0e065b01-920f-4c15-a51e-a8ec57a1dfe6",
+   "name": "When chat message received"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    160,
+    240
+   ],
+   "id": "2748f81e-b692-4df1-bd8a-e3115f43b1fd",
+   "name": "GPT-4.1-mini"
+  },
+  {
+   "parameters": {},
+   "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+   "typeVersion": 1.3,
+   "position": [
+    288,
+    272
+   ],
+   "id": "6e5aaf79-ab6d-4145-90d9-652c21e5c5d9",
+   "name": "Simple Memory"
+  },
+  {
+   "parameters": {
+    "resource": "calendar",
+    "calendar": {
+     "__rl": true,
+     "value": "you@example.com",
+     "mode": "list",
+     "cachedResultName": "you@example.com"
+    },
+    "options": {
+     "timezone": {
+      "__rl": true,
+      "value": "Asia/Dubai",
+      "mode": "list",
+      "cachedResultName": "Asia/Dubai"
+     }
+    }
+   },
+   "type": "n8n-nodes-base.googleCalendarTool",
+   "typeVersion": 1.3,
+   "position": [
+    384,
+    304
+   ],
+   "id": "69ac6903-d15f-4938-9b1a-f0da43efa27e",
+   "name": "check availability"
+  },
+  {
+   "parameters": {
+    "descriptionType": "manual",
+    "toolDescription": "book an appointment",
+    "resource": "calendar",
+    "calendar": {
+     "__rl": true,
+     "value": "you@example.com",
+     "mode": "list",
+     "cachedResultName": "you@example.com"
+    },
+    "options": {
+     "outputFormat": "bookedSlots"
+    }
+   },
+   "type": "n8n-nodes-base.googleCalendarTool",
+   "typeVersion": 1.3,
+   "position": [
+    512,
+    304
+   ],
+   "id": "c02fab3e-2aa2-416f-bd55-ea0211e7ed8a",
+   "name": "Google Calendar"
+  },
+  {
+   "parameters": {
+    "hasOutputParser": true,
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    224,
+    0
+   ],
+   "id": "12190f5a-b205-4c0b-bb9d-80722e5cd8a6",
+   "name": "AI Agent"
+  }
+ ],
+ "connections": {
+  "When chat message received": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "GPT-4.1-mini": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Simple Memory": {
+   "ai_memory": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "check availability": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Google Calendar": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

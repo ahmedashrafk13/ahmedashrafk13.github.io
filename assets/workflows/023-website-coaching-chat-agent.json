@@ -1,0 +1,158 @@
+{
+ "name": "Website Coaching Chat Agent",
+ "nodes": [
+  {
+   "parameters": {
+    "httpMethod": "POST",
+    "path": "aliraza",
+    "responseMode": "responseNode",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2,
+   "position": [
+    48,
+    0
+   ],
+   "id": "be869600-e65c-44ef-89ee-82431b6a1a2b",
+   "name": "Webhook"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $json.body.message }}",
+    "options": {
+     "systemMessage": "You are a helpful assistant. Provide brief 3 sentence responses. Use the SerpAPI tool to research the internet if needed"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.7,
+   "position": [
+    288,
+    0
+   ],
+   "id": "b6935434-75be-4bb0-85f2-0cdb6b923b21",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    208,
+    240
+   ],
+   "id": "caea60fa-d128-465b-9ebc-2e3c0ba6bdc4",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "respondWith": "allIncomingItems",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    640,
+    0
+   ],
+   "id": "cba558da-2f8c-46a1-beb0-37fb010e0bf3",
+   "name": "Respond to Webhook"
+  },
+  {
+   "parameters": {
+    "sessionIdType": "customKey",
+    "sessionKey": "={{ $('Webhook').item.json.headers['x-real-ip'] }}"
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+   "typeVersion": 1.3,
+   "position": [
+    368,
+    240
+   ],
+   "id": "1742d230-75d5-4cb4-852d-29dde82968df",
+   "name": "Window Buffer Memory"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+   "typeVersion": 1,
+   "position": [
+    512,
+    240
+   ],
+   "id": "111c48aa-aeff-499d-bc54-0622fe31ae03",
+   "name": "SerpAPI"
+  }
+ ],
+ "connections": {
+  "Webhook": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Window Buffer Memory": {
+   "ai_memory": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "SerpAPI": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

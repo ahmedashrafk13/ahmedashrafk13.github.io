@@ -1,0 +1,874 @@
+{
+ "name": "WhatsApp Voice and Text Executive Assistant",
+ "nodes": [
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $json.text }} ",
+    "options": {
+     "systemMessage": "You are a WhatsApp-based assistant with access to the user's Gmail inbox. You serve as a smart email assistant, capable of:\n\n📬 Gmail Reading and Summarization\nWhenever the user asks to filter, read, summarize, or list emails, always return information using markdown and the following format per email:\n\nmarkdown\n**[Sender's Name]** - **Email** sender@example.com  \n**Subject** Subject Line of the Email  \n**MessageID** abc123xyz\nAlways extract the sender name, email address, subject, and Gmail Message ID.\n\nStore this information in memory and update a virtual contact sheet for future reference.\n\nIf Sender's Name is not available, use \"Unknown\".\n\n📨 Replying to Emails\nWhen the user says:\n\n\nReply to [Sender’s Name]\nLook up the email address of the sender using the virtual contact sheet or previously stored messages.\n\nCompose the reply using Gmail’s send tool.\n\nEnsure the reply is sent to the correct email address and keep a record of replies sent.\n\n🏷️ Labeling Emails\nIf the user asks to label or organize emails as:\n\n\nMark this important\nMark this follow up\nOrganize this for later\nReturn a valid JSON object or array in this format:\n\nSingle Label:\n\njson\nCopy\nEdit\n{\n  \"query\": \"abc123xyz\",\n  \"labels\": [\"Important\"]\n}\nMultiple Labels:\n\n\n[\n  {\n    \"query\": \"abc123xyz\",\n    \"labels\": [\"Follow up\"]\n  },\n  {\n    \"query\": \"def456uvw\",\n    \"labels\": [\"Important\", \"Follow up\"]\n  }\n]\nNever return natural language with the JSON.\n\nDo not wrap the JSON in a string.\n\nAlways output pure JSON without surrounding explanations or text.\n\n✅ Additional Rules\nYou are always on standby to check or summarize recent emails.\n\nOrganize, tag, reply, and filter emails only upon user request.\n\nDo not proceed with replying or labeling if required information (like sender's name or message ID) is missing — instead, ask the user to clarify.\n\nAlways prioritize clarity, structure, and directness in your responses"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    1072,
+    -384
+   ],
+   "id": "c4c166d1-4a92-47a9-88a6-f2099942341a",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "sessionIdType": "customKey",
+    "sessionKey": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+    "contextWindowLength": 20
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+   "typeVersion": 1.3,
+   "position": [
+    960,
+    128
+   ],
+   "id": "e4000496-f683-4bab-9714-574762847ca0",
+   "name": "Simple Memory"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    784,
+    144
+   ],
+   "id": "e53b5b8b-ec0b-4656-ac39-0f36a8063739",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "updates": [
+     "messages"
+    ],
+    "options": {}
+   },
+   "type": "n8n-nodes-base.whatsAppTrigger",
+   "typeVersion": 1,
+   "position": [
+    -544,
+    -368
+   ],
+   "id": "16b95b7d-ae6c-4b95-b092-f2586b99a908",
+   "name": "WhatsApp Trigger"
+  },
+  {
+   "parameters": {
+    "operation": "send",
+    "phoneNumberId": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}",
+    "recipientPhoneNumber": "923276298835",
+    "textBody": "={{ $json.output }}",
+    "additionalFields": {}
+   },
+   "type": "n8n-nodes-base.whatsApp",
+   "typeVersion": 1,
+   "position": [
+    1664,
+    -240
+   ],
+   "id": "18ae68c8-cae1-4034-ba8a-58d277317339",
+   "name": "WhatsApp Business Cloud"
+  },
+  {
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $json.messages[0].type }}",
+          "rightValue": "text",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          },
+          "id": "402235ac-518e-418d-bd31-bbe3f0d6e2c6"
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "text"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "bba43c17-50f3-41fa-9b1e-2c21a2fc88ec",
+          "leftValue": "={{ $json.messages[0].type }}",
+          "rightValue": "audio",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "voice"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.2,
+   "position": [
+    -224,
+    -368
+   ],
+   "id": "cab8c779-de69-4175-954d-146b070deabe",
+   "name": "Switch"
+  },
+  {
+   "parameters": {
+    "resource": "media",
+    "operation": "mediaUrlGet",
+    "mediaGetId": "={{ $json.messages[0].audio.id }}"
+   },
+   "type": "n8n-nodes-base.whatsApp",
+   "typeVersion": 1,
+   "position": [
+    -48,
+    -176
+   ],
+   "id": "adf4c89b-1c51-41e9-a0f5-5cd48b566bcb",
+   "name": "WhatsApp Business Cloud1"
+  },
+  {
+   "parameters": {
+    "url": "={{ $json.url }}",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "whatsAppApi",
+    "sendHeaders": true,
+    "specifyHeaders": "json",
+    "jsonHeaders": "=[\n   {\n     \"name\": \"Authorization\",\n     \"value\": \"EAAJ1LV6MvpUBOymiYsw58girsZCfkV12oNHmAEgZAJu2DhbiZA2yEYBrDOhhhzxW6E4ORxuYBa03fAEN8wsbKnzAyrfcZArwMaCTmxMAA29vD0ZAAfVuy7ngZAfpSn8o5PIC7XZCCNabt3TsTS5jZBDIBuedUHLPboz5sgnLDP3aWxLPnSYaa7fA8vQ2c5CNqvcbiuOOpgbyuA2EYId3FthlUSZBRpMB79y567EgK2uItAQZDZD\"\n   }\n]",
+    "options": {
+     "response": {
+      "response": {
+       "responseFormat": "file"
+      }
+     }
+    }
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    208,
+    0
+   ],
+   "id": "1cf06d2c-34ba-4488-b2b1-4fa9447e1809",
+   "name": "HTTP Request"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.deepgram.com/v1/listen",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      }
+     ]
+    },
+    "sendBody": true,
+    "contentType": "binaryData",
+    "inputDataFieldName": "data",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    480,
+    -176
+   ],
+   "id": "7a41579d-5bb5-41ad-8d8c-bd84b26561f6",
+   "name": "HTTP Request1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "9a5c071f-9a78-484e-a8bc-9d733d965574",
+       "name": "text",
+       "value": "={{ $json.results.channels[0].alternatives[0].transcript }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    688,
+    -96
+   ],
+   "id": "b8290c48-288c-473e-a84d-7cfbfc8284e3",
+   "name": "Edit Fields1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "06cfad67-ba72-418e-8c37-f30428e46da9",
+       "name": "text",
+       "value": "={{ $json.messages[0].text.body }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    384,
+    -576
+   ],
+   "id": "236611b8-4751-4923-9ff6-230930af41c4",
+   "name": "Edit Fields"
+  },
+  {
+   "parameters": {
+    "operation": "getAll",
+    "filters": {
+     "labelIds": [
+      "INBOX",
+      "UNREAD"
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.gmailTool",
+   "typeVersion": 2.1,
+   "position": [
+    1280,
+    400
+   ],
+   "id": "39f08425-2c17-4d74-bb5e-73d6532feef8",
+   "name": "Gmail"
+  },
+  {
+   "parameters": {
+    "sendTo": "={{ $fromAI(\"to\",\"raw email address of the recipient\") }}",
+    "subject": "={{ $fromAI(\"subject\",\"the subject title of the email\") }}",
+    "emailType": "text",
+    "message": "={{ $fromAI(\"body\",\"the body od the email itself\") }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.gmailTool",
+   "typeVersion": 2.1,
+   "position": [
+    1152,
+    448
+   ],
+   "id": "c90d793c-27c2-433d-abeb-e25d00555e38",
+   "name": "Gmail1"
+  },
+  {
+   "parameters": {
+    "jsCode": "const output = $input.first().json.output;\n\nconsole.log(output);\n\nconst results = [];\n\n// Split the output into blocks (separated by double newlines)\nconst emailBlocks = output\n  .split(`\\n\\n`)\n  .filter(block => block.includes('**Email**') && block.includes('**MessageID**'));\n\nfor (const block of emailBlocks) {\n  // Extract name from the markdown header, like **[LinkedIn Job Alerts]**\n  const nameMatch = block.match(/\\*\\*\\[(.*?)\\]\\*\\*/);\n  const emailMatch = block.match(/\\*\\*Email\\*\\*: ([^\\n]+)/);\n  const messageIdMatch = block.match(/\\*\\*MessageID\\*\\*: ([^\\n]+)/);  // Accepts alphanumeric\n\n  if (nameMatch && emailMatch && messageIdMatch) {\n    results.push({\n      Name: nameMatch[1],\n      Email: emailMatch[1].trim(),\n      MessageID: messageIdMatch[1].trim()\n    });\n  }\n}\n\nreturn results;\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    1632,
+    80
+   ],
+   "id": "1a843969-3ada-4c89-8050-12959c25b5f2",
+   "name": "Code"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "a3d05536-8041-4703-9cfa-6ea7dfcb3064",
+       "name": "Name",
+       "value": "={{ $json.Name }}",
+       "type": "string"
+      },
+      {
+       "id": "92c25197-f8c8-4629-96f7-ffc29c5fc104",
+       "name": "Email",
+       "value": "={{ $json.Email }}",
+       "type": "string"
+      },
+      {
+       "id": "d733575d-a5f1-4149-b558-13603783b878",
+       "name": "MessageID",
+       "value": "={{ $json.MessageID }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    1840,
+    240
+   ],
+   "id": "659349ad-2f2c-447a-b9df-962afe81d9fe",
+   "name": "Edit Fields2"
+  },
+  {
+   "parameters": {
+    "operation": "appendOrUpdate",
+    "documentId": {
+     "__rl": true,
+     "value": "122T5dkHbXSKvNvmdkAcV-JFVL7yxGnryJ0ANApDkRJ0",
+     "mode": "list",
+     "cachedResultName": "EmailContactList",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "autoMapInputData",
+     "value": {},
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "Name",
+       "displayName": "Name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Email",
+       "displayName": "Email",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "MessageID",
+       "displayName": "MessageID",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.6,
+   "position": [
+    2112,
+    400
+   ],
+   "id": "8c97d15e-c681-476d-a4a9-a2d7d0d29b53",
+   "name": "Google Sheets"
+  },
+  {
+   "parameters": {
+    "documentId": {
+     "__rl": true,
+     "value": "122T5dkHbXSKvNvmdkAcV-JFVL7yxGnryJ0ANApDkRJ0",
+     "mode": "list",
+     "cachedResultName": "EmailContactList",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheetsTool",
+   "typeVersion": 4.6,
+   "position": [
+    1440,
+    384
+   ],
+   "id": "064340b3-40a3-486e-a99a-bf926b9b5446",
+   "name": "Google Sheets1"
+  },
+  {
+   "parameters": {
+    "description": "Use this tool to delete Emails",
+    "workflowId": {
+     "__rl": true,
+     "value": "zoHWiypFvPDRgrUE",
+     "mode": "list",
+     "cachedResultName": "Delete Email Tool WhatsApp Agent"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {},
+     "matchingColumns": [],
+     "schema": [],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    1008,
+    464
+   ],
+   "id": "13ec8c9f-fb1f-41e0-b68e-e8f7f9c23a14",
+   "name": "Call n8n Workflow Tool"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=This is the incoming data: {{ $json.output }}",
+    "options": {
+     "systemMessage": "You are an AI agent responsible for extracting Gmail label instructions from AI-generated outputs.\n\n📥 Input\nYou are given one or more objects, each containing an \"output\" field. This field includes natural language plus a code block with Gmail labeling instructions in JSON format.\n\nThese JSON blocks:\n\nMay include ```json and ``` markdown indicators — ignore those.\n\nContain the valid instructions — extract only those.\n\n🎯 Your Task\nExtract only the valid Gmail label instructions from the JSON block and return:\n\nA JSON object or array with the following format:\n\n\n{\n  \"query\": \"gmail_message_id\",\n  \"labels\": [\"IMPORTANT\"]\n}\n✅ Labels must be returned in ALL UPPERCASE regardless of how they appear in the input.\n✅ Return only valid JSON, no text, no markdown, and no formatting characters.\n❌ Do not add new labels or modify query values.\n❌ Do not return anything other than the exact array or object structure.\n\n✅ Output Format Examples\nSingle item:\n\n\n{\n  \"query\": \"197e5a70016161d6\",\n  \"labels\": [\"IMPORTANT\"]\n}\nMultiple items:\n\n[\n  {\n    \"query\": \"197e5a70016161d6\",\n    \"labels\": [\"IMPORTANT\"]\n  },\n  {\n    \"query\": \"197e5a6f6115a8a8\",\n    \"labels\": [\"FOLLOW UP\"]\n  }\n]"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    1600,
+    -768
+   ],
+   "id": "1f613fd3-de32-4054-a821-153ba4feca63",
+   "name": "AI Agent1"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    1520,
+    -480
+   ],
+   "id": "f2c9a907-89cc-49aa-94c1-7e7f47187c49",
+   "name": "OpenAI Chat Model1"
+  },
+  {
+   "parameters": {
+    "jsCode": "const raw = $json.output;\n\n// Remove code block formatting if present\nconst cleaned = raw.replace(/```json|```/g, '').trim();\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (error) {\n  throw new Error(\"Could not parse JSON from AI output: \" + error.message);\n}\n\nconst outputArray = Array.isArray(parsed) ? parsed : [parsed];\n\n// Return properly formatted output\nreturn outputArray.map(obj => ({ json: obj }));\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    2064,
+    -768
+   ],
+   "id": "00e71bb1-01e4-475b-8079-83a7dd51e5d4",
+   "name": "Code1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "9bcf4a5c-ff54-4f93-9e7a-4e09816cb5e0",
+       "name": "label",
+       "value": "={{ $json.labels[0] }}",
+       "type": "string"
+      },
+      {
+       "id": "b0debc7d-7f84-4c43-954e-5694ca48ac9b",
+       "name": "ID",
+       "value": "={{ $json.query }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    2352,
+    -768
+   ],
+   "id": "c5327f18-d5de-42b4-84ef-b66070509ead",
+   "name": "Edit Fields3"
+  },
+  {
+   "parameters": {
+    "mode": "combine",
+    "advanced": true,
+    "mergeByFields": {
+     "values": [
+      {
+       "field1": "name",
+       "field2": "label"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.merge",
+   "typeVersion": 3.1,
+   "position": [
+    2848,
+    -768
+   ],
+   "id": "41803460-3011-4112-b8c8-24a050fe94d8",
+   "name": "Merge"
+  },
+  {
+   "parameters": {
+    "resource": "label",
+    "returnAll": true
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    2608,
+    -944
+   ],
+   "id": "7742c89b-da59-4284-a994-9b526ea3a34e",
+   "name": "Gmail2"
+  },
+  {
+   "parameters": {
+    "operation": "addLabels",
+    "messageId": "={{ $json.ID }}",
+    "labelIds": "={{ $json.label }}"
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    3184,
+    -768
+   ],
+   "id": "f4dcd214-f273-4387-b7ef-7eba0da6f390",
+   "name": "Gmail3"
+  }
+ ],
+ "connections": {
+  "Simple Memory": {
+   "ai_memory": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "WhatsApp Trigger": {
+   "main": [
+    [
+     {
+      "node": "Switch",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "WhatsApp Business Cloud",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Code",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "AI Agent1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Switch": {
+   "main": [
+    [
+     {
+      "node": "Edit Fields",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "WhatsApp Business Cloud1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    []
+   ]
+  },
+  "WhatsApp Business Cloud1": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "HTTP Request": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "HTTP Request1": {
+   "main": [
+    [
+     {
+      "node": "Edit Fields1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Edit Fields1": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Edit Fields": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail1": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Code": {
+   "main": [
+    [
+     {
+      "node": "Edit Fields2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Edit Fields2": {
+   "main": [
+    [
+     {
+      "node": "Google Sheets",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Google Sheets1": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Call n8n Workflow Tool": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Google Sheets": {
+   "main": [
+    []
+   ]
+  },
+  "OpenAI Chat Model1": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent1",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent1": {
+   "main": [
+    [
+     {
+      "node": "Code1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Code1": {
+   "main": [
+    [
+     {
+      "node": "Edit Fields3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Edit Fields3": {
+   "main": [
+    [
+     {
+      "node": "Gmail2",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 1
+     }
+    ]
+   ]
+  },
+  "Merge": {
+   "main": [
+    [
+     {
+      "node": "Gmail3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail2": {
+   "main": [
+    [
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

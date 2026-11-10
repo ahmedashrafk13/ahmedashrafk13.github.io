@@ -1,0 +1,222 @@
+{
+ "name": "Review Scraper and Sentiment Report",
+ "nodes": [
+  {
+   "parameters": {
+    "formTitle": "Review Scarper",
+    "formDescription": "The Product review Scraper",
+    "formFields": {
+     "values": [
+      {
+       "fieldLabel": "Give the link of the product",
+       "placeholder": "Paste the link here"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.formTrigger",
+   "typeVersion": 2.2,
+   "position": [
+    0,
+    0
+   ],
+   "id": "4b68eb30-bd44-454c-89b4-6410194e05b8",
+   "name": "On form submission"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.apify.com/v2/acts/scrapingshark~amazon-reviews-scraper-by-product-url/run-sync-get-dataset-items?token=YOUR_KEY",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"urls\": [\n    { \"url\": \"https://www.amazon.com/ASUS-Display-NVIDIA%C2%AE-GeForce-FA506NC-ES51/dp/B0CRDB8G1G/\" }\n  ],\n  \"maxReviews\": 20\n}\n\n",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    224,
+    0
+   ],
+   "id": "42b004a7-ee34-4250-aa5b-52d9fc6c819d",
+   "name": "HTTP Request"
+  },
+  {
+   "parameters": {
+    "inputText": "={{ $json.reviewText }}",
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+   "typeVersion": 1,
+   "position": [
+    448,
+    0
+   ],
+   "id": "94a5863c-8139-4424-a788-6d55cc4311f0",
+   "name": "Sentiment Analysis"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    400,
+    224
+   ],
+   "id": "d5139e4b-13a0-40be-8b5d-242e5aee64ee",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=Positive Reviews\n{{ $json.reviewText }}\nNegative Reviews:\n{{ $json.reviewText }}",
+    "options": {
+     "systemMessage": "You are an AI assistant that analyzes product reviews and generates a weekly insights summary. \nYour task is to process the given reviews and output structured insights. \n\nSteps:\n1. Classify each review sentiment as Positive, Neutral, or Negative. \n2. Calculate % of Positive, Neutral, and Negative reviews. \n3. Compute the average rating (round to 1 decimal). \n4. Identify top 3 complaints (negative themes). \n5. Identify top 3 praises (positive themes). \n6. Output results in a clean Markdown format suitable for a Google Doc. Use headings and bullet points.\n\nExample output:\n\n# Weekly Review Insights Report\n\n**Sentiment Breakdown**\n- Positive: 60%\n- Neutral: 15%\n- Negative: 25%\n\n**Average Rating**\n- 4.2 / 5\n\n**Top 3 Complaints**\n1. Battery drains quickly\n2. Shipping delays\n3. Keyboard not backlit\n\n**Top 3 Praises**\n1. Great display\n2. Fast performance\n3. Solid build quality\n\n\nYou are an assistant that generates a weekly product review insights report.\n\nSTRICT RULES:\n- Output the report ONLY ONCE.\n- Use the following exact format every time.\n- Do not use Markdown (#, **, or *). \n- Titles must be in ALL CAPS.\n- Use numbered lists for complaints and praises.\n- Do not repeat the report in multiple formats.\n\nFORMAT TO FOLLOW:\n\nWEEKLY REVIEW INSIGHTS REPORT\n\nSENTIMENT BREAKDOWN\n1. Positive: X%\n2. Neutral: X%\n3. Negative: X%\n\nAVERAGE RATING\n- X / 5\n\nTOP 3 COMPLAINTS\n1. ...\n2. ...\n3. ...\n\nTOP 3 PRAISES\n1. ...\n2. ...\n3. ...\n\n\n"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    912,
+    0
+   ],
+   "id": "720e1718-c90f-44b4-be61-121d25a526a9",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "gpt-4o-mini",
+     "mode": "list",
+     "cachedResultName": "gpt-4o-mini"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    864,
+    240
+   ],
+   "id": "496021de-60c6-4eeb-a263-64e75a35acdd",
+   "name": "OpenAI Chat Model1"
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "documentURL": "https://docs.google.com/document/d/1BJ9M91EG9Ga9Xtui5Kj5b0-952-Nb_kUb1Xf_09iSvU/edit?tab=t.0",
+    "actionsUi": {
+     "actionFields": [
+      {
+       "action": "insert",
+       "text": "={{ $json.output }}"
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.googleDocs",
+   "typeVersion": 2,
+   "position": [
+    1344,
+    -16
+   ],
+   "id": "f3fda6b3-0a9b-41af-bf78-81f14feb971b",
+   "name": "Google Docs"
+  }
+ ],
+ "connections": {
+  "On form submission": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "HTTP Request": {
+   "main": [
+    [
+     {
+      "node": "Sentiment Analysis",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Sentiment Analysis",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Sentiment Analysis": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model1": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "Google Docs",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

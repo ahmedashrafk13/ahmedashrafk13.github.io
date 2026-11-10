@@ -1,0 +1,250 @@
+{
+ "name": "Research Agent with Brave and Firecrawl MCP",
+ "nodes": [
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+   "typeVersion": 1.1,
+   "position": [
+    -96,
+    240
+   ],
+   "id": "4931805c-01c4-4932-b29f-84adc013f520",
+   "name": "When chat message received"
+  },
+  {
+   "parameters": {
+    "options": {
+     "systemMessage": "You are a helpful assistant. Use the proper tool to respond to user queries about recent news or events"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.8,
+   "position": [
+    832,
+    240
+   ],
+   "id": "b283df39-e93d-45a3-a6d0-3d98b1297d15",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    752,
+    480
+   ],
+   "id": "4618bc09-d2f1-49f7-a620-65f18672aaf1",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-mcp.mcpClientTool",
+   "typeVersion": 1,
+   "position": [
+    912,
+    480
+   ],
+   "id": "dd93e115-b7f8-48ac-afcc-e76964ec8c47",
+   "name": "Brave List Tools"
+  },
+  {
+   "parameters": {
+    "operation": "executeTool",
+    "toolName": "={{ $fromAI('tool', 'selected tool to execute') }}"
+   },
+   "type": "n8n-nodes-mcp.mcpClientTool",
+   "typeVersion": 1,
+   "position": [
+    1072,
+    480
+   ],
+   "id": "6ca14c24-2378-4219-a8a1-54cf342fba66",
+   "name": "Brave Execute Tool"
+  },
+  {
+   "parameters": {
+    "options": {
+     "systemMessage": "You are a helpful assistant"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.8,
+   "position": [
+    128,
+    320
+   ],
+   "id": "c495f5e2-d251-4651-9fa7-13ccac91c5e2",
+   "name": "AI Agent1"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    0,
+    592
+   ],
+   "id": "0ec2216b-b022-4710-a476-aaf96d6ef86a",
+   "name": "OpenAI Chat Model1"
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-mcp.mcpClientTool",
+   "typeVersion": 1,
+   "position": [
+    160,
+    624
+   ],
+   "id": "88001749-fe68-40cd-8fbc-d3da47fc0c35",
+   "name": "FireCrawl List Tools"
+  },
+  {
+   "parameters": {
+    "operation": "executeTool",
+    "toolName": "={{ $fromAI('tool', 'selected tool to execute') }}"
+   },
+   "type": "n8n-nodes-mcp.mcpClientTool",
+   "typeVersion": 1,
+   "position": [
+    352,
+    560
+   ],
+   "id": "28e2844b-16e2-4a7f-a513-c95b38f174d9",
+   "name": "FireCrawl Execute Tool"
+  },
+  {
+   "parameters": {
+    "content": "## Brave Search MCP\n\nBrave search MCP server - https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search",
+    "height": 140,
+    "width": 500,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    704,
+    0
+   ],
+   "id": "b9b266e6-7065-465c-8ff3-d81aa9565bc5",
+   "name": "Sticky Note"
+  },
+  {
+   "parameters": {
+    "content": "## FireCrawl MCP\n\nFireCrawl MCP server -https://github.com/mendableai/firecrawl-mcp-server",
+    "height": 140,
+    "width": 500,
+    "color": 5
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    0,
+    0
+   ],
+   "id": "bca09bb1-e375-406f-9937-e3cc0c56536f",
+   "name": "Sticky Note1"
+  }
+ ],
+ "connections": {
+  "When chat message received": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model1": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent1",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "FireCrawl List Tools": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "FireCrawl Execute Tool": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Brave List Tools": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Brave Execute Tool": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

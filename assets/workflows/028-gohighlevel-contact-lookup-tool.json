@@ -1,0 +1,158 @@
+{
+ "name": "GoHighLevel Contact Lookup Tool",
+ "nodes": [
+  {
+   "parameters": {
+    "httpMethod": "POST",
+    "path": "f3a3fa45-1ef4-41f8-aa0e-cd189ef1f66b",
+    "responseMode": "responseNode",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2,
+   "position": [
+    -192,
+    -128
+   ],
+   "id": "4e05ad1e-1593-4580-9cbe-72d6e29b534a",
+   "name": "Webhook"
+  },
+  {
+   "parameters": {
+    "url": "=https://services.leadconnectorhq.com/contacts/?query={{ $json.from_number }}&locationId=dzTOfajR3YuQKAqE1myz&limit=1\n",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    256,
+    -128
+   ],
+   "id": "9083c302-4ddb-4ff9-ba0c-1ae1592a3064",
+   "name": "Find Contact in 1Prompt"
+  },
+  {
+   "parameters": {
+    "jsCode": "// Loop over input items and get the data we need\nvar contactArrLength = $input.all()[0].json.contacts.length;\nvar contactArr = contactArrLength > 0 ? $input.all()[0].json.contacts[0].customFields : [];\nfunction findValueById(arr, id) {\n  let result;\n  arr.forEach(item => {\n    if (Array.isArray(item)) {\n      result = findValueById(item, id);\n    } else if (item.id === id) {\n      result = item.value;\n    }\n  });\n  return result;\n}\n\n// Extract the values we need\nvar call1 = contactArrLength > 0 ? findValueById(contactArr, \"KeAqFtPCLbvwmfFTQYQe\") : \"\";\nvar call2 = contactArrLength > 0 ? findValueById(contactArr, \"yNW5UyI2UeXaMMEUEoNj\") : \"\";\nvar call3 = contactArrLength > 0 ? findValueById(contactArr, \"CDyptcCL0687sSwxgOYB\") : \"\";\nvar chat = contactArrLength > 0 ? findValueById(contactArr, \"d1E7AQI1N9V6lyzdB4qw\") : \"\";\nvar reactiveCallHistory = contactArrLength > 0 ? findValueById(contactArr, \"jr9ZXook1RcVoGmiuqTp\") : \"\";\nvar contactName = contactArrLength > 0 ? $input.all()[0].json.contacts[0].contactName : \"customer\";\n\n// Use the webhook response as a template object\nvar template = {\n  \"call_inbound\": {\n    \"override_agent_id\": \"agent_191599fb3ce849161ad14a64b8\",\n    \"override_agent_version\": \"13\",\n    \"dynamic_variables\": {\n      \"contact_name\": contactName,\n      \"call1\": call1 || \"\",\n      \"call2\": call2 || \"\",\n      \"call3\": call3 || \"\",\n      \"chat\": chat || \"\",\n      \"reactiveCallHistory\": reactiveCallHistory || \"\"\n    }\n  }\n};\n\n// Convert to string first with standard JSON.stringify\nvar jsonString = JSON.stringify(template);\n\n// Then convert back to object and return that\n// This ensures proper escaping of all values\nreturn JSON.parse(jsonString);\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    480,
+    -128
+   ],
+   "id": "87339a35-433c-477c-9960-b43c8c1a1d02",
+   "name": "Code1"
+  },
+  {
+   "parameters": {
+    "respondWith": "json",
+    "responseBody": "={\n  \"call_inbound\": {\n    \"override_agent_id\": {{ JSON.stringify($('Webhook').item.json.body.call_inbound.agent_id) }},\n    \"override_agent_version\": {{ JSON.stringify($('Webhook').item.json.body.call_inbound.agent_version) }},\n    \"dynamic_variables\": {\n      \"contact_name\": {{ JSON.stringify($('Find Contact in 1Prompt').item.json.contacts[0].contactName) }},\n      \"phoneNumber\": {{ JSON.stringify($('Find Contact in 1Prompt').item.json.contacts[0].phone) }},\n      \"email\": {{ JSON.stringify($('Find Contact in 1Prompt').item.json.contacts[0].email) }},\n      \"call1\": {{ JSON.stringify($json.call_inbound.dynamic_variables.call1) }},\n      \"call2\": {{ JSON.stringify($json.call_inbound.dynamic_variables.call2) }},\n      \"call3\": {{ JSON.stringify($json.call_inbound.dynamic_variables.call3) }},\n      \"chat\": {{ JSON.stringify($json.call_inbound.dynamic_variables.chat) }},\n      \"reactiveCallHistory\": {{ JSON.stringify($json.call_inbound.dynamic_variables.reactiveCallHistory) }}\n    }\n  }\n}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    704,
+    -128
+   ],
+   "id": "9ab4b662-b3c6-4e24-a5a3-e488c7aaf7d0",
+   "name": "Respond to Webhook"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "f0ce7314-9bb9-4d2c-a09a-9065cb2d8d64",
+       "name": "from_number",
+       "value": "={{ (() => {\n    const fromNumber = $json.body?.call_inbound?.from_number;\n    return fromNumber ? encodeURIComponent(fromNumber) : '';\n})() }}",
+       "type": "string"
+      },
+      {
+       "id": "36a68416-5472-4ce6-8417-66aeebd8a827",
+       "name": "1Prompt_Credential",
+       "value": "YOUR_GHL_PRIVATE_TOKEN",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    32,
+    -128
+   ],
+   "id": "82876131-75de-47f0-8746-41e5a0b46640",
+   "name": "Set _HighLevel_API_Key"
+  }
+ ],
+ "connections": {
+  "Webhook": {
+   "main": [
+    [
+     {
+      "node": "Set _HighLevel_API_Key",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Find Contact in 1Prompt": {
+   "main": [
+    [
+     {
+      "node": "Code1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Code1": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set _HighLevel_API_Key": {
+   "main": [
+    [
+     {
+      "node": "Find Contact in 1Prompt",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

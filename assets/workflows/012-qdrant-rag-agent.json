@@ -1,0 +1,292 @@
+{
+ "name": "Qdrant RAG Agent",
+ "nodes": [
+  {
+   "parameters": {
+    "options": {
+     "allowFileUploads": true
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+   "typeVersion": 1.1,
+   "position": [
+    0,
+    0
+   ],
+   "id": "e49d17fd-4513-4722-b18f-f2c1fbcccb41",
+   "name": "When chat message received"
+  },
+  {
+   "parameters": {
+    "mode": "insert",
+    "qdrantCollection": {
+     "__rl": true,
+     "value": "={{ $json.sessionId }}",
+     "mode": "id"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+   "typeVersion": 1.1,
+   "position": [
+    224,
+    0
+   ],
+   "id": "c434a710-7f44-49c3-948c-069d5a348fd5",
+   "name": "Qdrant Vector Store"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    128,
+    224
+   ],
+   "id": "f3ba5236-04a9-4bee-b60c-354ececd74d1",
+   "name": "Embeddings OpenAI"
+  },
+  {
+   "parameters": {
+    "dataType": "binary",
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+   "typeVersion": 1,
+   "position": [
+    288,
+    224
+   ],
+   "id": "f6747226-b93b-4ec7-8b77-a1dc349aee0b",
+   "name": "Default Data Loader"
+  },
+  {
+   "parameters": {
+    "chunkSize": 500,
+    "chunkOverlap": 50
+   },
+   "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+   "typeVersion": 1,
+   "position": [
+    320,
+    448
+   ],
+   "id": "dddb285d-fc3e-431f-9f9b-30af1ab0f2b4",
+   "name": "Token Splitter"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $('When chat message received').item.json.chatInput }}",
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    592,
+    0
+   ],
+   "id": "6bfe80ed-b9f9-4545-9b1c-644f35a37c6e",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    624,
+    224
+   ],
+   "id": "015b731f-54b4-4889-af01-18a0513a7be8",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "description": "this will be used as a knowledge base to answer user questions."
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+   "typeVersion": 1.1,
+   "position": [
+    752,
+    224
+   ],
+   "id": "e27ca50b-a05b-40c4-a9ee-56600ffc56ee",
+   "name": "Answer questions with a vector store"
+  },
+  {
+   "parameters": {
+    "qdrantCollection": {
+     "__rl": true,
+     "value": "={{ $('When chat message received').item.json.sessionId }}",
+     "mode": "id"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+   "typeVersion": 1.1,
+   "position": [
+    560,
+    432
+   ],
+   "id": "ff3823f9-b9ae-460f-99b3-849c3c7848d3",
+   "name": "Qdrant Vector Store1"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    912,
+    448
+   ],
+   "id": "f7a406a3-ef0a-488d-9e8f-7068350ae54f",
+   "name": "OpenAI Chat Model1"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    640,
+    608
+   ],
+   "id": "cabb97d6-8edb-4da5-a8f8-a780dc05f0bb",
+   "name": "Embeddings OpenAI1"
+  }
+ ],
+ "connections": {
+  "When chat message received": {
+   "main": [
+    [
+     {
+      "node": "Qdrant Vector Store",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Embeddings OpenAI": {
+   "ai_embedding": [
+    [
+     {
+      "node": "Qdrant Vector Store",
+      "type": "ai_embedding",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Default Data Loader": {
+   "ai_document": [
+    [
+     {
+      "node": "Qdrant Vector Store",
+      "type": "ai_document",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Token Splitter": {
+   "ai_textSplitter": [
+    [
+     {
+      "node": "Default Data Loader",
+      "type": "ai_textSplitter",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Qdrant Vector Store": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Answer questions with a vector store": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Qdrant Vector Store1": {
+   "ai_vectorStore": [
+    [
+     {
+      "node": "Answer questions with a vector store",
+      "type": "ai_vectorStore",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model1": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Answer questions with a vector store",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Embeddings OpenAI1": {
+   "ai_embedding": [
+    [
+     {
+      "node": "Qdrant Vector Store1",
+      "type": "ai_embedding",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

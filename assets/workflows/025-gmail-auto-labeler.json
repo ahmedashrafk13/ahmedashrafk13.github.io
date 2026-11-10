@@ -1,0 +1,225 @@
+{
+ "name": "Gmail Auto-Labeler",
+ "nodes": [
+  {
+   "parameters": {
+    "pollTimes": {
+     "item": [
+      {
+       "mode": "everyMinute"
+      }
+     ]
+    },
+    "simple": false,
+    "filters": {},
+    "options": {}
+   },
+   "id": "a0c41674-8941-48e8-942e-1543f0c90940",
+   "name": "Gmail Trigger",
+   "type": "n8n-nodes-base.gmailTrigger",
+   "typeVersion": 1.1,
+   "position": [
+    -80,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "addLabels",
+    "messageId": "={{ $json.id }}",
+    "labelIds": [
+     "Label_7255669759972285689"
+    ]
+   },
+   "id": "4f201b8e-0c1f-4056-92ff-057204dd89b0",
+   "name": "Others",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    544,
+    592
+   ]
+  },
+  {
+   "parameters": {
+    "content": "## I'm your personal email AI Labeling Agent :)\n\n### I will organize your inbox by labeling all incoming emails into predefined labels to save you time. ",
+    "height": 223.59369296517087,
+    "width": 407.40000000000003,
+    "color": 5
+   },
+   "id": "a1da345e-7752-4584-a678-d1ae89f80fa2",
+   "name": "Sticky Note",
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    0,
+    64
+   ]
+  },
+  {
+   "parameters": {
+    "inputText": "={{ $json.text }}",
+    "categories": {
+     "categories": [
+      {
+       "category": "Education",
+       "description": "Emails about my courses I am doing and every skill I am learning"
+      },
+      {
+       "category": "Work",
+       "description": "Emails about my appointments and every email that say something work I has to done"
+      },
+      {
+       "category": "Tour",
+       "description": "Emails that are related to traveling like from one place to another. Every email which says that we have to go somewhere is this category"
+      },
+      {
+       "category": "Others",
+       "description": "All others emails that do not match the description of previous labels. "
+      }
+     ]
+    },
+    "options": {
+     "systemPromptTemplate": "Please classify the text provided by the user into one of the following categories: {categories}, and use the provided formatting instructions below. Don't explain, and only output the json."
+    }
+   },
+   "id": "38e30e3f-1943-4b51-9e8a-81cf21492f36",
+   "name": "Labeling AI Agent",
+   "type": "@n8n/n8n-nodes-langchain.textClassifier",
+   "typeVersion": 1,
+   "position": [
+    112,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "addLabels",
+    "messageId": "={{ $json.id }}",
+    "labelIds": [
+     "Label_3271612743766754239"
+    ]
+   },
+   "id": "f1560486-8ef0-4657-a1f8-d916d565e70f",
+   "name": "Education",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    544,
+    112
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "addLabels",
+    "messageId": "={{ $json.id }}",
+    "labelIds": [
+     "Label_2369031428633511254"
+    ]
+   },
+   "id": "61d92113-6ed7-4544-8b40-a3571c98f929",
+   "name": "Work",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    544,
+    272
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "addLabels",
+    "messageId": "={{ $json.id }}",
+    "labelIds": [
+     "Label_4302996456795049898"
+    ]
+   },
+   "id": "1694c6db-cf80-477a-9638-60389d3b1a15",
+   "name": "Tour",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    544,
+    432
+   ]
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "gpt-4o-mini",
+     "mode": "list",
+     "cachedResultName": "gpt-4o-mini"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    144,
+    544
+   ],
+   "id": "78310605-0fa2-4073-a8bd-526e8c71f9ea",
+   "name": "OpenAI Chat Model"
+  }
+ ],
+ "connections": {
+  "Gmail Trigger": {
+   "main": [
+    [
+     {
+      "node": "Labeling AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Labeling AI Agent": {
+   "main": [
+    [
+     {
+      "node": "Education",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Work",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Tour",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Others",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Labeling AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

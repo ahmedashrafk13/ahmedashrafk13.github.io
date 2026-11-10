@@ -1,0 +1,249 @@
+{
+ "name": "Inbox Triage Agent",
+ "nodes": [
+  {
+   "parameters": {
+    "pollTimes": {
+     "item": [
+      {
+       "mode": "everyMinute"
+      }
+     ]
+    },
+    "filters": {}
+   },
+   "type": "n8n-nodes-base.gmailTrigger",
+   "typeVersion": 1.2,
+   "position": [
+    0,
+    0
+   ],
+   "id": "68329538-32c6-4c9d-82d0-5ccfe92b4eb2",
+   "name": "Gmail Trigger"
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "messageId": "={{ $json.id }}"
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    224,
+    0
+   ],
+   "id": "edcbedb9-4c98-422b-8a2a-7732c87f2ff1",
+   "name": "Gmail"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $json.snippet }}",
+    "messages": {
+     "messageValues": [
+      {
+       "message": "You are an email classifier. Categorize the following email into one or more of the following labels:\n\nWork: Related to job, business, or professional matters\n\nPersonal: Related to private or non-work life\n\nTour: Related to travel or trips\n\nReturn only the labels that apply, in a valid JSON array (e.g., [\"work\", \"tour\"]).\nDo not add any explanations or make up labels.\nIf no labels apply, return an empty array.\n\nJson Schema example to always follow:\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"labels\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\",\n        \"enum\": [\"Tour\", \"Work\", \"Personal\"]\n      }\n    }\n  },\n  \"required\": [\"labels\"]\n}\n\n\n\n"
+      }
+     ]
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.chainLlm",
+   "typeVersion": 1.6,
+   "position": [
+    448,
+    0
+   ],
+   "id": "1241a5a2-f634-4344-b135-518cf27bbecc",
+   "name": "Basic LLM Chain"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-turbo",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-turbo"
+    },
+    "options": {
+     "responseFormat": "json_object",
+     "temperature": 0
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    480,
+    224
+   ],
+   "id": "02d3d170-49be-4837-86fa-191242ae806e",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "jsonSchemaExample": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"labels\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\",\n        \"enum\": [\"Tour\", \"Work\", \"Personal\"]\n      }\n    }\n  },\n  \"required\": [\"labels\"]\n}\n"
+   },
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.2,
+   "position": [
+    624,
+    240
+   ],
+   "id": "a23b0f41-7bb8-4c95-89dd-489e5d2eb12d",
+   "name": "Structured Output Parser"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "ff372585-57b3-49b0-b913-d058e9913f12",
+       "name": "labels",
+       "value": "={{ $json.labels }}",
+       "type": "array"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    800,
+    0
+   ],
+   "id": "87f91cd3-09b9-4c11-8615-6339491ff72e",
+   "name": "Edit Fields"
+  },
+  {
+   "parameters": {
+    "resource": "label",
+    "returnAll": true
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    1024,
+    -96
+   ],
+   "id": "db2cb175-03d4-4b3a-996e-43e453fb8379",
+   "name": "Gmail1"
+  },
+  {
+   "parameters": {
+    "fieldToSplitOut": "labels",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.splitOut",
+   "typeVersion": 1,
+   "position": [
+    1040,
+    160
+   ],
+   "id": "8c6444b8-6445-4e53-9d2d-9ffcc190210b",
+   "name": "Split Out"
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-base.merge",
+   "typeVersion": 3.1,
+   "position": [
+    1424,
+    64
+   ],
+   "id": "b696470b-f713-4bd4-ab8f-a9c6e7a11eae",
+   "name": "Merge"
+  }
+ ],
+ "connections": {
+  "Gmail Trigger": {
+   "main": [
+    [
+     {
+      "node": "Gmail",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail": {
+   "main": [
+    [
+     {
+      "node": "Basic LLM Chain",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Basic LLM Chain",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Structured Output Parser": {
+   "ai_outputParser": [
+    []
+   ]
+  },
+  "Basic LLM Chain": {
+   "main": [
+    [
+     {
+      "node": "Edit Fields",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Edit Fields": {
+   "main": [
+    [
+     {
+      "node": "Gmail1",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Split Out",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail1": {
+   "main": [
+    [
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Split Out": {
+   "main": [
+    [
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 1
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

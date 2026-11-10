@@ -1,0 +1,527 @@
+{
+ "name": "Market Sentiment News Digest",
+ "nodes": [
+  {
+   "parameters": {
+    "url": "https://feeds.bbci.co.uk/news/rss.xml",
+    "options": {}
+   },
+   "name": "RSS Feed",
+   "type": "n8n-nodes-base.rssFeedRead",
+   "typeVersion": 1,
+   "position": [
+    -1024,
+    80
+   ],
+   "id": "3121b9c9-87e4-4023-b435-80a2717c3bfa"
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-base.manualTrigger",
+   "typeVersion": 1,
+   "position": [
+    -1280,
+    80
+   ],
+   "id": "2fb8bdde-0044-41d2-b2ee-ee50fac0d77f",
+   "name": "When clicking ‘Test workflow’"
+  },
+  {
+   "parameters": {
+    "jsCode": "return items.slice(0, 5); "
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -800,
+    80
+   ],
+   "id": "caaf5043-c01b-4a70-be2b-44948afe0741",
+   "name": "Code"
+  },
+  {
+   "parameters": {
+    "url": "=https://r.jina.ai/{{$json[\"link\"]}}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -544,
+    80
+   ],
+   "id": "594a3dc0-ca1d-425e-b586-3cf747e1ac2b",
+   "name": "HTTP Request"
+  },
+  {
+   "parameters": {
+    "jsCode": "// Loop over each incoming item and return a cleaned version\nreturn items.map(entry => {\n  const raw = entry.json.data || \"\";\n\n  // Remove the \"Title:\", \"URL Source:\", and \"Published Time:\" sections\n  let cleaned = raw\n    .replace(/Title:.*?\\n\\n/s, \"\")\n    .replace(/URL Source:.*?\\n\\n/s, \"\")\n    .replace(/Published Time:.*?\\n\\n/s, \"\");\n\n  // Remove image markdown: ![...](...)\n  cleaned = cleaned.replace(/!\\[.*?\\]\\(.*?\\)/g, \"\");\n\n  // Remove \"Markdown Content:\" label if present\n  cleaned = cleaned.replace(/Markdown Content:\\s*/i, \"\");\n\n  // Remove extra newlines\n  cleaned = cleaned.replace(/\\n{2,}/g, \"\\n\\n\").trim();\n\n  return {\n    json: {\n      articleBody: cleaned\n    }\n  };\n});\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -256,
+    80
+   ],
+   "id": "b2ea0099-b011-4209-be25-5f181fa0bb02",
+   "name": "Code1"
+  },
+  {
+   "parameters": {
+    "mode": "combine",
+    "combineBy": "combineByPosition",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.merge",
+   "typeVersion": 3.1,
+   "position": [
+    -304,
+    368
+   ],
+   "id": "61863604-3351-4511-a262-183557ce17d0",
+   "name": "Merge"
+  },
+  {
+   "parameters": {
+    "inputText": "={{ $json.articleBody }}",
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+   "typeVersion": 1,
+   "position": [
+    48,
+    224
+   ],
+   "id": "1887e68b-463a-4eed-800b-01d65e58bba5",
+   "name": "Sentiment Analysis"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    32,
+    464
+   ],
+   "id": "8db3b32b-0e4d-47d6-8dce-1fdc0da9fc73",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+   "typeVersion": 2,
+   "position": [
+    480,
+    -80
+   ],
+   "id": "268cf486-7d36-491a-89af-d5e94c5e7e0f",
+   "name": "Summarization Chain"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    432,
+    128
+   ],
+   "id": "e9eddf26-0156-4de2-b954-ad0e9e90d7dd",
+   "name": "OpenAI Chat Model1"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+   "typeVersion": 2,
+   "position": [
+    560,
+    224
+   ],
+   "id": "2716b629-b947-4609-a12f-4e3454317b28",
+   "name": "Summarization Chain1"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    512,
+    448
+   ],
+   "id": "614f9154-9518-4910-abcc-4668e000d21f",
+   "name": "OpenAI Chat Model2"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+   "typeVersion": 2,
+   "position": [
+    528,
+    592
+   ],
+   "id": "74bed79d-b573-4a7e-b3b6-385d1bec21e6",
+   "name": "Summarization Chain2"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    560,
+    800
+   ],
+   "id": "aa4a36e7-4ba3-45f4-bb2a-acf1c7b68cb3",
+   "name": "OpenAI Chat Model3"
+  },
+  {
+   "parameters": {
+    "sendTo": "you@example.com",
+    "subject": "={{ $('Sentiment Analysis').item.json.title }}",
+    "emailType": "text",
+    "message": "={{ $json.response.text }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    880,
+    592
+   ],
+   "id": "fdd54632-ed96-41c9-95c5-576bb093b303",
+   "name": "Gmail"
+  },
+  {
+   "parameters": {
+    "sendTo": "you@example.com",
+    "subject": "={{ $('Sentiment Analysis').item.json.title }}",
+    "emailType": "text",
+    "message": "={{ $json.response.text }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    960,
+    224
+   ],
+   "id": "398b394a-7a48-4523-bedb-fc50c2cf5454",
+   "name": "Gmail1"
+  },
+  {
+   "parameters": {
+    "sendTo": "you@example.com",
+    "subject": "={{ $('Sentiment Analysis').item.json.title }}",
+    "emailType": "text",
+    "message": "={{ $json.response.text }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    944,
+    -80
+   ],
+   "id": "a91f8207-07c0-4e7d-b1a6-f7393f20a122",
+   "name": "Gmail2"
+  },
+  {
+   "parameters": {
+    "operation": "addLabels",
+    "messageId": "={{ $json.id }}",
+    "labelIds": [
+     "Label_597562310727625812"
+    ]
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    1248,
+    -80
+   ],
+   "id": "bf74d57b-c56f-4c5c-90e8-3b55c0ba9c3d",
+   "name": "Add lebel"
+  },
+  {
+   "parameters": {
+    "operation": "addLabels",
+    "messageId": "={{ $json.id }}",
+    "labelIds": [
+     "Label_7775012554023901613"
+    ]
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    1248,
+    240
+   ],
+   "id": "a3c058a9-ff94-4a7b-9887-140554be447b",
+   "name": "Add label"
+  },
+  {
+   "parameters": {
+    "operation": "addLabels",
+    "messageId": "={{ $json.id }}",
+    "labelIds": [
+     "Label_5277482132173192506"
+    ]
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    1104,
+    592
+   ],
+   "id": "b9e53c30-0589-4a11-a708-c37d1f399d7e",
+   "name": "Add label1"
+  }
+ ],
+ "connections": {
+  "RSS Feed": {
+   "main": [
+    [
+     {
+      "node": "Code",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "When clicking ‘Test workflow’": {
+   "main": [
+    [
+     {
+      "node": "RSS Feed",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Code": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 1
+     }
+    ]
+   ]
+  },
+  "HTTP Request": {
+   "main": [
+    [
+     {
+      "node": "Code1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Code1": {
+   "main": [
+    [
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Merge": {
+   "main": [
+    [
+     {
+      "node": "Sentiment Analysis",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Sentiment Analysis": {
+   "main": [
+    [
+     {
+      "node": "Summarization Chain",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Summarization Chain1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Summarization Chain2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Sentiment Analysis",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model1": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Summarization Chain",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model2": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Summarization Chain1",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model3": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Summarization Chain2",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Summarization Chain2": {
+   "main": [
+    [
+     {
+      "node": "Gmail",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Summarization Chain1": {
+   "main": [
+    [
+     {
+      "node": "Gmail1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Summarization Chain": {
+   "main": [
+    [
+     {
+      "node": "Gmail2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail": {
+   "main": [
+    [
+     {
+      "node": "Add label1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail1": {
+   "main": [
+    [
+     {
+      "node": "Add label",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail2": {
+   "main": [
+    [
+     {
+      "node": "Add lebel",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

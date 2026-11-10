@@ -1,0 +1,1134 @@
+{
+ "name": "Automated Recitation Video Renderer",
+ "nodes": [
+  {
+   "parameters": {
+    "url": "=https://quranapi.pages.dev/api/{{ $json.surah_number }}.json",
+    "options": {}
+   },
+   "id": "00aa4786-94ea-45d9-9e93-e857a4ce162c",
+   "name": "Get Surah Data",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -1360,
+    32
+   ]
+  },
+  {
+   "parameters": {
+    "url": "=https://everyayah.com/data/translations/{{ $('Video Parameters').item.json.translation_audio }}/{{ $json.formatted_ayah_number }}.mp3",
+    "options": {
+     "response": {
+      "response": {
+       "neverError": true,
+       "responseFormat": "file"
+      }
+     }
+    }
+   },
+   "id": "24079f01-25b2-4c69-bcf0-ebc324e8e96f",
+   "name": "Fetch Translation Audio",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -480,
+    -128
+   ]
+  },
+  {
+   "parameters": {
+    "jsCode": "const items = $input.all();\nconst processedItems = [];\n\nfor (const item of items) {\n  const data = item.json;\n  processedItems.push({\n    ...data,\n    reciter_duration: 0,\n    translation_duration: 0,\n    total_duration: 0\n  });\n}\n\nreturn processedItems.map(item => ({ json: item }));"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    624,
+    32
+   ],
+   "id": "ae4cea66-b303-4175-b5a9-a82b4e8d578b",
+   "name": "Prepare Timing Data1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "translation-dur",
+       "name": "translation_duration",
+       "value": "={{ $json.Translation_Duration }}",
+       "type": "number"
+      },
+      {
+       "id": "total-dur",
+       "name": "total_duration",
+       "value": "={{ parseFloat($('Get Translation Duration').item.json.stdout.trim()) }}",
+       "type": "number"
+      },
+      {
+       "id": "94294d7d-bd4b-4776-a1e5-6e53af5c8a51",
+       "name": "translation_audio_path",
+       "value": "={{ $('merge All data').item.json.translation_audio_path }}",
+       "type": "string"
+      },
+      {
+       "id": "b424b1f5-bb64-443b-8a2b-e4c4d2e143eb",
+       "name": "formatted_ayah_number",
+       "value": "={{ $('merge All data').item.json.formatted_ayah_number }}",
+       "type": "string"
+      },
+      {
+       "id": "0f7e23a4-42d2-4afb-be39-162565037684",
+       "name": "surah_number",
+       "value": "={{ $('merge All data').item.json.surah_number }}",
+       "type": "number"
+      },
+      {
+       "id": "92e4111f-a730-490d-bf9c-2a33ee82138e",
+       "name": "arabic_text",
+       "value": "={{ $('merge All data').item.json.arabic_text }}",
+       "type": "string"
+      },
+      {
+       "id": "2a921723-67ee-4faf-b873-95ca29bf86f0",
+       "name": "urdu_text",
+       "value": "={{ $('merge All data').item.json.urdu_text }}",
+       "type": "string"
+      },
+      {
+       "id": "0fbad802-d478-4b54-9ae5-c0ab5e3e3be2",
+       "name": "english_text",
+       "value": "={{ $('merge All data').item.json.english_text }}",
+       "type": "string"
+      },
+      {
+       "id": "5f01ee92-d0fb-417c-9c34-1b41502b68f8",
+       "name": "surah_name_arabic",
+       "value": "={{ $('merge All data').item.json.surah_name_arabic }}",
+       "type": "string"
+      },
+      {
+       "id": "d1125ff0-95d4-49e1-9cd7-27034ffcdfbb",
+       "name": "surah_range",
+       "value": "={{ $('merge All data').item.json.surah_range }}",
+       "type": "string"
+      },
+      {
+       "id": "b3101efa-1eeb-4c1f-b79d-16140bcaef9e",
+       "name": "background_videos_path",
+       "value": "={{ $('Video Parameters').item.json.background_videos_path }}",
+       "type": "string"
+      },
+      {
+       "id": "3fb0e908-6934-49b0-bc64-3030bc4d16e6",
+       "name": "fonts_path",
+       "value": "={{ $('merge All data').item.json.fonts_path }}",
+       "type": "string"
+      },
+      {
+       "id": "94c07012-2f65-4792-89f6-5fe638534515",
+       "name": "english_font",
+       "value": "={{ $('merge All data').item.json.english_font }}",
+       "type": "string"
+      },
+      {
+       "id": "cd29beff-b3f0-47a6-858f-b04f7d3f99dc",
+       "name": "output_path",
+       "value": "={{ $('merge All data').item.json.output_path }}",
+       "type": "string"
+      },
+      {
+       "id": "e4afb325-836f-4d95-a759-7271c8b61bff",
+       "name": "urdu_lines",
+       "value": "={{ $('Wrap Ayah Text').item.json.urdu_lines }}",
+       "type": "array"
+      },
+      {
+       "id": "da8b1f58-7553-46da-8220-e01dbbfab613",
+       "name": "english_lines",
+       "value": "={{ $('Wrap Ayah Text').item.json.english_lines }}",
+       "type": "array"
+      },
+      {
+       "id": "1586c79b-6dc4-4397-a78f-01c89abce62d",
+       "name": "surah_png_path",
+       "value": "={{ $('merge All data').item.json.surah_png_path }}",
+       "type": "string"
+      },
+      {
+       "id": "urdu_chunks",
+       "name": "urdu_chunks",
+       "value": "={{ $('Wrap Ayah Text').item.json.urdu_chunks }}",
+       "type": "array"
+      },
+      {
+       "id": "english_chunks",
+       "name": "english_chunks",
+       "value": "={{ $('Wrap Ayah Text').item.json.english_chunks }}",
+       "type": "array"
+      },
+      {
+       "id": "total_urdu_chunks",
+       "name": "total_urdu_chunks",
+       "value": "={{ $('Wrap Ayah Text').item.json.total_urdu_chunks }}",
+       "type": "number"
+      },
+      {
+       "id": "total_english_chunks",
+       "name": "total_english_chunks",
+       "value": "={{ $('Wrap Ayah Text').item.json.total_english_chunks }}",
+       "type": "number"
+      },
+      {
+       "id": "2c0d25d0-c866-4c16-9654-633c91773e58",
+       "name": "surah_Name_eng",
+       "value": "={{ $('merge All data').item.json.surah_Name }}",
+       "type": "string"
+      },
+      {
+       "id": "af0d75a3-3fbb-4f9f-aa7b-4c1a0ce5ee90",
+       "name": "reciter_audio_path",
+       "value": "={{ $('merge All data').item.json.reciter_audio_path }}",
+       "type": "string"
+      },
+      {
+       "id": "3c7a8ec1-065a-4459-9339-9d6839a76f72",
+       "name": "reciter_duration",
+       "value": "={{ parseFloat($('Get Reciter Duration').item.json.stdout.trim()) }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    1504,
+    32
+   ],
+   "id": "365b1127-5f19-4a03-b5d3-4221c8b54c2c",
+   "name": "Set Audio Durations"
+  },
+  {
+   "parameters": {
+    "formTitle": "Quran video maker",
+    "formFields": {
+     "values": [
+      {
+       "fieldLabel": "surah number",
+       "fieldType": "number",
+       "placeholder": "1 to 114",
+       "requiredField": true
+      },
+      {
+       "fieldLabel": "from_ayah",
+       "fieldType": "number",
+       "requiredField": true
+      },
+      {
+       "fieldLabel": "to_ayah",
+       "fieldType": "number",
+       "requiredField": true
+      },
+      {
+       "fieldLabel": "translation_audio",
+       "fieldType": "dropdown",
+       "fieldOptions": {
+        "values": [
+         {
+          "option": "urdu_shamshad_ali_khan_46kbps"
+         },
+         {
+          "option": "urdu_farhat_hashmi"
+         }
+        ]
+       },
+       "requiredField": true
+      },
+      {
+       "fieldLabel": "Reciter",
+       "fieldType": "dropdown",
+       "fieldOptions": {
+        "values": [
+         {
+          "option": "Abdul_Basit_Murattal_192kbps"
+         },
+         {
+          "option": "Abdullaah_3awwaad_Al-Juhaynee_128kbps"
+         },
+         {
+          "option": "AbdulSamad_64kbps_QuranExplorer.Com"
+         },
+         {
+          "option": "Abdul_Basit_Mujawwad_128kbps"
+         },
+         {
+          "option": "Abdul_Basit_Murattal_192kbps"
+         },
+         {
+          "option": "Abdullaah_3awwaad_Al-Juhaynee_128kbps"
+         },
+         {
+          "option": "Abdullah_Basfar_192kbps"
+         },
+         {
+          "option": "Abdullah_Matroud_128kbps"
+         },
+         {
+          "option": "Abdurrahmaan_As-Sudais_192kbps"
+         },
+         {
+          "option": "Abu_Bakr_Ash-Shaatree_128kbps"
+         },
+         {
+          "option": "Ahmed_Neana_128kbps"
+         },
+         {
+          "option": "Ahmed_ibn_Ali_al-Ajamy_128kbps_ketaballah.net"
+         },
+         {
+          "option": "Alafasy_128kbps"
+         },
+         {
+          "option": "Ali_Hajjaj_AlSuesy_128kbps"
+         },
+         {
+          "option": "Ali_Jaber_64kbps"
+         },
+         {
+          "option": "Husary_128kbps_Mujawwad"
+         },
+         {
+          "option": "Khaalid_Abdullaah_al-Qahtaanee_192kbps"
+         },
+         {
+          "option": "ahmed_ibn_ali_al_ajamy_128kbps"
+         }
+        ]
+       },
+       "requiredField": true
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.formTrigger",
+   "typeVersion": 2.2,
+   "position": [
+    -1808,
+    32
+   ],
+   "id": "f86f4ce1-46ad-4046-8a62-6580248db2bc",
+   "name": "On form submission"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "3f32a5eb-787c-4a12-b7cb-c3eb6884181a",
+       "name": "formatted_ayah_number",
+       "value": "={{ $json.formatted_ayah_number }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -704,
+    32
+   ],
+   "id": "9c541156-f485-4e70-8d34-48456231cca9",
+   "name": "formatted_ayah_number"
+  },
+  {
+   "parameters": {
+    "jsCode": "const items = $input.all();\n\nfunction wrapToLines(text, wordsPerLine = 5) {\n  const words = (text || '').split(/\\s+/);\n  const lines = [];\n  for (let i = 0; i < words.length; i += wordsPerLine) {\n    lines.push(words.slice(i, i + wordsPerLine).join(' '));\n  }\n  return lines;\n}\n\nfunction chunkLines(lines, chunkSize = 4) {\n  const chunks = [];\n  for (let i = 0; i < lines.length; i += chunkSize) {\n    chunks.push(lines.slice(i, i + chunkSize));\n  }\n  return chunks;\n}\n\nreturn items.map(item => {\n  const data = item.json;\n  \n  // Dynamic wrapping based on text length\n  const urduWords = (data.urdu_text || '').split(/\\s+/).length;\n  const englishWords = (data.english_text || '').split(/\\s+/).length;\n  \n  // Adjust words per line based on total word count\n  const urduWordsPerLine = urduWords > 40 ? 10 : urduWords > 25 ? 10 : 9;\n  const englishWordsPerLine = englishWords > 50 ? 8 : englishWords > 30 ? 8 : 8;\n\n  // Get lines\n  const urduLines = wrapToLines(data.urdu_text, urduWordsPerLine);\n  const englishLines = wrapToLines(data.english_text, englishWordsPerLine);\n\n  // Create chunks of 4 lines each\n  const urduChunks = chunkLines(urduLines, 4);\n  const englishChunks = chunkLines(englishLines, 4);\n\n  return {\n    json: {\n      ...data,\n      urdu_lines: urduLines, // Keep original for reference\n      english_lines: englishLines, // Keep original for reference\n      urdu_chunks: urduChunks, // New chunked data\n      english_chunks: englishChunks, // New chunked data\n      total_urdu_chunks: urduChunks.length,\n      total_english_chunks: englishChunks.length\n    }\n  };\n});"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -928,
+    32
+   ],
+   "id": "531207ce-3144-4fa8-bc09-2d0cad85e798",
+   "name": "Wrap Ayah Text"
+  },
+  {
+   "parameters": {
+    "jsCode": "// Generate ayah processing list with all required data\nconst inputParams = $('Video Parameters').first().json;\nconst surahData = $input.first().json;\n\nconst surahNumber = inputParams.surah_number;\nconst fromAyah = inputParams.from_ayah;\nconst toAyah = inputParams.to_ayah;\nconst reciter = inputParams.reciter;\nconst translationAudio = inputParams.translation_audio;\n\n// Create processing list for each ayah\nconst ayahsToProcess = [];\nfor (let ayahNum = fromAyah; ayahNum <= toAyah; ayahNum++) {\n  const formattedAyahNumber = String(surahNumber).padStart(3, '0') + String(ayahNum).padStart(3, '0');\n  \n  ayahsToProcess.push({\n    // Basic ayah info\n    ayah_number: ayahNum,\n    formatted_ayah_number: formattedAyahNumber,\n    surah_number: surahNumber,\n    \n    // Audio info\n    reciter: reciter,\n    translation_audio: translationAudio,\n    \n    // Text content (from surah data)\n    arabic_text: surahData.arabic1 && surahData.arabic1[ayahNum - 1] ? surahData.arabic1[ayahNum - 1] : '',\n    urdu_text: surahData.urdu && surahData.urdu[ayahNum - 1] ? surahData.urdu[ayahNum - 1] : '',\n    english_text: surahData.english && surahData.english[ayahNum - 1] ? surahData.english[ayahNum - 1] : '',\n    \n    // Surah info for display\n    surah_name_arabic: surahData.surahNameArabicLong,\n    surah_name_english: surahData.surahName,\n    surah_range: `${fromAyah}-${toAyah}`,\n    \n    // Video parameters\n    background_images_path: inputParams.background_images_path,\n    fonts_path: inputParams.fonts_path,\n    temp_path: inputParams.temp_path,\n    output_path: inputParams.output_path,\n    arabic_font: inputParams.arabic_font,\n    urdu_font: inputParams.urdu_font,\n    english_font: inputParams.english_font\n  });\n}\n\nreturn ayahsToProcess.map(item => ({ json: item }));"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -1136,
+    32
+   ],
+   "id": "31b41228-290d-454d-8da7-d92cfdc1b0ba",
+   "name": "Generate Processing List"
+  },
+  {
+   "parameters": {
+    "values": {
+     "number": [
+      {
+       "name": "surah_number",
+       "value": "={{ $json['surah number'] }}"
+      },
+      {
+       "name": "from_ayah",
+       "value": "={{ $json.from_ayah }}"
+      },
+      {
+       "name": "to_ayah",
+       "value": "={{ $json.to_ayah }}"
+      }
+     ],
+     "string": [
+      {
+       "name": "translation_audio",
+       "value": "={{ $json.translation_audio }}"
+      },
+      {
+       "name": "background_videos_path",
+       "value": "\\n8n data\\quran-videos\\videos"
+      },
+      {
+       "name": "fonts_path",
+       "value": "\\n8n data\\quran-videos\\fonts"
+      },
+      {
+       "name": "temp_path",
+       "value": "\\n8n data\\quran-videos\\temp"
+      },
+      {
+       "name": "output_path",
+       "value": "\\n8n data\\quran-videos\\output"
+      },
+      {
+       "name": "english_font",
+       "value": "Arial.ttf"
+      },
+      {
+       "name": "surah_png_path",
+       "value": "\\n8n data\\quran-videos\\114-surahs-png"
+      },
+      {
+       "name": "reciter",
+       "value": "={{ $json.Reciter }}"
+      }
+     ]
+    },
+    "options": {
+     "dotNotation": false
+    }
+   },
+   "id": "4537b9d6-a2dd-4192-8cb9-128e964cda44",
+   "name": "Video Parameters",
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 1,
+   "position": [
+    -1584,
+    32
+   ]
+  },
+  {
+   "parameters": {
+    "url": "=https://everyayah.com/data/{{ $('Video Parameters').item.json.Reciter }}/{{ $json.formatted_ayah_number }}.mp3",
+    "options": {
+     "response": {
+      "response": {
+       "neverError": true,
+       "responseFormat": "file"
+      }
+     }
+    }
+   },
+   "id": "5a8aa77d-0871-4280-94d7-02ac4060defa",
+   "name": "Fetch Reciter Audio",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -480,
+    176
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "write",
+    "fileName": "={{(() => {\n  const path = $json.temp_path || '/n8n data/quran-videos/temp';\n  return `${path}/reciter_${$json.formatted_ayah_number}.mp3`;\n})()}}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.readWriteFile",
+   "typeVersion": 1,
+   "position": [
+    -256,
+    176
+   ],
+   "id": "8ff4064a-a42f-4d39-80a3-62620831dc40",
+   "name": "save Reciter Audio"
+  },
+  {
+   "parameters": {
+    "operation": "write",
+    "fileName": "={{(() => {\n  const path = $json.temp_path || '/n8n data/quran-videos/temp';\n  return `${path}/translation_${$json.formatted_ayah_number}.mp3`;\n})()}}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.readWriteFile",
+   "typeVersion": 1,
+   "position": [
+    -256,
+    -128
+   ],
+   "id": "389adae5-31e2-4297-9ee8-773e45bbd8ad",
+   "name": "save Translation Audio"
+  },
+  {
+   "parameters": {
+    "executeOnce": false,
+    "command": "=ffprobe -v quiet -show_entries format=duration -of csv=p=0 \"{{ $('Merge').item.json.reciter_audio_path }}\""
+   },
+   "type": "n8n-nodes-base.executeCommand",
+   "typeVersion": 1,
+   "position": [
+    848,
+    128
+   ],
+   "id": "1efa8476-6fae-41d4-bc58-54901b44a889",
+   "name": "Get Reciter Duration"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "507ff5f4-4de8-417c-aba4-ffdd94314516",
+       "name": "reciter_Duration",
+       "value": "={{ $json.stdout }}",
+       "type": "string"
+      },
+      {
+       "id": "23fa7af1-7dd0-4339-bd69-510ff87d4892",
+       "name": "stderr",
+       "value": "={{ $json.stderr }}",
+       "type": "string"
+      },
+      {
+       "id": "0449c020-e1be-43d8-888d-63a5c25d862e",
+       "name": "exitCode",
+       "value": "={{ $json.exitCode }}",
+       "type": "number"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    1072,
+    128
+   ],
+   "id": "713fad3c-db87-44a0-ac24-3e379e67ffde",
+   "name": "Reciter Duration setup"
+  },
+  {
+   "parameters": {
+    "mode": "combine",
+    "combineBy": "combineByPosition",
+    "numberInputs": 3,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.merge",
+   "typeVersion": 3.2,
+   "position": [
+    192,
+    32
+   ],
+   "id": "e6f12ada-fb6c-4b69-a980-7b54b8bbe032",
+   "name": "Merge"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "51cb293d-865c-4e59-b835-adfe8b3f20ec",
+       "name": "translation_audio_path",
+       "value": "={{ $json.translation_audio_path }}",
+       "type": "string"
+      },
+      {
+       "id": "12836e9d-d788-4a03-8f7d-e776a1c56397",
+       "name": "formatted_ayah_number",
+       "value": "={{ $json.formatted_ayah_number }}",
+       "type": "string"
+      },
+      {
+       "id": "5475d039-113d-4f8d-85b6-dbe08c765ac4",
+       "name": "surah_number",
+       "value": "={{ $('Generate Processing List').item.json.surah_number }}",
+       "type": "number"
+      },
+      {
+       "id": "669f3be6-80ee-48f4-ab45-e8c566791d04",
+       "name": "arabic_text",
+       "value": "={{ $('Generate Processing List').item.json.arabic_text }}",
+       "type": "string"
+      },
+      {
+       "id": "be2fa5d1-9518-4a1a-9b9b-f32ff421788a",
+       "name": "urdu_text",
+       "value": "={{ $('Generate Processing List').item.json.urdu_text }}",
+       "type": "string"
+      },
+      {
+       "id": "36e94ae7-5e8a-4b2a-b521-b511e15510a0",
+       "name": "english_text",
+       "value": "={{ $('Generate Processing List').item.json.english_text }}",
+       "type": "string"
+      },
+      {
+       "id": "57f8a7d4-09c1-4482-a49d-5f7de7c4423d",
+       "name": "surah_name_arabic",
+       "value": "={{ $('Get Surah Data').item.json.surahNameArabicLong }}",
+       "type": "string"
+      },
+      {
+       "id": "2e7c34d7-e33f-44af-b4f0-6cce4ca2369e",
+       "name": "surah_range",
+       "value": "={{ $('Generate Processing List').item.json.surah_range }}",
+       "type": "string"
+      },
+      {
+       "id": "81c7c218-413c-4457-a862-f1a43c3cc1be",
+       "name": "background_videos_path",
+       "value": "={{ $('Video Parameters').item.json.background_videos_path }}",
+       "type": "string"
+      },
+      {
+       "id": "0e06ecbd-5466-4d27-9a9c-bff65c87de75",
+       "name": "fonts_path",
+       "value": "={{ $('Generate Processing List').item.json.fonts_path }}",
+       "type": "string"
+      },
+      {
+       "id": "5ff0f672-42f3-495e-a819-d8c70f49252e",
+       "name": "english_font",
+       "value": "={{ $('Generate Processing List').item.json.english_font }}",
+       "type": "string"
+      },
+      {
+       "id": "94c17651-1106-462d-8c04-e40b60585552",
+       "name": "output_path",
+       "value": "={{ $('Generate Processing List').item.json.output_path }}",
+       "type": "string"
+      },
+      {
+       "id": "34c2ea0e-e21e-40db-9323-7f9e6fc34d41",
+       "name": "surah_Name",
+       "value": "={{ $('Get Surah Data').item.json.surahName }}",
+       "type": "string"
+      },
+      {
+       "id": "4947b3fd-693d-4d98-850d-8c85fc2a38db",
+       "name": "surah_png_path",
+       "value": "={{ $('Video Parameters').item.json.surah_png_path }}/{{ $('Generate Processing List').item.json.surah_number }}.png",
+       "type": "string"
+      },
+      {
+       "id": "753106f5-b1f6-4e78-ba45-0bd380ac87ea",
+       "name": "reciter_audio_path",
+       "value": "={{ $json.reciter_audio_path }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    400,
+    32
+   ],
+   "id": "d8d654f6-b7ef-4c28-a8e7-59eace5c7c51",
+   "name": "merge All data"
+  },
+  {
+   "parameters": {
+    "mode": "combine",
+    "combineBy": "combineByPosition",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.merge",
+   "typeVersion": 3.2,
+   "position": [
+    1280,
+    32
+   ],
+   "id": "1c47cc30-2781-4463-8410-4820a0611f62",
+   "name": "Merge With Durations"
+  },
+  {
+   "parameters": {
+    "jsCode": "// This would combine multiple ayahs into one sequential video\nconst items = $input.all();\nlet currentTime = 0;\nconst combinedSegments = [];\n\nfor (const item of items) {\n  const data = item.json;\n  // Calculate timing for this ayah segment\n  const segmentDuration = data.reciter_duration + data.translation_duration + 4; // +4 for transitions\n  \n  combinedSegments.push({\n    ...data,\n    segment_start: currentTime,\n    segment_end: currentTime + segmentDuration\n  });\n  \n  currentTime += segmentDuration;\n}\n\nreturn combinedSegments.map(item => ({ json: item }));"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    1728,
+    32
+   ],
+   "id": "668dc798-d721-4e48-a123-653a34c01f52",
+   "name": "Combine Multiple Ayahs"
+  },
+  {
+   "parameters": {
+    "jsCode": "// ---------- Path Sanitizer ----------\nfunction fixPath(path) {\n  if (!path) return '';\n  return path\n    .replace(/\\n/g, '')        // remove accidental newline chars\n    .replace(/\\r/g, '')        // remove carriage return\n    .trim();                   // remove spaces at start/end\n}\n\n// ---------- Text Escaper ----------\nfunction escapeTextForFFmpeg(text) {\n  if (!text) return '';\n  let escaped = text.replace(/\\\\/g, '\\\\\\\\'); // backslashes\n  escaped = escaped.replace(/%/g, '\\\\%');    // percent signs\n  escaped = escaped.replace(/:/g, '\\\\:');    // colons\n  escaped = escaped.replace(/'/g, \"\\\\\\\\\\\\'\");// single quotes\n  return escaped;\n}\n\nconst items = $input.all();\nconst first = items[0].json;\n\n// Sanitize paths\nconst background_videos_path = fixPath(first.background_videos_path);\nconst fonts_path = fixPath(first.fonts_path);\nconst english_font = fixPath(first.english_font);\nconst output_path = fixPath(first.output_path);\nconst surah_png_path = fixPath(first.surah_png_path);\n\n// Defaults for Surah info\nconst surah_range_val = first.surah_range && first.surah_range.trim() !== '' ? first.surah_range : '1-1';\nconst surah_Name_val  = first.surah_Name && first.surah_Name.trim() !== '' ? first.surah_Name : `Surah_${first.surah_number || 'Unknown'}`;\n\n// Escaped values\nconst escapedRange = escapeTextForFFmpeg(surah_range_val);\nconst escapedName  = escapeTextForFFmpeg(surah_Name_val);\n\n// Debug Logs\nconsole.log('✅ Surah Range:', surah_range_val);\nconsole.log('✅ Surah Name:', surah_Name_val);\nconsole.log('✅ Fonts Path:', fonts_path);\nconsole.log('✅ English Font File:', english_font);\n\n// Resolution\nconst width = 1080;\nconst height = 1920;\n\n// Total duration calc\nlet totalDuration = 1;\nitems.forEach(item => {\n  const reciterDur = parseFloat(item.json.reciter_duration) || 0;\n  const translationDur = parseFloat(item.json.translation_duration) || 0;\n  totalDuration += reciterDur + 1 + translationDur + 1.5;\n});\n\n// Select clips\nfunction selectClips(path, totalDuration) {\n  const available = Array.from({ length: 44 }, (_, i) => `${i + 1}.mp4`);\n  const clipDuration = 6;\n  const clipsNeeded = Math.ceil(totalDuration / clipDuration);\n  const selected = [];\n  for (let i = 0; i < clipsNeeded; i++) {\n    const randomIndex = Math.floor(Math.random() * available.length);\n    selected.push({\n      file: fixPath(`${path}/${available[randomIndex]}`),\n      start: Math.floor(Math.random() * 2),\n      duration: clipDuration\n    });\n  }\n  return selected;\n}\n\nconst selectedClips = selectClips(background_videos_path, totalDuration);\n\nlet inputArgs = [], videoFilters = [], audioDelays = [], audioInputs = [];\n\n// Video inputs\nselectedClips.forEach((clip) => {\n  inputArgs.push(`-ss ${clip.start} -t ${clip.duration} -i \"${clip.file}\"`);\n});\n\n// Bismillah PNG\ninputArgs.push(`-i \"${fixPath(surah_png_path).replace(/[^\\\\/]*\\.png$/, 'bismillah.png')}\"`);\nconst bismillahInputIndex = selectedClips.length;\n\n// Surah PNG\ninputArgs.push(`-i \"${fixPath(surah_png_path)}\"`);\nconst surahInputIndex = selectedClips.length + 1;\n\n// Prepare clips\nconst prepared = selectedClips.map((_, i) =>\n  `[${i}:v]scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},setsar=1[clip_${i}]`\n);\nconst concatInputs = selectedClips.map((_, i) => `[clip_${i}]`).join('');\nvideoFilters.push(`${prepared.join(';')};${concatInputs}concat=n=${selectedClips.length}:v=1:a=0[bg_original]`);\n\nconst englishFontPath = `${fonts_path}/${english_font}`.replace(/\\\\/g, '\\\\\\\\');\n\n// Overlays + text\nvideoFilters.push(\n  `[${bismillahInputIndex}:v]scale=576:288[scaled_bismillah]`,\n  `[bg_original][scaled_bismillah]overlay=(main_w-overlay_w)/2:80[with_bismillah]`,\n  `[${surahInputIndex}:v]scale=520:520[scaled_surah_png]`,\n  `[with_bismillah][scaled_surah_png]overlay=(main_w-overlay_w)/2:400[with_surah_png]`,\n  `[with_surah_png]drawtext=fontfile='${englishFontPath}':text='Ayah (${escapedRange})':fontsize=45:fontcolor=white@1.0:x=(w-text_w)/2:y=870[with_range]`,\n  `[with_range]drawtext=fontfile='${englishFontPath}':text='${escapedName}':fontsize=40:fontcolor=white@1.0:x=(w-text_w)/2:y=930[video_final]`\n);\n\n// Audio\nlet currentTime = 1;\nlet audioInputIndex = selectedClips.length + 2;\n\nitems.forEach((item, index) => {\n  const reciter_audio_path = fixPath(item.json.reciter_audio_path);\n  const translation_audio_path = fixPath(item.json.translation_audio_path);\n  const reciterDur = parseFloat(item.json.reciter_duration) || 0;\n  const translationDur = parseFloat(item.json.translation_duration) || 0;\n\n  inputArgs.push(`-i \"${reciter_audio_path}\"`);\n  const reciterInputIndex = audioInputIndex++;\n  inputArgs.push(`-i \"${translation_audio_path}\"`);\n  const translationInputIndex = audioInputIndex++;\n\n  const reciterDelay = Math.round(currentTime * 1000);\n  audioDelays.push(`[${reciterInputIndex}:a]dynaudnorm=f=150:g=15:p=0.95,acompressor=threshold=-18dB:ratio=3:attack=3:release=100:makeup=2dB,volume=0.63,adelay=${reciterDelay}|${reciterDelay}[reciter_${index}]`);\n\n  const translationDelay = Math.round((currentTime + reciterDur + 1) * 1000);\n  audioDelays.push(`[${translationInputIndex}:a]dynaudnorm=f=150:g=15:p=0.95,acompressor=threshold=-18dB:ratio=3:attack=3:release=100:makeup=2dB,volume=0.595,adelay=${translationDelay}|${translationDelay}[translation_${index}]`);\n\n  audioInputs.push(`[reciter_${index}]`, `[translation_${index}]`);\n\n  currentTime += reciterDur + 1 + translationDur + 1.5;\n});\n\n// Audio mix\nconst audioMix = `${audioInputs.join('')}amix=inputs=${audioInputs.length}:duration=longest:dropout_transition=3:normalize=1,dynaudnorm=f=200:g=10:p=0.9,acompressor=threshold=-16dB:ratio=2:attack=5:release=150:makeup=1dB,volume=1.1[audio_out]`;\n\nconst filterComplex = [...videoFilters, ...audioDelays, audioMix].join(';');\n\n// Output file\nconst startAyah = first.formatted_ayah_number || '001';\nconst endAyah = items[items.length - 1].json.formatted_ayah_number || '001';\nconst surahNameSafe = surah_Name_val.replace(/\\s+/g, '_');\nconst outputFile = `${output_path}/${surahNameSafe}_Reciter_Translation_Ayah_${startAyah}_to_${endAyah}_${Date.now()}.mp4`;\n\n// Final command\nconst cmd = `ffmpeg -y ${inputArgs.join(' ')} -filter_complex \"${filterComplex}\" -map \"[video_final]\" -map \"[audio_out]\" -c:v libx264 -preset medium -crf 18 -c:a aac -b:a 320k -ac 2 -ar 48000 -pix_fmt yuv420p -t ${currentTime.toFixed(3)} -r 25 -movflags +faststart \"${outputFile}\"`;\n\nreturn [{\n  json: {\n    ffmpeg_command: cmd,\n    output_file: outputFile,\n    total_duration: currentTime.toFixed(3),\n    ayah_count: items.length,\n    selected_videos: selectedClips.map(c => c.file),\n    surah_png_used: surah_png_path,\n    audio_type: 'reciter_then_translation_enhanced'\n  }\n}];\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    1920,
+    32
+   ],
+   "id": "38cbd497-0442-417e-a985-2596ce483427",
+   "name": "Generate FFmpeg Command"
+  },
+  {
+   "parameters": {
+    "command": "={{ $json.ffmpeg_command }}"
+   },
+   "type": "n8n-nodes-base.executeCommand",
+   "typeVersion": 1,
+   "position": [
+    2304,
+    32
+   ],
+   "id": "fc7a2a5c-c284-4919-9d28-54e55b9d4972",
+   "name": "Make a video"
+  },
+  {
+   "parameters": {
+    "fileSelector": "={{ $('Fix Output Path').item.json.corrected_file_path }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.readWriteFile",
+   "typeVersion": 1,
+   "position": [
+    2512,
+    32
+   ],
+   "id": "e52881c0-b15f-4296-925f-7e53ad56e6bd",
+   "name": "Display Video"
+  },
+  {
+   "parameters": {
+    "jsCode": "// Fix output file path for Read File node\nconst items = $input.all();\n\nreturn items.map(item => {\n  const data = item.json;\n  \n  // Get the original output file path\n  let outputFile = data.output_file;\n  \n  // Convert Windows backslashes to forward slashes\n  // From: \\n8n-data\\quran-videos\\output/filename.mp4  \n  // To: /n8n-data/quran-videos/output/filename.mp4\n  const correctedPath = outputFile.replace(/\\\\/g, '/');\n  \n  return {\n    json: {\n      ...data,\n      original_output_path: outputFile,\n      corrected_file_path: correctedPath,\n      video_ready: true,\n      status: \"Video generation completed successfully\"\n    }\n  };\n});"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    2112,
+    32
+   ],
+   "id": "95d8c501-3242-453f-a84b-e1c0de721745",
+   "name": "Fix Output Path"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "9b529829-06bc-4b75-837d-6d0925721b0a",
+       "name": "translation_audio_path",
+       "value": "={{ $json.fileName }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -32,
+    -128
+   ],
+   "id": "bddfb068-67ee-4353-8d17-69508b058523",
+   "name": "set Translation Audio"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "9b529829-06bc-4b75-837d-6d0925721b0a",
+       "name": "reciter_audio_path",
+       "value": "={{ $json.fileName }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -32,
+    176
+   ],
+   "id": "35e9b985-46d5-4557-9b14-972c6af42954",
+   "name": "set Reciter Audio"
+  },
+  {
+   "parameters": {
+    "executeOnce": false,
+    "command": "=ffprobe -v quiet -show_entries format=duration -of csv=p=0 \"{{ $('merge All data').item.json.translation_audio_path }}\""
+   },
+   "type": "n8n-nodes-base.executeCommand",
+   "typeVersion": 1,
+   "position": [
+    848,
+    -64
+   ],
+   "id": "363f99cf-b0ea-4843-a81b-e3c0a65585bf",
+   "name": "Get Translation Duration"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "507ff5f4-4de8-417c-aba4-ffdd94314516",
+       "name": "Translation_Duration",
+       "value": "={{ $json.stdout }}",
+       "type": "string"
+      },
+      {
+       "id": "23fa7af1-7dd0-4339-bd69-510ff87d4892",
+       "name": "stderr",
+       "value": "={{ $json.stderr }}",
+       "type": "string"
+      },
+      {
+       "id": "0449c020-e1be-43d8-888d-63a5c25d862e",
+       "name": "exitCode",
+       "value": "={{ $json.exitCode }}",
+       "type": "number"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    1072,
+    -64
+   ],
+   "id": "ffe66c70-ef0c-482a-8f6c-832b5fba556e",
+   "name": "Translation Duration setup"
+  }
+ ],
+ "connections": {
+  "Get Surah Data": {
+   "main": [
+    [
+     {
+      "node": "Generate Processing List",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Fetch Translation Audio": {
+   "main": [
+    [
+     {
+      "node": "save Translation Audio",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Prepare Timing Data1": {
+   "main": [
+    [
+     {
+      "node": "Get Translation Duration",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Get Reciter Duration",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set Audio Durations": {
+   "main": [
+    [
+     {
+      "node": "Combine Multiple Ayahs",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "On form submission": {
+   "main": [
+    [
+     {
+      "node": "Video Parameters",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "formatted_ayah_number": {
+   "main": [
+    [
+     {
+      "node": "Fetch Translation Audio",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 1
+     },
+     {
+      "node": "Fetch Reciter Audio",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Wrap Ayah Text": {
+   "main": [
+    [
+     {
+      "node": "formatted_ayah_number",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Generate Processing List": {
+   "main": [
+    [
+     {
+      "node": "Wrap Ayah Text",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Video Parameters": {
+   "main": [
+    [
+     {
+      "node": "Get Surah Data",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Fetch Reciter Audio": {
+   "main": [
+    [
+     {
+      "node": "save Reciter Audio",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "save Reciter Audio": {
+   "main": [
+    [
+     {
+      "node": "set Reciter Audio",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "save Translation Audio": {
+   "main": [
+    [
+     {
+      "node": "set Translation Audio",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Reciter Duration": {
+   "main": [
+    [
+     {
+      "node": "Reciter Duration setup",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Reciter Duration setup": {
+   "main": [
+    [
+     {
+      "node": "Merge With Durations",
+      "type": "main",
+      "index": 1
+     }
+    ]
+   ]
+  },
+  "Merge": {
+   "main": [
+    [
+     {
+      "node": "merge All data",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "merge All data": {
+   "main": [
+    [
+     {
+      "node": "Prepare Timing Data1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Merge With Durations": {
+   "main": [
+    [
+     {
+      "node": "Set Audio Durations",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Combine Multiple Ayahs": {
+   "main": [
+    [
+     {
+      "node": "Generate FFmpeg Command",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Generate FFmpeg Command": {
+   "main": [
+    [
+     {
+      "node": "Fix Output Path",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Make a video": {
+   "main": [
+    [
+     {
+      "node": "Display Video",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Fix Output Path": {
+   "main": [
+    [
+     {
+      "node": "Make a video",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "set Translation Audio": {
+   "main": [
+    [
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "set Reciter Audio": {
+   "main": [
+    [
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 2
+     }
+    ]
+   ]
+  },
+  "Get Translation Duration": {
+   "main": [
+    [
+     {
+      "node": "Translation Duration setup",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Translation Duration setup": {
+   "main": [
+    [
+     {
+      "node": "Merge With Durations",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

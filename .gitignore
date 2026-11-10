@@ -1,0 +1,6 @@
+tools/_sheets/
+tools/shots/
+tools/img_sizes.json
+__pycache__/
+.DS_Store
+Thumbs.db

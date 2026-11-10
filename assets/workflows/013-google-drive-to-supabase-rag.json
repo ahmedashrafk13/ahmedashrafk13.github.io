@@ -1,0 +1,305 @@
+{
+ "name": "Google Drive to Supabase RAG",
+ "nodes": [
+  {
+   "parameters": {},
+   "id": "21b573e3-af98-443a-a5e8-8dc40f586a0f",
+   "name": "When clicking ‘Test workflow’",
+   "type": "n8n-nodes-base.manualTrigger",
+   "typeVersion": 1,
+   "position": [
+    0,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "download",
+    "fileId": {
+     "__rl": true,
+     "value": "1YA2XuCpQ74kis6FNmWoWAX4NoqDEznT1",
+     "mode": "list",
+     "cachedResultName": "04-Bonus_120__Call-to-actions.docx",
+     "cachedResultUrl": "https://docs.google.com/document/d/1YA2XuCpQ74kis6FNmWoWAX4NoqDEznT1/edit?usp=drivesdk&ouid=101425801163741283835&rtpof=true&sd=true"
+    },
+    "options": {}
+   },
+   "id": "5a06b2a8-f039-440a-813a-e7f5fef59762",
+   "name": "Google Drive",
+   "type": "n8n-nodes-base.googleDrive",
+   "typeVersion": 3,
+   "position": [
+    208,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "dataType": "binary",
+    "options": {}
+   },
+   "id": "2a1c007f-8d3a-4227-95cc-ef44542e04a1",
+   "name": "Default Data Loader",
+   "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+   "typeVersion": 1,
+   "position": [
+    512,
+    224
+   ]
+  },
+  {
+   "parameters": {
+    "chunkOverlap": 200,
+    "options": {}
+   },
+   "id": "bb43b4ce-32d9-452d-847a-c7f1bd3d1d54",
+   "name": "Recursive Character Text Splitter",
+   "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+   "typeVersion": 1,
+   "position": [
+    448,
+    384
+   ]
+  },
+  {
+   "parameters": {
+    "mode": "insert",
+    "tableName": {
+     "__rl": true,
+     "value": "documents",
+     "mode": "list",
+     "cachedResultName": "documents"
+    },
+    "options": {
+     "queryName": "match_documents"
+    }
+   },
+   "id": "bc3b3872-8761-4ccc-9f09-63068d844eeb",
+   "name": "Supabase Vector Store",
+   "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+   "typeVersion": 1,
+   "position": [
+    400,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "id": "fdf645db-a568-43b9-8252-dc84c5457495",
+   "name": "When chat message received",
+   "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+   "typeVersion": 1.1,
+   "position": [
+    912,
+    32
+   ]
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "id": "9c79badc-65c1-4cb9-839e-02059f794561",
+   "name": "Question and Answer Chain",
+   "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+   "typeVersion": 1.3,
+   "position": [
+    1104,
+    32
+   ]
+  },
+  {
+   "parameters": {},
+   "id": "5bc6b819-2e3a-496b-8736-702749555467",
+   "name": "Vector Store Retriever",
+   "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+   "typeVersion": 1,
+   "position": [
+    1200,
+    240
+   ]
+  },
+  {
+   "parameters": {
+    "tableName": {
+     "__rl": true,
+     "value": "documents",
+     "mode": "list",
+     "cachedResultName": "documents"
+    },
+    "options": {
+     "queryName": "match_documents"
+    }
+   },
+   "id": "7515bb56-1113-4370-a32d-e30b6558f3b4",
+   "name": "Supabase Vector Store1",
+   "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+   "typeVersion": 1,
+   "position": [
+    1088,
+    384
+   ]
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    304,
+    272
+   ],
+   "id": "907f393f-e9af-4246-8c83-87d2c21a010b",
+   "name": "Embeddings OpenAI"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    1184,
+    560
+   ],
+   "id": "f3e5d7b0-1c15-4c86-a5c0-26767f1bfd11",
+   "name": "Embeddings OpenAI1"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    1024,
+    272
+   ],
+   "id": "d35d3013-7c07-4b9e-a04c-1e308457a36a",
+   "name": "OpenAI Chat Model"
+  }
+ ],
+ "connections": {
+  "When clicking ‘Test workflow’": {
+   "main": [
+    [
+     {
+      "node": "Google Drive",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Google Drive": {
+   "main": [
+    [
+     {
+      "node": "Supabase Vector Store",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Default Data Loader": {
+   "ai_document": [
+    [
+     {
+      "node": "Supabase Vector Store",
+      "type": "ai_document",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Recursive Character Text Splitter": {
+   "ai_textSplitter": [
+    [
+     {
+      "node": "Default Data Loader",
+      "type": "ai_textSplitter",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "When chat message received": {
+   "main": [
+    [
+     {
+      "node": "Question and Answer Chain",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Vector Store Retriever": {
+   "ai_retriever": [
+    [
+     {
+      "node": "Question and Answer Chain",
+      "type": "ai_retriever",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Supabase Vector Store1": {
+   "ai_vectorStore": [
+    [
+     {
+      "node": "Vector Store Retriever",
+      "type": "ai_vectorStore",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Embeddings OpenAI": {
+   "ai_embedding": [
+    [
+     {
+      "node": "Supabase Vector Store",
+      "type": "ai_embedding",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Embeddings OpenAI1": {
+   "ai_embedding": [
+    [
+     {
+      "node": "Supabase Vector Store1",
+      "type": "ai_embedding",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Question and Answer Chain",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

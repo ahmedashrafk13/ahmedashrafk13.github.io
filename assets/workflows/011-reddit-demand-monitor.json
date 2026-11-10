@@ -1,0 +1,672 @@
+{
+ "name": "Reddit Demand Monitor",
+ "nodes": [
+  {
+   "parameters": {},
+   "id": "e14ac52e-cbe3-4dee-a5d3-32dfd37c21d0",
+   "name": "When clicking \"Execute Workflow\"",
+   "type": "n8n-nodes-base.manualTrigger",
+   "position": [
+    -1728,
+    384
+   ],
+   "typeVersion": 1
+  },
+  {
+   "parameters": {
+    "operation": "search",
+    "subreddit": "smallbusiness",
+    "keyword": "looking for a solution",
+    "limit": 4,
+    "additionalFields": {
+     "sort": "hot"
+    }
+   },
+   "id": "5a18af5c-c004-4cfe-a846-2db370762b67",
+   "name": "Reddit",
+   "type": "n8n-nodes-base.reddit",
+   "position": [
+    -1488,
+    240
+   ],
+   "typeVersion": 1
+  },
+  {
+   "parameters": {
+    "keepOnlySet": true,
+    "values": {
+     "number": [
+      {
+       "name": "upvotes",
+       "value": "={{ $json.ups }}"
+      },
+      {
+       "name": "subredditSize",
+       "value": "={{ $json.subreddit_subscribers }}"
+      }
+     ],
+     "string": [
+      {
+       "name": "originalPost",
+       "value": "={{ $json.selftext }}"
+      },
+      {
+       "name": "subreddit",
+       "value": "={{ $json.subreddit }}"
+      },
+      {
+       "name": "date",
+       "value": "={{ DateTime.fromSeconds($json.created).toLocaleString() }}"
+      },
+      {
+       "name": "url",
+       "value": "={{ $json.url }}"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "26e5e9c0-0476-4c3a-8666-8b33a46a6998",
+   "name": "Set",
+   "type": "n8n-nodes-base.set",
+   "position": [
+    -1088,
+    288
+   ],
+   "typeVersion": 1
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "number": [
+      {
+       "value1": "={{ $json.ups }}",
+       "operation": "largerEqual",
+       "value2": "=2"
+      }
+     ],
+     "string": [
+      {
+       "value1": "={{ $json.selftext }}",
+       "operation": "isNotEmpty"
+      }
+     ],
+     "dateTime": [
+      {
+       "value1": "={{ DateTime.fromSeconds($json.created).toISO() }}",
+       "value2": "={{ $today.minus({days: 180}).toISO() }}"
+      }
+     ]
+    }
+   },
+   "id": "45326774-2d08-403d-aaf8-595d52664552",
+   "name": "IF",
+   "type": "n8n-nodes-base.if",
+   "position": [
+    -1296,
+    400
+   ],
+   "typeVersion": 1
+  },
+  {
+   "parameters": {
+    "mode": "combine",
+    "combinationMode": "mergeByPosition",
+    "options": {
+     "fuzzyCompare": false,
+     "includeUnpaired": true
+    }
+   },
+   "id": "478a941c-d15d-4e63-a4e1-bae0ee427cab",
+   "name": "Merge",
+   "type": "n8n-nodes-base.merge",
+   "position": [
+    -544,
+    352
+   ],
+   "typeVersion": 2
+  },
+  {
+   "parameters": {
+    "resource": "draft",
+    "subject": "={{ $json.subreddit }}",
+    "message": "={{ $('Set').item.json.selftextTrimmed }}",
+    "options": {}
+   },
+   "id": "47a8e3b7-92d3-41ed-902f-ed147877707d",
+   "name": "Gmail",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    480,
+    880
+   ]
+  },
+  {
+   "parameters": {
+    "select": "channel",
+    "channelId": {
+     "__rl": true,
+     "value": "C07N5K5JLTX",
+     "mode": "list",
+     "cachedResultName": "ai-agents"
+    },
+    "text": "={{ $json.selftextTrimmed }}",
+    "otherOptions": {}
+   },
+   "id": "b5b6aa8e-7168-4de7-96c4-03ba4ac49afc",
+   "name": "Slack",
+   "type": "n8n-nodes-base.slack",
+   "typeVersion": 2.2,
+   "position": [
+    480,
+    544
+   ]
+  },
+  {
+   "parameters": {
+    "select": "channel",
+    "channelId": {
+     "__rl": true,
+     "value": "C07P2E6LE9E",
+     "mode": "list",
+     "cachedResultName": "customer-feedback"
+    },
+    "text": "={{ $json.selftextTrimmed }}",
+    "otherOptions": {}
+   },
+   "id": "8891b7c3-3d97-4da7-b4c1-4ba65c70d1c3",
+   "name": "Slack1",
+   "type": "n8n-nodes-base.slack",
+   "typeVersion": 2.2,
+   "position": [
+    480,
+    704
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "1AUuDPAuxaXZCUqrYCLIqCSGsVf1nvryV__ZqHmSw8Ew",
+     "mode": "list",
+     "cachedResultName": "Reddit seach Agent",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "Subreddit": "={{ $json.subreddit }}",
+      "Subreddit Size": "={{ $json.subredditSize }}",
+      "Original Post Date": "={{ $json.date }}",
+      "Upvotes": "={{ $json.upvotes }}",
+      "Post URL": "={{ $json.url }}",
+      "Potential Solution": "={{ $json.message.content }}",
+      "Post Summary": "={{ $json.response.text }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "Subreddit",
+       "displayName": "Subreddit",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Subreddit Size",
+       "displayName": "Subreddit Size",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Original Post Date",
+       "displayName": "Original Post Date",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Upvotes",
+       "displayName": "Upvotes",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Post URL",
+       "displayName": "Post URL",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Post Summary",
+       "displayName": "Post Summary",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Potential Solution",
+       "displayName": "Potential Solution",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "id": "41593c7c-424b-4ccd-968f-c87db4711343",
+   "name": "Google Sheets",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    608,
+    144
+   ]
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "9ababf7b-4d85-4d5d-854b-6f0db81ea88b",
+       "leftValue": "={{ $json.output }}",
+       "rightValue": "Yes",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "id": "9ee0b75b-6e30-4b8a-b810-e82659e2c4dc",
+   "name": "Filter",
+   "type": "n8n-nodes-base.filter",
+   "typeVersion": 2.2,
+   "position": [
+    -320,
+    272
+   ]
+  },
+  {
+   "parameters": {
+    "agent": "conversationalAgent",
+    "promptType": "define",
+    "text": "=Decide whether this Reddit post is describing a business-related problem or a need for a solution. The post should mention a specific challenge or requirement that a business is trying to address.\n\nReddit Post: {{ $json.originalPost }}\n\nIs this post about a business problem or need for a solution? output only Yes or No",
+    "options": {}
+   },
+   "id": "f7e03a7c-c770-43ef-bcb6-55aab87ddf57",
+   "name": "AI Agent",
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.7,
+   "position": [
+    -864,
+    80
+   ]
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "id": "5d8ef4b0-bd94-4f97-a36a-4367b4144a51",
+   "name": "Summarization Chain",
+   "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+   "typeVersion": 2,
+   "position": [
+    0,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "modelId": {
+     "__rl": true,
+     "value": "gpt-4o-mini",
+     "mode": "list",
+     "cachedResultName": "GPT-4O-MINI"
+    },
+    "messages": {
+     "values": [
+      {
+       "content": "=Based on the following Reddit post, suggest a business idea or service that I could create to help solve this problem for this business and others with similar needs.\n\nReddit Post: \"{{ $json.originalPost }}\"\n\nProvide a concise description of a business idea or service that would address this issue effectively for multiple businesses facing similar challenges.\n\n"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "18792827-9e8e-488f-a418-55b76dc5b872",
+   "name": "OpenAI",
+   "type": "@n8n/n8n-nodes-langchain.openAi",
+   "typeVersion": 1.6,
+   "position": [
+    0,
+    240
+   ]
+  },
+  {
+   "parameters": {
+    "mode": "combine",
+    "combineBy": "combineByPosition",
+    "numberInputs": 3,
+    "options": {}
+   },
+   "id": "4c702157-a46e-4a97-b94e-aea940bd89be",
+   "name": "Merge1",
+   "type": "n8n-nodes-base.merge",
+   "typeVersion": 3,
+   "position": [
+    464,
+    352
+   ]
+  },
+  {
+   "parameters": {
+    "inputText": "={{ $json.originalPost }}",
+    "options": {}
+   },
+   "id": "6e289cad-7dfb-46e0-84b4-3cbeb4ab7dd2",
+   "name": "Sentiment Analysis",
+   "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+   "typeVersion": 1,
+   "position": [
+    -64,
+    464
+   ]
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    -848,
+    304
+   ],
+   "id": "65dd7daa-a560-411f-acc2-9a8df656d084",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    48,
+    688
+   ],
+   "id": "10e91425-0272-4218-8aae-f8dc2558ce80",
+   "name": "OpenAI Chat Model1"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    -80,
+    160
+   ],
+   "id": "920b13b0-40a9-4582-8044-0a52cdbc2501",
+   "name": "OpenAI Chat Model2"
+  }
+ ],
+ "connections": {
+  "IF": {
+   "main": [
+    [
+     {
+      "node": "Set",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 1
+     }
+    ]
+   ]
+  },
+  "Merge": {
+   "main": [
+    [
+     {
+      "node": "Filter",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Reddit": {
+   "main": [
+    [
+     {
+      "node": "IF",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "When clicking \"Execute Workflow\"": {
+   "main": [
+    [
+     {
+      "node": "Reddit",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Filter": {
+   "main": [
+    [
+     {
+      "node": "OpenAI",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Summarization Chain",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Merge1",
+      "type": "main",
+      "index": 2
+     },
+     {
+      "node": "Sentiment Analysis",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Summarization Chain": {
+   "main": [
+    [
+     {
+      "node": "Merge1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI": {
+   "main": [
+    [
+     {
+      "node": "Merge1",
+      "type": "main",
+      "index": 1
+     }
+    ]
+   ]
+  },
+  "Merge1": {
+   "main": [
+    [
+     {
+      "node": "Google Sheets",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Sentiment Analysis": {
+   "main": [
+    [
+     {
+      "node": "Slack",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Slack1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Gmail",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model1": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Sentiment Analysis",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model2": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Summarization Chain",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

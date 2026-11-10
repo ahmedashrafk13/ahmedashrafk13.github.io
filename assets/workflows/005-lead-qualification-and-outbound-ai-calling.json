@@ -1,0 +1,1632 @@
+{
+ "name": "Lead Qualification and Outbound AI Calling",
+ "nodes": [
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "9d398570-4d50-49ff-bc2f-e410e6f4c101",
+       "name": "name",
+       "value": "={{ $json.Name }}",
+       "type": "string"
+      },
+      {
+       "id": "49deb1be-7a55-47ce-91ae-8d0b6b86ef2f",
+       "name": "=email",
+       "value": "={{ $json.Email }}",
+       "type": "string"
+      },
+      {
+       "id": "115bcd42-f02a-4811-85f0-9dd83e9309d7",
+       "name": "phone",
+       "value": "={{ $json['Phone Number'] }}",
+       "type": "number"
+      },
+      {
+       "id": "e1998682-3f64-4b83-b791-730f6445f9db",
+       "name": "status",
+       "value": "NEW",
+       "type": "string"
+      },
+      {
+       "id": "4b1962c2-d425-476a-a077-9d6caa3c8116",
+       "name": "submittedAt",
+       "value": "={{ $json.submittedAt }}",
+       "type": "string"
+      },
+      {
+       "id": "b31e1ea0-2412-4756-a2e0-0041665530eb",
+       "name": "Budget",
+       "value": "={{ $json['Budget($)'] }}",
+       "type": "number"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -3424,
+    -1920
+   ],
+   "id": "f4396841-d145-4ed8-ad46-16c67db503c5",
+   "name": "Normalize Fields✅"
+  },
+  {
+   "parameters": {
+    "formTitle": "Lead intake form",
+    "formDescription": "This form is used to store data of leads",
+    "formFields": {
+     "values": [
+      {
+       "fieldLabel": "Name",
+       "requiredField": true
+      },
+      {
+       "fieldLabel": "Email",
+       "requiredField": true
+      },
+      {
+       "fieldLabel": "Phone Number",
+       "fieldType": "number",
+       "requiredField": true
+      },
+      {
+       "fieldLabel": "Budget($)",
+       "fieldType": "number",
+       "requiredField": true
+      }
+     ]
+    },
+    "options": {
+     "appendAttribution": false
+    }
+   },
+   "type": "n8n-nodes-base.formTrigger",
+   "typeVersion": 2.3,
+   "position": [
+    -3616,
+    -1920
+   ],
+   "id": "83816f16-622d-43f0-8542-87be9d450e37",
+   "name": "Lead intake Form👀"
+  },
+  {
+   "parameters": {
+    "operation": "removeItemsSeenInPreviousExecutions",
+    "dedupeValue": "={{ $json.lead_key }}",
+    "options": {
+     "scope": "workflow"
+    }
+   },
+   "type": "n8n-nodes-base.removeDuplicates",
+   "typeVersion": 2,
+   "position": [
+    -3008,
+    -1920
+   ],
+   "id": "b57cafae-703c-4b48-a31d-0cc3f1811a53",
+   "name": "Remove Duplicates"
+  },
+  {
+   "parameters": {
+    "operation": "appendOrUpdate",
+    "documentId": {
+     "__rl": true,
+     "value": "1EJf0Okn7zDpUj-qw5-Ozqa7tboPz3EIZ7TrmGbyHf24",
+     "mode": "list",
+     "cachedResultName": "Leads Call Records",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "lead_key": "={{ $json.lead_key }}",
+      "status": "={{ $json.status }}",
+      "submittedAt": "={{ $('Lead intake Form👀').item.json.submittedAt }}",
+      "email": "={{ $('Lead intake Form👀').item.json.Email }}",
+      "name": "={{ $('Lead intake Form👀').item.json.Name }}",
+      "Budget": "={{ $('Lead intake Form👀').item.json['Budget($)'] }}",
+      "phone": "={{ $('Lead intake Form👀').item.json['Phone Number'] }}"
+     },
+     "matchingColumns": [
+      "lead_key"
+     ],
+     "schema": [
+      {
+       "id": "name",
+       "displayName": "name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "email",
+       "displayName": "email",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "phone",
+       "displayName": "phone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "status",
+       "displayName": "status",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "submittedAt",
+       "displayName": "submittedAt",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Budget",
+       "displayName": "Budget",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "lead_key",
+       "displayName": "lead_key",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.7,
+   "position": [
+    -2784,
+    -1920
+   ],
+   "id": "7f3ece19-e848-46d1-a4cf-a6f7ff0c2ff0",
+   "name": "Storing Lead Data"
+  },
+  {
+   "parameters": {
+    "content": "## Storing New Leads",
+    "height": 240,
+    "width": 1072
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -3696,
+    -1984
+   ],
+   "id": "0e0554d2-ca92-455c-8a17-96ab2c78c94b",
+   "name": "Sticky Note"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "da7783f0-032b-40dd-838f-7cd85168e933",
+       "leftValue": "={{ $json.status }}",
+       "rightValue": "CALLED",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      },
+      {
+       "id": "8cf0ad9c-18ed-486a-b652-20aaf1155fb1",
+       "leftValue": "={{ $json.status }}",
+       "rightValue": "SCHEDULED",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      },
+      {
+       "id": "1b4bdb70-7793-4987-af1a-88f964a39f92",
+       "leftValue": "={{ $json.status }}",
+       "rightValue": "CALLING_IN_PROGRESS",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      }
+     ],
+     "combinator": "or"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -2224,
+    -1952
+   ],
+   "id": "1f2a9e7b-d409-4741-bc86-87747ca2f454",
+   "name": "If"
+  },
+  {
+   "parameters": {
+    "documentId": {
+     "__rl": true,
+     "value": "1EJf0Okn7zDpUj-qw5-Ozqa7tboPz3EIZ7TrmGbyHf24",
+     "mode": "list",
+     "cachedResultName": "Leads Call Records",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "filtersUI": {
+     "values": [
+      {
+       "lookupColumn": "lead_key",
+       "lookupValue": "={{ $json.lead_key }}"
+      }
+     ]
+    },
+    "options": {
+     "returnFirstMatch": true
+    }
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.7,
+   "position": [
+    -2384,
+    -1952
+   ],
+   "id": "cec8476f-a1e4-4422-ac08-a1f4f128d592",
+   "name": "Get Lead ID"
+  },
+  {
+   "parameters": {
+    "type": "SHA256",
+    "value": "={{$json.email + '|' + $json.phone}}",
+    "dataPropertyName": "lead_key"
+   },
+   "type": "n8n-nodes-base.crypto",
+   "typeVersion": 1,
+   "position": [
+    -3200,
+    -1920
+   ],
+   "id": "a5ae44e5-a145-4f34-bce9-017f3eb656e8",
+   "name": "CREATING LEAD ID"
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-base.noOp",
+   "typeVersion": 1,
+   "position": [
+    -2016,
+    -2048
+   ],
+   "id": "26bdae04-9301-442c-b044-ac37ee83fa28",
+   "name": "No Operation, do nothing"
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "documentId": {
+     "__rl": true,
+     "value": "1EJf0Okn7zDpUj-qw5-Ozqa7tboPz3EIZ7TrmGbyHf24",
+     "mode": "list",
+     "cachedResultName": "Leads Call Records",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "status": "CALLING_IN_PROGRESS",
+      "row_number": "={{ $json.row_number }}",
+      "updatedAt": "={{ $now }}"
+     },
+     "matchingColumns": [
+      "row_number"
+     ],
+     "schema": [
+      {
+       "id": "lead_key",
+       "displayName": "lead_key",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "name ",
+       "displayName": "name ",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "email ",
+       "displayName": "email ",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "phone ",
+       "displayName": "phone ",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "budget",
+       "displayName": "budget",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "submittedAt",
+       "displayName": "submittedAt",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "updatedAt",
+       "displayName": "updatedAt",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "call_task_id",
+       "displayName": "call_task_id",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "calendar_event_id",
+       "displayName": "calendar_event_id",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "last_call_at",
+       "displayName": "last_call_at",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "call_count",
+       "displayName": "call_count",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "notes",
+       "displayName": "notes",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "owner",
+       "displayName": "owner",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "status",
+       "displayName": "status",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "row_number",
+       "displayName": "row_number",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "number",
+       "canBeUsedToMatch": true,
+       "readOnly": true,
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.7,
+   "position": [
+    -2016,
+    -1840
+   ],
+   "id": "778f670b-e69d-47bd-a78f-de6e61af67e4",
+   "name": "Update Call Status"
+  },
+  {
+   "parameters": {
+    "content": "## UPDATING Calling Status",
+    "height": 416,
+    "width": 592,
+    "color": 6
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -2432,
+    -2080
+   ],
+   "id": "9a5fbbb6-d60f-4204-887d-2bf90a5689c0",
+   "name": "Sticky Note1"
+  },
+  {
+   "parameters": {
+    "url": "https://api.vapi.ai/assistant/73256d85-40d3-4638-8872-786851ba438b",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -3648,
+    -1424
+   ],
+   "id": "e05faee9-39bd-4834-8b2b-b87a3de7505d",
+   "name": "Activating Assistant"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.vapi.ai/call",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"phoneNumberId\": \"{{ $json['Phone Number id'] }}\",\n  \"assistantId\": \"{{ $json['Assistant id'] }}\",\n  \"customer\": {\n    \"number\": \"+{{ $('Lead intake Form👀').item.json['Phone Number'] }}\"\n  },\n  \"assistantOverrides\": {\n    \"variableValues\": {\n      \"name\": \"{{ $('Lead intake Form👀').item.json.Name }}\"\n    }\n  }\n}\n",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -3008,
+    -1424
+   ],
+   "id": "c26f224e-d458-42b2-8c74-32f535e3038b",
+   "name": "Making Outbound Call📞",
+   "alwaysOutputData": false,
+   "retryOnFail": true,
+   "onError": "continueErrorOutput"
+  },
+  {
+   "parameters": {
+    "url": "https://api.vapi.ai/phone-number/dcd1a416-0929-4012-8cd2-944a83009cbe",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -3424,
+    -1424
+   ],
+   "id": "b20bbd01-12d0-4608-9112-4b8f434d88a3",
+   "name": "Getting Phone Number"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "8e549885-6eac-4a46-b5ec-c14b3ceb16f1",
+       "name": "Phone Number id",
+       "value": "={{ $json.id }}",
+       "type": "string"
+      },
+      {
+       "id": "f208aafd-c5eb-4b10-a693-5c80fa1e03aa",
+       "name": "Assistant id",
+       "value": "={{ $('Activating Assistant').item.json.id }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -3216,
+    -1424
+   ],
+   "id": "fbcc91c4-363f-40df-89b8-39dd419129ae",
+   "name": "Edit Fields"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "07451a91-8a95-4f4b-a779-fa5f7fad2797",
+       "leftValue": "={{ $json.status }}",
+       "rightValue": "ended",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -2608,
+    -1424
+   ],
+   "id": "5b68b6df-8fd7-473b-8f92-36f0b3d87a88",
+   "name": "Checking Status"
+  },
+  {
+   "parameters": {
+    "amount": 15
+   },
+   "type": "n8n-nodes-base.wait",
+   "typeVersion": 1.1,
+   "position": [
+    -2256,
+    -1216
+   ],
+   "id": "1d742102-96ce-4050-a61c-b8ff373cb208",
+   "name": "Wait"
+  },
+  {
+   "parameters": {
+    "url": "=https://api.vapi.ai/call/{{ $json.id }}",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -2768,
+    -1424
+   ],
+   "id": "c00295e3-70e7-4bf8-b6f8-e08eb3413d12",
+   "name": "Call Data"
+  },
+  {
+   "parameters": {
+    "content": "## Outbound Calls",
+    "height": 624,
+    "width": 2480,
+    "color": 3
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -3696,
+    -1648
+   ],
+   "id": "fccfd7ec-6133-4c7b-96a6-f0aed8f51685",
+   "name": "Sticky Note2"
+  },
+  {
+   "parameters": {
+    "documentId": {
+     "__rl": true,
+     "value": "1EJf0Okn7zDpUj-qw5-Ozqa7tboPz3EIZ7TrmGbyHf24",
+     "mode": "list",
+     "cachedResultName": "Leads Call Records",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "filtersUI": {
+     "values": [
+      {
+       "lookupColumn": "lead_key",
+       "lookupValue": "={{ $('CREATING LEAD ID').item.json.lead_key }}"
+      }
+     ]
+    },
+    "options": {
+     "returnFirstMatch": true
+    }
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.7,
+   "position": [
+    -2448,
+    -1600
+   ],
+   "id": "2ef5d032-173a-490d-9e4b-0cd890ccf3da",
+   "name": "Getting Rows"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "aca1b528-5b46-4092-bbab-5149ee1b5287",
+       "name": "pollCount",
+       "value": "={{ $json.pollCount || 0 }}",
+       "type": "number"
+      },
+      {
+       "id": "04cfe21f-a89c-4e4b-a895-c1c1e05b0bff",
+       "name": "maxPolls",
+       "value": 40,
+       "type": "number"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -2448,
+    -1216
+   ],
+   "id": "ca10a562-f45e-4217-94a1-b653ea91dd79",
+   "name": "Poll State"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "ddd7dc3b-6373-45b9-80ed-3552f0bd1ddf",
+       "name": "pollCount",
+       "value": "={{ ($json.pollCount || 0) + 1 }}",
+       "type": "number"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -2048,
+    -1216
+   ],
+   "id": "0707436e-208d-4c1d-a653-48ddd74c9fa4",
+   "name": "Poll ++"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "e5d37efc-8cbd-4f42-bf17-44379a37da8f",
+       "leftValue": "={{ $json.pollCount }}",
+       "rightValue": "={{ $('Poll State').item.json.maxPolls }}",
+       "operator": {
+        "type": "number",
+        "operation": "gte"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -1840,
+    -1216
+   ],
+   "id": "84453fd5-21cf-4ecd-845c-1567e6f52419",
+   "name": "Max Polls?"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "ed314df4-e930-4ea3-bafe-6923d0b62bdc",
+       "name": "status",
+       "value": "FAILED",
+       "type": "string"
+      },
+      {
+       "id": "9a7c1943-28f7-4020-92b7-023851fb3c67",
+       "name": "error_message",
+       "value": "Polling exceeded maxPolls",
+       "type": "string"
+      },
+      {
+       "id": "9ac975c6-5783-4273-b172-6f6702a7b6f0",
+       "name": "updatedAt",
+       "value": "={{ $now }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -1648,
+    -1344
+   ],
+   "id": "c27bc640-b05c-462a-b4e0-6e5610be9f68",
+   "name": "Finalize Timeout"
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "documentId": {
+     "__rl": true,
+     "value": "1EJf0Okn7zDpUj-qw5-Ozqa7tboPz3EIZ7TrmGbyHf24",
+     "mode": "list",
+     "cachedResultName": "Leads Call Records",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "lead_key": "={{ $('CREATING LEAD ID').item.json.lead_key }}",
+      "status": "={{ $json.status }}",
+      "error_message": "={{ $json.error_message }}",
+      "updatedAt": "={{ $now }}"
+     },
+     "matchingColumns": [
+      "lead_key"
+     ],
+     "schema": [
+      {
+       "id": "lead_key",
+       "displayName": "lead_key",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "name",
+       "displayName": "name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "email",
+       "displayName": "email",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "phone ",
+       "displayName": "phone ",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "budget",
+       "displayName": "budget",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "submittedAt",
+       "displayName": "submittedAt",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "updatedAt",
+       "displayName": "updatedAt",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "status",
+       "displayName": "status",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "call_summary",
+       "displayName": "call_summary",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "call_transcript_link",
+       "displayName": "call_transcript_link",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "call_recording_url",
+       "displayName": "call_recording_url",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "call_count",
+       "displayName": "call_count",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "last_call_at",
+       "displayName": "last_call_at",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "error_message",
+       "displayName": "error_message",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "row_number",
+       "displayName": "row_number",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "number",
+       "canBeUsedToMatch": true,
+       "readOnly": true,
+       "removed": true
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.7,
+   "position": [
+    -1440,
+    -1344
+   ],
+   "id": "b782498c-4bc6-42b0-8704-3fb024f6ab5d",
+   "name": "Call Drop Update"
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "documentId": {
+     "__rl": true,
+     "value": "1EJf0Okn7zDpUj-qw5-Ozqa7tboPz3EIZ7TrmGbyHf24",
+     "mode": "list",
+     "cachedResultName": "Leads Call Records",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "status": "CALLED",
+      "row_number": "={{ $('Getting Rows').item.json.row_number }}",
+      "updatedAt": "={{ $now }}",
+      "call_summary": "={{ $('Call Data').item.json.summary }}",
+      "call_recording_url": "={{ $('Call Data').item.json.recordingUrl }}",
+      "call_transcript_link": "={{ $('Call Data').item.json.transcript }}",
+      "last_call_at": "={{ $now }}",
+      "call_count": "={{ $json.call_count }}"
+     },
+     "matchingColumns": [
+      "row_number"
+     ],
+     "schema": [
+      {
+       "id": "lead_key",
+       "displayName": "lead_key",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "name",
+       "displayName": "name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "email",
+       "displayName": "email",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "phone ",
+       "displayName": "phone ",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "budget",
+       "displayName": "budget",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "submittedAt",
+       "displayName": "submittedAt",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "updatedAt",
+       "displayName": "updatedAt",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "status",
+       "displayName": "status",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "call_summary",
+       "displayName": "call_summary",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "call_transcript_link",
+       "displayName": "call_transcript_link",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "call_recording_url",
+       "displayName": "call_recording_url",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "call_count",
+       "displayName": "call_count",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "last_call_at",
+       "displayName": "last_call_at",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "error_message",
+       "displayName": "error_message",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": true
+      },
+      {
+       "id": "row_number",
+       "displayName": "row_number",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "number",
+       "canBeUsedToMatch": true,
+       "readOnly": true,
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.7,
+   "position": [
+    -2048,
+    -1600
+   ],
+   "id": "a0904e06-2a62-4c28-92b5-82d3e5b49f06",
+   "name": "Update Summary of Call"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "af02d523-6277-40d1-9922-2098a2be7314",
+       "name": "call_count",
+       "value": "={{ ($json.call_count || 0) + 1 }}",
+       "type": "string"
+      },
+      {
+       "id": "36af47f7-825d-4140-ab81-c72ee3daa3a8",
+       "name": "last_call_at",
+       "value": "={{$now}}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -2256,
+    -1600
+   ],
+   "id": "48be3b83-c405-4294-82a4-b6575268de0e",
+   "name": "Call Count ++"
+  },
+  {
+   "parameters": {
+    "sendTo": "you@example.com",
+    "subject": "={{ $json.error.status }} OUTBOUND CALL",
+    "emailType": "text",
+    "message": "HI Hamza!\n\nThere is an error in this workflow which needs attention: https://YOUR-N8N-HOST/workflow/XICqGtZ4PjUBehs9/f2ecd9",
+    "options": {
+     "appendAttribution": false
+    }
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    -3152,
+    -1184
+   ],
+   "id": "f2ecd92f-2727-43e5-95e5-2c7ffa2744a4",
+   "name": "Error Notification"
+  },
+  {
+   "parameters": {
+    "content": "## Workflow Notes 🛠️\n\n- **Duplicates** handled automatically via `lead_key` hash.  \n- **Call loop** is bounded (max polls) to prevent infinite executions.  \n- **Timeouts** update status as `CALL_TIMEOUT` safely.  \n- **Successful calls** store transcript, summary & artifacts in Sheets.  \n- Workflow ensures **no hang-ups** and exits cleanly every time.  \n- Designed for **scalability & production-readiness**.\n",
+    "height": 272,
+    "width": 496,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -1712,
+    -2000
+   ],
+   "id": "3254b458-41d0-4efb-9602-a4f0fe08e4e7",
+   "name": "Sticky Note3"
+  },
+  {
+   "parameters": {
+    "content": "## ERROR BRANCH",
+    "height": 224,
+    "width": 608
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -3472,
+    -1248
+   ],
+   "id": "52ec2bf7-10d4-4095-807f-b5717041ce46",
+   "name": "Sticky Note4"
+  }
+ ],
+ "connections": {
+  "Lead intake Form👀": {
+   "main": [
+    [
+     {
+      "node": "Normalize Fields✅",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Normalize Fields✅": {
+   "main": [
+    [
+     {
+      "node": "CREATING LEAD ID",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Remove Duplicates": {
+   "main": [
+    [
+     {
+      "node": "Storing Lead Data",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Storing Lead Data": {
+   "main": [
+    [
+     {
+      "node": "Get Lead ID",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Lead ID": {
+   "main": [
+    [
+     {
+      "node": "If",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "CREATING LEAD ID": {
+   "main": [
+    [
+     {
+      "node": "Remove Duplicates",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "If": {
+   "main": [
+    [
+     {
+      "node": "No Operation, do nothing",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Update Call Status",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Update Call Status": {
+   "main": [
+    [
+     {
+      "node": "Activating Assistant",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Activating Assistant": {
+   "main": [
+    [
+     {
+      "node": "Getting Phone Number",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Getting Phone Number": {
+   "main": [
+    [
+     {
+      "node": "Edit Fields",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Edit Fields": {
+   "main": [
+    [
+     {
+      "node": "Making Outbound Call📞",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Making Outbound Call📞": {
+   "main": [
+    [
+     {
+      "node": "Call Data",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Error Notification",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Checking Status": {
+   "main": [
+    [
+     {
+      "node": "Getting Rows",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Poll State",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Wait": {
+   "main": [
+    [
+     {
+      "node": "Poll ++",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Call Data": {
+   "main": [
+    [
+     {
+      "node": "Checking Status",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Getting Rows": {
+   "main": [
+    [
+     {
+      "node": "Call Count ++",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Poll State": {
+   "main": [
+    [
+     {
+      "node": "Wait",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Poll ++": {
+   "main": [
+    [
+     {
+      "node": "Max Polls?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Max Polls?": {
+   "main": [
+    [
+     {
+      "node": "Finalize Timeout",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Call Data",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Finalize Timeout": {
+   "main": [
+    [
+     {
+      "node": "Call Drop Update",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Update Summary of Call": {
+   "main": [
+    []
+   ]
+  },
+  "Call Count ++": {
+   "main": [
+    [
+     {
+      "node": "Update Summary of Call",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1",
+  "callerPolicy": "workflowsFromSameOwner"
+ }
+}

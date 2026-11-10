@@ -1,0 +1,184 @@
+{
+ "name": "Instagram Lead Scraper",
+ "nodes": [
+  {
+   "parameters": {
+    "formTitle": "Niche",
+    "formDescription": "Tell the Niche of the leads",
+    "formFields": {
+     "values": [
+      {
+       "fieldLabel": "Enter your Niche"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.formTrigger",
+   "typeVersion": 2.2,
+   "position": [
+    0,
+    0
+   ],
+   "id": "4410e4e4-9893-489c-ab5d-7db8f71fae2b",
+   "name": "On form submission"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.apify.com/v2/acts/apify~google-search-scraper/run-sync-get-dataset-items?token=YOUR_KEY",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"queries\": \"site:instagram.com fitness email -inurl:/p/ -inurl:/reel/\",\n  \"maxPagesPerQuery\": 1,\n  \"resultsPerPage\": 10\n}\n\n\n",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    224,
+    0
+   ],
+   "id": "9da49666-c3d4-4744-8d42-da6b4729387e",
+   "name": "HTTP Request"
+  },
+  {
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "1xMWRzu2VHFIvY-t9QvpbGfoBdXTPXGYcHUsgisGDqWI",
+     "mode": "list",
+     "cachedResultName": "Instagram Leads",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "Channel Name: ": "={{ $json[\"channelName\"] }}\n",
+      "URL": "={{ $json.url }}",
+      "Description": "={{ $json.description }}",
+      "Title": "={{ $json.title }}",
+      "Followers Count": "={{ $json.followersAmount }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "Channel Name: ",
+       "displayName": "Channel Name: ",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "URL",
+       "displayName": "URL",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Description",
+       "displayName": "Description",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Title",
+       "displayName": "Title",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Followers Count",
+       "displayName": "Followers Count",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.6,
+   "position": [
+    752,
+    0
+   ],
+   "id": "f94add30-83a0-43e3-9177-2b3c8ac03e0a",
+   "name": "Google Sheets"
+  },
+  {
+   "parameters": {
+    "jsCode": "return $json[\"organicResults\"];\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    448,
+    0
+   ],
+   "id": "6ec49621-84e0-48e3-af5c-1d531f49549a",
+   "name": "Code"
+  }
+ ],
+ "connections": {
+  "On form submission": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "HTTP Request": {
+   "main": [
+    [
+     {
+      "node": "Code",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Code": {
+   "main": [
+    [
+     {
+      "node": "Google Sheets",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

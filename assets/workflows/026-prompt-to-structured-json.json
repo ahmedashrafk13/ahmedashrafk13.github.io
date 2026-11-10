@@ -1,0 +1,210 @@
+{
+ "name": "Prompt to Structured JSON",
+ "nodes": [
+  {
+   "parameters": {
+    "formTitle": "Natural To JSON",
+    "formFields": {
+     "values": [
+      {
+       "fieldLabel": "Write what you want to cnvert",
+       "placeholder": "Type Here"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.formTrigger",
+   "typeVersion": 2.2,
+   "position": [
+    0,
+    0
+   ],
+   "id": "b6f21a63-9126-400f-9db9-42271f4396d9",
+   "name": "On form submission"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $json[\"Write what you want to cnvert\"] }}",
+    "hasOutputParser": true,
+    "options": {
+     "systemMessage": "ou are an n8n AI Agent. Your job is to take a user’s natural language request and turn it into a structured JSON prompt object and a Google Sheet row for saving.\n\nBehavior Rules\n\nAlways return JSON only, no extra text.\n\nYour output must contain two top-level objects:\n\nprompt → detailed structured prompt object\n\nsheet_row → flat object with 4 fixed columns for Google Sheets\n\nPrompt JSON (prompt)\n\nRequired keys:\n\nid (UUID v4)\n\ntitle (short title ≤120 chars)\n\ndescription (detailed instruction ≤2000 chars)\n\ntask_type (one of: generate, summarize, analyze, transform, extract, other)\n\nparameters (default: { \"temperature\":0.2, \"max_tokens\":512, \"language\":\"en\" })\n\ntags (array of strings, max 5)\n\ncreated_at (ISO 8601 timestamp UTC)\n\nGoogle Sheet Mapping (sheet_row)\n\nKeep 4 columns only:\n\nid — same as prompt.id\n\ntitle — prompt.title\n\ndescription — prompt.description\n\ntags — comma-separated string of prompt.tags\n\nRules\n\nIf missing info, infer safely and mark inferred fields in prompt.metadata.inferred_fields.\n\nIf user asks for update/delete, include \"action\" in prompt.metadata.\n\nIf anything fails, return { \"error\": \"reason\" } only."
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    224,
+    0
+   ],
+   "id": "8fdb9ab0-1019-4d85-817c-5a0977c36adf",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    160,
+    208
+   ],
+   "id": "13f9456d-3ef9-484b-b6df-63e17f9bd88f",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "1t4H_v8axQ8_PL0zfdN005_4LfZG7fqaTyBwpZVc1GmQ",
+     "mode": "list",
+     "cachedResultName": "Json Prompts",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "Json prompt": "={{ $json.output }}",
+      "Title": "={{ $json.output.title }}",
+      "Tags": "={{ $json.output.tags }}",
+      "Summary": "={{ $json.output.summary }}"
+     },
+     "matchingColumns": [
+      "Json prompt"
+     ],
+     "schema": [
+      {
+       "id": "Title",
+       "displayName": "Title",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Json prompt",
+       "displayName": "Json prompt",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Tags",
+       "displayName": "Tags",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      },
+      {
+       "id": "Summary",
+       "displayName": "Summary",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true,
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.6,
+   "position": [
+    624,
+    0
+   ],
+   "id": "95158938-175f-472f-82fc-5a109ab9f490",
+   "name": "Google Sheets"
+  },
+  {
+   "parameters": {
+    "jsonSchemaExample": "{\n  \"id\": \"summ-article-bullets\",\n  \"title\": \"Article → 5 Bullet Summary\",\n  \"prompt\": \"You are an expert summarizer. Given an article, produce exactly 5 concise bullet points capturing the main facts and the takeaway. No intro or outro. Keep bullets under 20 words each.\",\n  \"intent\": \"summarize\",\n  \"tags\": [\"summary\", \"article\", \"bullets\"],\n  \"params\": {\n    \"temperature\": 0.0,\n    \"max_tokens\": 200\n  },\n  \"summary\": \"Converts an article into 5 concise bullet points that capture key facts and the main takeaway.\"\n}\n"
+   },
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.2,
+   "position": [
+    400,
+    224
+   ],
+   "id": "3d5655ad-12e0-4b92-b80e-9150dd19f18b",
+   "name": "Structured Output Parser"
+  }
+ ],
+ "connections": {
+  "On form submission": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "Google Sheets",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Structured Output Parser": {
+   "ai_outputParser": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_outputParser",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

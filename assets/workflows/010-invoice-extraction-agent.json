@@ -1,0 +1,466 @@
+{
+ "name": "Invoice Extraction Agent",
+ "nodes": [
+  {
+   "parameters": {
+    "operation": "pdf",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.extractFromFile",
+   "typeVersion": 1,
+   "position": [
+    560,
+    0
+   ],
+   "id": "f5df9ce6-9d88-4d11-80c4-7e25e55f17f9",
+   "name": "Extract from File"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $json.text }}",
+    "hasOutputParser": true,
+    "options": {
+     "systemMessage": "Extract the following fields from this invoice text and return ONLY valid JSON:\n\n- Invoice Number\n- Invoice Date\n- Due Date\n- Vendor\n- Bill To (full name + address)\n- Line Items (description, quantity, unit price, total)\n- Subtotal\n- Tax\n- Total Amount\n"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    832,
+    0
+   ],
+   "id": "b222dd5a-7d4b-4294-b193-e1938abc9a0c",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    784,
+    224
+   ],
+   "id": "bbb132a4-d198-4d1e-8fce-663df3eedea1",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "jsonSchemaExample": "{\n  \"invoiceNumber\": \"The unique invoice ID or number (e.g., INV-2025-045)\",\n  \"invoiceDate\": \"The issue date of the invoice (format: DD/MM/YYYY)\",\n  \"dueDate\": \"The payment due date (format: DD/MM/YYYY)\",\n  \"vendor\": \"The company or person issuing the invoice (e.g., Tech Supplies Ltd.)\",\n  \"billTo\": {\n    \"name\": \"The name of the customer being billed (e.g., Ahmed Ashraf)\",\n    \"address\": \"The full billing address (e.g., 123 Data Street, Islamabad, PK)\"\n  },\n  \"items\": [\n    {\n      \"description\": \"The product or service name (e.g., Laptop Stand)\",\n      \"quantity\": \"The number of units (e.g., 2)\",\n      \"unitPrice\": \"The price per unit (numeric, e.g., 45.00)\",\n      \"total\": \"The total for this line item (numeric, e.g., 90.00)\"\n    }\n  ],\n  \"subtotal\": \"The sum of all items before tax (numeric, e.g., 155.00)\",\n  \"tax\": \"The tax amount applied (numeric, e.g., 15.50)\",\n  \"totalAmount\": \"The final total after tax (numeric, e.g., 170.50)\"\n}\n"
+   },
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.2,
+   "position": [
+    1008,
+    224
+   ],
+   "id": "09e2048c-e87f-4ec6-ac4f-a6db85816ef2",
+   "name": "Structured Output Parser"
+  },
+  {
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "1aRyRfJxGu_DmsRrboEdkH8WXvjPBHvz033m4QxXtGSc",
+     "mode": "list",
+     "cachedResultName": "Invoice data",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "Invoice Number": "={{ $json.output.invoiceNumber }}",
+      "Invoice Date": "={{ $json.output.invoiceDate }}",
+      "Due Date": "={{ $json.output.dueDate }}",
+      "Vendor": "={{ $json.output.vendor }}",
+      "Customer Name": "={{ $json.output.billTo.name }}",
+      "Customer Address": "={{ $json.output.billTo.address }}",
+      "Item Descriptions": "={{ $json.output.items[0].description }}",
+      "Item Quantities": "={{ $json.output.items[0].quantity }}",
+      "Item Unit Prices": "={{ $json.output.items[1].unitPrice }}",
+      "Item Totals": "={{ $json.output.items[0].total }}",
+      "Subtotal": "={{ $json.output.subtotal }}",
+      "Tax": "={{ $json.output.tax }}",
+      "Total Amount": "={{ $json.output.totalAmount }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "Invoice Number",
+       "displayName": "Invoice Number",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Invoice Date",
+       "displayName": "Invoice Date",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Due Date",
+       "displayName": "Due Date",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Vendor",
+       "displayName": "Vendor",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Customer Name",
+       "displayName": "Customer Name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Customer Address",
+       "displayName": "Customer Address",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Item Descriptions",
+       "displayName": "Item Descriptions",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Item Quantities",
+       "displayName": "Item Quantities",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Item Unit Prices",
+       "displayName": "Item Unit Prices",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Item Totals",
+       "displayName": "Item Totals",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Subtotal",
+       "displayName": "Subtotal",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Tax",
+       "displayName": "Tax",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Total Amount",
+       "displayName": "Total Amount",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.6,
+   "position": [
+    1184,
+    0
+   ],
+   "id": "c6abb949-37ec-4277-9cb3-863496ef8da0",
+   "name": "Google Sheets"
+  },
+  {
+   "parameters": {
+    "sendTo": "you@example.com",
+    "subject": "={{ $json.output.subject }}",
+    "message": "={{ $json.output.body }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    1808,
+    0
+   ],
+   "id": "183c0671-dc2d-4ebf-848e-8d5da16bd6a3",
+   "name": "Gmail"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $('Extract from File').item.json.text }}",
+    "hasOutputParser": true,
+    "options": {
+     "systemMessage": "You are a helpful assistant. Write a perfect email to tell them about the orderbased on the invoice data I gave you. Please create a table if you can for the invoice. Write the body of the email in html\n"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    1408,
+    0
+   ],
+   "id": "df183be2-715b-478f-aaba-05b16360872a",
+   "name": "AI Agent1"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    1328,
+    240
+   ],
+   "id": "3688c3a0-d9dd-480b-a99a-c6bcd8d943e8",
+   "name": "OpenAI Chat Model1"
+  },
+  {
+   "parameters": {
+    "jsonSchemaExample": "{\n\t\"subject\": \"The subject of the Email\",\n\t\"body\": \"the body of the email\"\n}"
+   },
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.2,
+   "position": [
+    1584,
+    224
+   ],
+   "id": "bfa44c1e-dc09-4286-a6fa-7e2a392a0b5e",
+   "name": "Structured Output Parser1"
+  },
+  {
+   "parameters": {
+    "pollTimes": {
+     "item": [
+      {
+       "mode": "everyMinute"
+      }
+     ]
+    },
+    "triggerOn": "specificFile",
+    "fileToWatch": {
+     "__rl": true,
+     "value": "1M-JK8yOmPGOaHgDuYnITdlGlYh1CB-1z",
+     "mode": "list",
+     "cachedResultName": "Invoice data.pdf",
+     "cachedResultUrl": "https://drive.google.com/file/d/1M-JK8yOmPGOaHgDuYnITdlGlYh1CB-1z/view?usp=drivesdk"
+    }
+   },
+   "type": "n8n-nodes-base.googleDriveTrigger",
+   "typeVersion": 1,
+   "position": [
+    112,
+    0
+   ],
+   "id": "a45c1b5f-ceb0-4b2a-bcf3-66ed33ddbb46",
+   "name": "Google Drive Trigger"
+  },
+  {
+   "parameters": {
+    "operation": "download",
+    "fileId": {
+     "__rl": true,
+     "value": "1M-JK8yOmPGOaHgDuYnITdlGlYh1CB-1z",
+     "mode": "list",
+     "cachedResultName": "Invoice data.pdf",
+     "cachedResultUrl": "https://drive.google.com/file/d/1M-JK8yOmPGOaHgDuYnITdlGlYh1CB-1z/view?usp=drivesdk"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleDrive",
+   "typeVersion": 3,
+   "position": [
+    320,
+    0
+   ],
+   "id": "5e75adc9-b51b-4d04-8b15-85a291413fa8",
+   "name": "Google Drive"
+  }
+ ],
+ "connections": {
+  "Extract from File": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Structured Output Parser": {
+   "ai_outputParser": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_outputParser",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "Google Sheets",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Google Sheets": {
+   "main": [
+    [
+     {
+      "node": "AI Agent1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent1": {
+   "main": [
+    [
+     {
+      "node": "Gmail",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model1": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent1",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Structured Output Parser1": {
+   "ai_outputParser": [
+    [
+     {
+      "node": "AI Agent1",
+      "type": "ai_outputParser",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Google Drive Trigger": {
+   "main": [
+    [
+     {
+      "node": "Google Drive",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Google Drive": {
+   "main": [
+    [
+     {
+      "node": "Extract from File",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

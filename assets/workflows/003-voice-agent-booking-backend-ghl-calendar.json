@@ -1,0 +1,1706 @@
+{
+ "name": "Voice Agent Booking Backend (GHL Calendar)",
+ "nodes": [
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://services.leadconnectorhq.com/contacts",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"name\": \"{{ $('Webhook1').item.json.body.args.name }}\",\n  \"email\": \"{{ $('Webhook1').item.json.body.args.email }}\",\n  \"phone\": \"{{ $('Webhook1').item.json.body.args.phone }}\",\n  \"locationId\": \"{{ $json.location_Id }}\",\n  \"assignedTo\": \"{{ $('Set_Assignee_Id_User_Id').item.json.assignee_Id }}\"\n}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    224,
+    432
+   ],
+   "id": "2b8a69e4-2f8e-496e-9aa6-894bb5575b7d",
+   "name": "Create_Contact",
+   "alwaysOutputData": true,
+   "retryOnFail": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "name": "get_available_slots",
+    "description": "Call this tool when needed to get the available slots",
+    "workflowId": {
+     "__rl": true,
+     "value": "9pmxGBHxQy58RIqL",
+     "mode": "list",
+     "cachedResultName": "Inbound / Outbound Booking Function"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "sessionId": "={{ $('Webhook1').item.json.body.args.email }}",
+      "timeZone": "={{ $('Webhook1').item.json.body.args.timeZone }}",
+      "startDate": "={{ $('Webhook1').item.json.body.args.startDateTime }}",
+      "endDate": "={{ $('Webhook1').item.json.body.args.endDateTime }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "sessionId",
+       "displayName": "sessionId",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "timeZone",
+       "displayName": "timeZone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string"
+      },
+      {
+       "id": "startDate",
+       "displayName": "startDate",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string"
+      },
+      {
+       "id": "endDate",
+       "displayName": "endDate",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string"
+      },
+      {
+       "id": "timeZone",
+       "displayName": "timeZone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string"
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.1,
+   "position": [
+    384,
+    144
+   ],
+   "id": "0db62912-85d9-496f-aaa9-6dec5da27c40",
+   "name": "get_available_slots"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    528,
+    -48
+   ],
+   "id": "1c2684dc-9af4-4e35-9257-ac778fef3edf",
+   "name": "Respond to Webhook1"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    448,
+    432
+   ],
+   "id": "d4c7f956-addd-45a6-be79-0718733c903a",
+   "name": "Respond to Webhook2"
+  },
+  {
+   "parameters": {
+    "url": "https://services.leadconnectorhq.com/contacts/",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "locationId",
+       "value": "={{ $json.location_Id }}"
+      },
+      {
+       "name": "limit",
+       "value": "=1"
+      },
+      {
+       "name": "query",
+       "value": "={{ $('Webhook1').item.json.body.args.email }}"
+      }
+     ]
+    },
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    256,
+    1600
+   ],
+   "id": "67bb5378-b9c9-496a-b503-036a21a4c241",
+   "name": "getContact1",
+   "retryOnFail": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "name": "getTimezone",
+    "description": "Call this tool to get the current timezone's latest time. ",
+    "jsCode": "const timezone = query.timezone\n\nconst now = new Date();\n\nconst options = { timeZone: timezone, hour12: false };\nconst formatterDate = new Intl.DateTimeFormat('en-US', { ...options, year: 'numeric', month: '2-digit', day: '2-digit' });\nconst formatterTime = new Intl.DateTimeFormat('en-US', { ...options, hour: '2-digit', minute: '2-digit', second: '2-digit' });\nconst formatterDay = new Intl.DateTimeFormat('en-US', { ...options, weekday: 'long' });\n\nconst dateParts = formatterDate.formatToParts(now).reduce((acc, part) => {\n  if (part.type !== 'literal') acc[part.type] = part.value;\n  return acc;\n}, {});\n\nconst timeParts = formatterTime.formatToParts(now).reduce((acc, part) => {\n  if (part.type !== 'literal') acc[part.type] = part.value;\n  return acc;\n}, {});\n\nconst dayOfWeek = formatterDay.format(now);\n\nconst output = {\n  year: parseInt(dateParts.year),\n  month: parseInt(dateParts.month),\n  day: parseInt(dateParts.day),\n  hour: parseInt(timeParts.hour),\n  minute: parseInt(timeParts.minute),\n  seconds: parseInt(timeParts.second),\n  milliSeconds: now.getMilliseconds(),\n  dateTime: now.toISOString(),\n  date: `${dateParts.month}/${dateParts.day}/${dateParts.year}`,\n  time: `${timeParts.hour}:${timeParts.minute}`,\n  timeZone: timezone,\n  dayOfWeek: dayOfWeek,\n  dstActive: false\n};\n\nreturn JSON.stringify(output);",
+    "specifyInputSchema": true,
+    "schemaType": "manual",
+    "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"timezone\": {\n      \"type\": \"string\",\n      \"description\": \"The user's timezone in format like 'Asia/Kolkata' or 'America/New_York'.\"\n    }\n  },\n  \"required\": [\"timezone\"]\n}"
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolCode",
+   "typeVersion": 1.1,
+   "position": [
+    1248,
+    1280
+   ],
+   "id": "e07678cc-2715-4a3d-a855-c6d95d54f29e",
+   "name": "getTimezone2"
+  },
+  {
+   "parameters": {
+    "toolDescription": "Use this function to get the list of user booked appointments ",
+    "url": "=https://services.leadconnectorhq.com/contacts/{{ $('getContact1').item.json.contacts[0].id }}/appointments",
+    "sendHeaders": true,
+    "parametersHeaders": {
+     "values": [
+      {
+       "name": "Content-Type",
+       "valueProvider": "fieldValue",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "valueProvider": "fieldValue",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "valueProvider": "fieldValue",
+       "value": "2021-04-15"
+      }
+     ]
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+   "typeVersion": 1.1,
+   "position": [
+    656,
+    1776
+   ],
+   "id": "5f601d2c-9408-47df-a589-6e7a290b255d",
+   "name": "getContactAppointments1"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    816,
+    1600
+   ],
+   "id": "e118b9a4-e0dc-47da-a59a-effebb8b1311",
+   "name": "Respond to Webhook3"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    448,
+    2048
+   ],
+   "id": "68b3fa3a-66f7-4ea6-825d-976417ab9b1a",
+   "name": "Respond to Webhook4"
+  },
+  {
+   "parameters": {
+    "url": "https://services.leadconnectorhq.com/calendars/events/appointments/{eventId}",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "= {\n  \"calendarId\": \"{{ $('Set_Calendar_Id').item.json.Calendar_Id }}\",\n  \"locationId\": \"{{ $json.location_Id }}\",\n   \"appointmentStatus\": \"cancelled\"\n}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    224,
+    2048
+   ],
+   "id": "bf47e739-dd71-454a-9510-ede8ea90d5e1",
+   "name": "CancelAppointment",
+   "retryOnFail": true,
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    800,
+    768
+   ],
+   "id": "ff96b1f3-54a3-462f-a72c-80f19932b402",
+   "name": "Respond to Webhook5"
+  },
+  {
+   "parameters": {
+    "toolDescription": "Use this function to create the appointment ",
+    "method": "POST",
+    "url": "https://services.leadconnectorhq.com/calendars/events/appointments",
+    "sendHeaders": true,
+    "parametersHeaders": {
+     "values": [
+      {
+       "name": "Content-Type",
+       "valueProvider": "fieldValue",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "valueProvider": "fieldValue",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "valueProvider": "fieldValue",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"calendarId\": \"{{ $('Set_Calendar_Id').item.json.Calendar_Id }}\",\n  \"locationId\": \"{{ $('Set_Location_Id').item.json.location_Id }}\",\n  \"contactId\": \"{{ $('getContact').item.json.contacts[0].id }}\",\n  \"startTime\": \"{{ $('Webhook1').item.json.body.args.startDateTime }}\",\n  \"title\": \"AI Strategy with Eugene x 1Prompt\",\n  \"meetingLocationType\": \"default\",\n  \"appointmentStatus\": \"confirmed\",\n  \"assignedUserId\": \"{{ $('Set_Assignee_Id_User_Id').item.json.assignee_Id }}\",\n  \"ignoreDateRange\": false,\n  \"toNotify\": true,\n  \"ignoreFreeSlotValidation\": false\n}"
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+   "typeVersion": 1.1,
+   "position": [
+    640,
+    976
+   ],
+   "id": "69035da7-dcbc-49d3-bb47-bbdcc8602ce9",
+   "name": "bookAppointment1"
+  },
+  {
+   "parameters": {
+    "content": "## Get Contact Appointment",
+    "height": 460,
+    "width": 992,
+    "color": 6
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    64,
+    1488
+   ],
+   "id": "abe8e096-8dad-4390-9d0d-7549e5aab0b5",
+   "name": "Sticky Note8"
+  },
+  {
+   "parameters": {
+    "content": "## Cancel Appointment",
+    "height": 240,
+    "width": 656
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    64,
+    1984
+   ],
+   "id": "1c7ddbcb-658a-4ea2-bc0d-2ea8f164da60",
+   "name": "Sticky Note10"
+  },
+  {
+   "parameters": {
+    "content": "## Book Appointment",
+    "height": 440,
+    "width": 992,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    64,
+    688
+   ],
+   "id": "5ae4b786-7f92-430e-b751-f515178b5f7e",
+   "name": "Sticky Note11"
+  },
+  {
+   "parameters": {
+    "content": "## LLM Model",
+    "height": 300,
+    "width": 380,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1104,
+    832
+   ],
+   "id": "62101ded-8780-4dbb-8333-bad047473e33",
+   "name": "Sticky Note13"
+  },
+  {
+   "parameters": {
+    "content": "## Get TimeZone",
+    "height": 300,
+    "width": 380,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1104,
+    1168
+   ],
+   "id": "8c3ba7c4-ad45-4e96-9324-46867b98cc6b",
+   "name": "Sticky Note14"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=Input Data:\nStartDate: {{ $('Webhook1').item.json.body.args.startDateTime }}\nEndDate: {{ $('Webhook1').item.json.body.args.endDateTime }}\ntimeZone: {{ $('Webhook1').item.json.body.args.timeZone }}\nEmail: {{ $('Webhook1').item.json.body.args.email }}",
+    "options": {
+     "systemMessage": "=<system_prompt>\nYOU ARE A BACKEND SLOT AVAILABILITY AGENT IN THE APPOINTMENT MANAGEMENT SYSTEM. YOUR RESPONSIBILITY IS TO PROCESS STRUCTURED INPUT TO FIRST DETERMINE THE USER’S TIMEZONE AND THEN RETURN A LIST OF AVAILABLE APPOINTMENT SLOTS BASED ON THAT TIMEZONE AND A REQUESTED DATE RANGE.\n\n---\n\n## TOOL USAGE (STRICT ORDER)\n\n### 1. `getTimezone`\n\n* **Purpose**: RESOLVE the input `timeZone` (e.g., a location string or loosely formatted TZ) into a valid IANA timezone.\n* **Input**:\n\n  ```js\n  {\n    timeZone: {{ $('Webhook1').item.json.body.args.timeZone }}\n  }\n  ```\n* **Instruction**: ALWAYS call this tool FIRST.\n* **Note**: If timezone resolution fails, default to `\"UTC\"` and CONTINUE.\n\n---\n\n### 2. `getAvailableSlots`\n\n* **Purpose**: RETRIEVE available appointment slots using the resolved timezone.\n* **Input**:\n\n  ```js\n  {\n    startDateTime:{{ $('Webhook1').item.json.body.args.startDateTime }} ,\n    endDateTime: {{ $('Webhook1').item.json.body.args.endDateTime }},\n    timeZone: [resolved IANA timezone from `getTimezone`]\n  }\n  ```\n\n---\n\n## LOGIC FLOW\n\n1. **CALL `getTimezone`** with the provided `timeZone` string.\n\n   * If it fails or returns nothing, fallback to `\"UTC\"`.\n2. **CALL `getAvailableSlots`** using:\n\n   * `startDateTime` from input\n   * `endDateTime` from input\n   * `timeZone` as resolved from step 2\n3. **RETURN** the result formatted as described in the output schema below.\n\n---\n\n## RESPONSE FORMAT\n\nALWAYS RETURN THE RESPONSE IN THE FOLLOWING STRUCTURE:\n\n```json\n{\n  \"status\": \"success\" | \"error\",\n  \"code\": 200 | 400 | 500,\n  \"message\": \"Slots retrieved successfully\" | \"Invalid timezone\" | \"No slots available\" | \"Missing parameters\" | \"Unexpected error\",\n  \"data\": [array_of_available_slots_or_empty],\n  \"error\": \"Description of the error if any\"\n}\n```\n\n---\n\n## VALIDATION RULES\n\n* `timeZone`: REQUIRED. String.\n* `startDateTime` and `endDateTime`: REQUIRED. Must be ISO 8601 and in the future.\n* `email`: REQUIRED. Must contain a valid email structure with `@`.\n\n---\n\n## WHAT NOT TO DO\n\n* DO NOT bypass `getTimezone` even if the input appears valid.\n* DO NOT call `getAvailableSlots` before confirming or resolving the timezone.\n* DO NOT perform booking, cancellation, or update operations.\n* DO NOT output raw tool responses; format them in the unified response structure.\n* DO NOT prompt or ask users for missing values—return validation error.\n\n---\n\n## EXAMPLE\n\n### Input:\n\n```json\n{\n  \"timeZone\": \"India/Kolkata\",\n  \"startDateTime\": \"2025-06-10T00:00:00\",\n  \"endDateTime\": \"2025-06-10T23:59:59\",\n  \"email\": \"you@example.com\"\n}\n```\n\n### Process:\n\n1. Run `getTimezone(\"India/Kolkata\")` → returns `\"Asia/Kolkata\"`\n2. Run `getAvailableSlots(\"Asia/Kolkata\", \"2025-06-10T00:00:00\", \"2025-06-10T23:59:59\")`\n3. Return response in standard output format\n\n\\</system\\_prompt>"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    208,
+    -48
+   ],
+   "id": "c6ef47a7-0164-47eb-bf13-0ef08c9c3b05",
+   "name": "GetAvailableSlot"
+  },
+  {
+   "parameters": {
+    "sessionIdType": "customKey",
+    "sessionKey": "={{ $('Webhook1').item.json.body.args.email }}",
+    "contextWindowLength": 50
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+   "typeVersion": 1.3,
+   "position": [
+    240,
+    144
+   ],
+   "id": "97d11f94-6d4d-4548-8d7b-b21344fd4483",
+   "name": "Simple Memory"
+  },
+  {
+   "parameters": {
+    "sessionIdType": "customKey",
+    "sessionKey": "={{ $('Webhook1').item.json.body.args.email }}",
+    "contextWindowLength": 50
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+   "typeVersion": 1.3,
+   "position": [
+    480,
+    1776
+   ],
+   "id": "e04ddfcd-322e-48c9-8b33-c9211bec3d9c",
+   "name": "Simple Memory1"
+  },
+  {
+   "parameters": {
+    "sessionIdType": "customKey",
+    "sessionKey": "={{ $('Webhook1').item.json.body.args.email }}"
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+   "typeVersion": 1.3,
+   "position": [
+    464,
+    976
+   ],
+   "id": "485a600c-edbb-478d-aaa6-0789fc6fadd9",
+   "name": "Simple Memory2"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    656,
+    2368
+   ],
+   "id": "4050ffc0-91f6-488b-b388-739abccbb205",
+   "name": "Respond to Webhook6"
+  },
+  {
+   "parameters": {
+    "url": "https://services.leadconnectorhq.com/contacts/",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "locationId",
+       "value": "={{ $json.location_Id }}"
+      },
+      {
+       "name": "limit",
+       "value": "=1"
+      },
+      {
+       "name": "query",
+       "value": "={{ $('Webhook1').item.json.body.args.email }}"
+      }
+     ]
+    },
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    224,
+    2368
+   ],
+   "id": "a9df00ae-d4c3-41ec-b5dd-39140c400080",
+   "name": "getContact3",
+   "retryOnFail": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "content": "## Update Appointment",
+    "height": 320,
+    "width": 880,
+    "color": 2
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    64,
+    2256
+   ],
+   "id": "b4ad8650-ebae-4921-9ca5-8dbf4bbd48a4",
+   "name": "Sticky Note12"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=Input Value:\nEmail: {{ $('Webhook1').item.json.body.args.email }}\ntimezone: {{ $('Webhook1').item.json.body.args.timeZone }}",
+    "options": {
+     "systemMessage": "=<system_prompt>\nYOU ARE A BACKEND APPOINTMENT RETRIEVAL AGENT IN THE APPOINTMENT MANAGEMENT SYSTEM. YOUR ROLE IS TO:\n\n1. RETRIEVE THE USER’S EXISTING APPOINTMENTS VIA `getContactAppointments`\n2. CONVERT THOSE APPOINTMENTS FROM UTC+3 (MINSK) TO THE USER'S TIMEZONE USING `getTimezone`\n3. RETURN THE FINAL LIST IN A WELL-STRUCTURED JSON FORMAT\n\n---\n\n## INPUT FORMAT\n\nYou will receive a structured JSON object containing:\n\n```json\n{\n  \"email\": \"user@example.com\",\n  \"contactId\": \"uuid-or-string-id\",\n  \"timeZone\": \"User-supplied location or timezone string\"\n}\n````\n\n---\n\n## TOOL EXECUTION ORDER (MANDATORY)\n\n### 1. `getContactAppointments`\n\n* **Purpose**: Retrieve all appointments for the specified user.\n* **Parameters**:\n\n  ```js\n  {\n    email: {{ $('Webhook1').item.json.body.args.email }},\n    contactId: {{ $json.contacts[0].id }}\n  }\n  ```\n* **Note**: All appointments returned are in UTC+3 (Europe/Minsk).\n\n---\n\n### 2. `getTimezone`\n\n* **Purpose**: Resolve the user’s preferred timezone based on their location or input.\n* **Parameters**:\n\n  ```js\n  {\n    timeZone: {{ $('Webhook3').item.json.body.args.timeZone }}\n  }\n  ```\n* **Note**: If timezone resolution fails, fallback to `\"UTC\"`.\n\n---\n\n## TIME CONVERSION LOGIC\n\n1. Each appointment in `getContactAppointments` is in `Europe/Minsk` timezone (UTC+3).\n2. Use `getTimezone` to resolve the user's IANA timezone (e.g., `\"America/New_York\"`).\n3. For each appointment:\n\n   * Convert `startDateTime` and `endDateTime` from UTC+3 → \\[User Timezone]\n   * Handle Daylight Saving Time if applicable\n   * Return both original and converted times for transparency\n\n---\n\n## OUTPUT FORMAT\n\nReturn the response in the following structure:\n\n```json\n{\n  \"status\": \"success\" | \"error\",\n  \"code\": 200 | 400 | 500,\n  \"message\": \"Appointments retrieved successfully\" | \"No appointments found\" | \"Missing or invalid input\",\n  \"data\": [\n    {\n      \"eventId\": \"string\",\n      \"originalTime\": \"2025-06-10T13:00:00+03:00\",\n      \"convertedTime\": \"2025-06-10T08:00:00-04:00\",\n      \"timeZone\": \"America/New_York\",\n      \"details\": {...}\n    }\n  ],\n  \"error\": \"Error description if any\"\n}\n```\n\n---\n\n## VALIDATION RULES\n\n* `email`: REQUIRED. Must be a valid email address.\n* `contactId`: REQUIRED. Must be a non-empty string.\n* `timeZone`: REQUIRED. Can be a city/location string or a valid IANA timezone.\n\n---\n\n## ERROR HANDLING\n\nReturn `error` responses if:\n\n1. Any required field is missing\n2. `getContactAppointments` or `getTimezone` fails\n3. Time conversion logic cannot execute due to missing data\n\n---\n\n## WHAT NOT TO DO\n\n* DO NOT call `getAvailableSlots`, `bookAppointment`, or any unrelated tool\n* DO NOT skip `getTimezone` – timezone conversion is mandatory\n* DO NOT assume Europe/Minsk is the user’s timezone\n* DO NOT return tool outputs raw – format them properly\n* DO NOT modify input values\n\n---\n\n## EXAMPLE FLOW\n\n### Input:\n\n```json\n{\n  \"email\": \"you@example.com\",\n  \"contactId\": \"c3245-a9dfc\",\n  \"timeZone\": \"New York\"\n}\n```\n\n### Execution:\n\n1. Call `getContactAppointments` with `email` and `contactId`\n2. Call `getTimezone(\"New York\")` → returns `\"America/New_York\"`\n3. Convert all `startDateTime` from `\"Europe/Minsk\"` to `\"America/New_York\"`\n4. Return formatted response\n\n\\</system\\_prompt>"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    448,
+    1600
+   ],
+   "id": "5b02b0f1-7635-41f3-b86d-071096572ce2",
+   "name": "GetContactAppointment"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=Input Value:\nEmail: {{ $('Webhook1').item.json.body.args.email }}\ntimezone: {{ $('Webhook1').item.json.body.args.timeZone }}\nStartDateTime: {{ $('Webhook1').item.json.body.args.startDateTime }}\nContact ID: {{ $json.contacts[0].id }}",
+    "options": {
+     "systemMessage": "=<system_prompt>\nYOU ARE A BACKEND BOOKING AGENT IN THE APPOINTMENT MANAGEMENT SYSTEM. YOUR RESPONSIBILITY IS TO:\n\n1. RESOLVE THE USER'S TIMEZONE USING `getTimezone`\n2. SCHEDULE AN APPOINTMENT USING `bookAppointment` IN THAT TIMEZONE\n3. RETURN A FORMATTED RESPONSE\n\n---\n\n## INPUT FORMAT\n\nYou will receive a structured JSON object:\n\n```json\n{\n  \"contactId\": \"uuid-or-contact-id-string\",\n  \"startDateTime\": \"ISO 8601 datetime string\",\n  \"timeZone\": \"User-supplied location or timezone string\"\n}\n````\n\n---\n\n## TOOL EXECUTION ORDER\n\n### 1. `getTimezone`\n\n* **Purpose**: Convert user-provided location or timezone into a valid IANA timezone string.\n* **Input**:\n\n  ```js\n  {\n    timeZone: {{ $('Webhook1').item.json.body.args.timeZone }}\n  }\n  ```\n* **Note**: If timezone resolution fails, fallback to `\"UTC\"`.\n\n---\n\n### 2. `bookAppointment`\n\n* **Purpose**: Book the appointment using the resolved timezone\n* **Input**:\n\n  ```js\n  {\n    contactId: {{ $json.contacts[0].id }},\n    startDateTime: {{ $('Webhook1').item.json.body.args.startDateTime }},\n    timeZone: [RESOLVED FROM getTimezone]\n  }\n  ```\n\n---\n\n## OUTPUT FORMAT\n\nReturn the result using this schema:\n\n```json\n{\n  \"status\": \"success\" | \"error\",\n  \"code\": 200 | 400 | 500,\n  \"message\": \"Appointment booked successfully\" | \"Booking failed\" | \"Missing or invalid input\",\n  \"data\": {\n    \"contactId\": \"string\",\n    \"eventId\": \"string\",\n    \"startDateTime\": \"ISO 8601 string\",\n    \"timeZone\": \"Resolved IANA timezone\"\n  },\n  \"error\": \"Error message if any\"\n}\n```\n\n---\n\n## VALIDATION RULES\n\n* `contactId`: REQUIRED. Must be a non-empty string.\n* `startDateTime`: REQUIRED. Must be ISO 8601 and in the future.\n* `timeZone`: REQUIRED. Can be a location or IANA string.\n\n---\n\n## WHAT NOT TO DO\n\n* ❌ DO NOT fetch or create contacts\n* ❌ DO NOT retrieve existing appointments\n* ❌ DO NOT skip `getTimezone`\n* ❌ DO NOT return raw tool outputs\n* ❌ DO NOT manipulate input or assume timezone validity without resolving\n\n---\n\n## EXAMPLE WORKFLOW\n\n### Input:\n\n```json\n{\n  \"contactId\": \"c-3892a918\",\n  \"startDateTime\": \"2025-06-12T15:00:00\",\n  \"timeZone\": \"Chicago\"\n}\n```\n\n### Execution:\n\n1. Run `getTimezone(\"Chicago\")` → returns `\"America/Chicago\"`\n2. Run `bookAppointment(contactId, startDateTime, \"America/Chicago\")`\n3. Return success JSON response\n\n\\</system\\_prompt>"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    416,
+    768
+   ],
+   "id": "a8e31c0b-9465-4493-81de-64035a0dfd4d",
+   "name": "BookAppointment"
+  },
+  {
+   "parameters": {
+    "method": "PUT",
+    "url": "=https://services.leadconnectorhq.com/calendars/events/appointments/{{ $('Webhook7').item.json.body.args.eventId }}",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "=application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"calendarId\": \"{{ $('Set_Calendar_Id6').item.json.Calendar_Id }}\",\n  \"locationId\": \"{{ $('Set_Location_Id6').item.json.location_Id }}\",\n  \"startTime\": \"{{ $('Webhook7').item.json.body.args.startDateTime }}\",\n   \"appointmentStatus\": \"confirmed\"\n}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    448,
+    2368
+   ],
+   "id": "dd7d614e-7ed5-4ea2-9cea-bded987d1f5a",
+   "name": "UpdateAppointment1",
+   "alwaysOutputData": true,
+   "retryOnFail": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "content": "## Get Available Slot",
+    "height": 440,
+    "width": 736,
+    "color": 2
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    64,
+    -144
+   ],
+   "id": "7a26cb13-4c96-438f-b568-9d5369501d5e",
+   "name": "Sticky Note1"
+  },
+  {
+   "parameters": {
+    "content": "## Create Contact",
+    "height": 300,
+    "width": 672,
+    "color": 3
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    64,
+    352
+   ],
+   "id": "ba0faab0-354c-4d26-b399-a921e77a00e7",
+   "name": "Sticky Note"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "gpt-4o",
+     "mode": "list",
+     "cachedResultName": "gpt-4o"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    1248,
+    944
+   ],
+   "id": "96cae17f-0e77-4cd6-807e-2a21ee30fe3a",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "29b6391c-02d6-4bf6-88f3-8e9585c31003",
+       "name": "Calendar_Id",
+       "value": "sOweuQGXpXqgsckc1Hua",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -864,
+    1216
+   ],
+   "id": "be1410a0-fa4e-428e-95cf-424d89df2095",
+   "name": "Set_Calendar_Id"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "af4ec4dc-789a-4d3f-8850-a97f989d9883",
+       "name": "location_Id",
+       "value": "dzTOfajR3YuQKAqE1myz",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -656,
+    1216
+   ],
+   "id": "7f97e8b4-c0b7-4d57-9fc2-e45fc48004a4",
+   "name": "Set_Location_Id"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "3967747c-826f-498b-a09e-b102cb66e7fb",
+       "name": "assignee_Id",
+       "value": "6XbRCGDsI2kKCCq3jrLi",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -656,
+    1024
+   ],
+   "id": "436bb0b9-99da-4836-80e8-d81d9d6ff495",
+   "name": "Set_Assignee_Id_User_Id"
+  },
+  {
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "060d5929-7eca-40b6-83a9-17b1b40d7689",
+          "leftValue": "={{ $('Webhook1').item.json.query[\"function-type\"] }}",
+          "rightValue": "get-available-slots",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "get-available-slots"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Webhook1').item.json.query[\"function-type\"] }}",
+          "rightValue": "create-contact",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          },
+          "id": "3d507a23-c321-4f53-9658-2751d10f26c9"
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "create-contact"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "0f17da38-8130-4e32-a5fe-7507fdb7bf02",
+          "leftValue": "={{ $('Webhook1').item.json.query[\"function-type\"] }}",
+          "rightValue": "book-appointments",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "book-appointments"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "59a0c63c-744b-4fed-9ace-927b15a26f62",
+          "leftValue": "={{ $('Webhook1').item.json.query[\"function-type\"] }}",
+          "rightValue": "get_contact",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "get_contact"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "6bdfb716-4826-412a-8068-957de1ad12c9",
+          "leftValue": "={{ $('Webhook1').item.json.query[\"function-type\"] }}",
+          "rightValue": " get-contact-appointments",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": " get-contact-appointments"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "ab46c5cf-9141-4dda-959c-dbf48ed6a6f7",
+          "leftValue": "={{ $('Webhook1').item.json.query[\"function-type\"] }}",
+          "rightValue": "cancel-appointments",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "cancel-appointments"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "3bd4bcaf-14d2-46ee-ba7a-4be50ba8a039",
+          "leftValue": "={{ $('Webhook1').item.json.query[\"function-type\"] }}",
+          "rightValue": "Update_Contact_Details",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Update_Contact_Details"
+      }
+     ]
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.2,
+   "position": [
+    -352,
+    928
+   ],
+   "id": "472cfb60-5445-4681-b34f-3f34f1194ba7",
+   "name": "Switch"
+  },
+  {
+   "parameters": {
+    "url": "https://services.leadconnectorhq.com/contacts/",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "locationId",
+       "value": "={{ $json.location_Id }}"
+      },
+      {
+       "name": "limit",
+       "value": "=1"
+      },
+      {
+       "name": "query",
+       "value": "={{ $('Webhook1').item.json.body.args.email }}"
+      }
+     ]
+    },
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    224,
+    768
+   ],
+   "id": "29a135f0-a492-42f9-9ecb-9d264496cf24",
+   "name": "getContact",
+   "retryOnFail": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "workflowInputs": {
+     "values": [
+      {
+       "name": "sessionId",
+       "type": "any"
+      },
+      {
+       "name": "timeZone"
+      },
+      {
+       "name": "startDate"
+      },
+      {
+       "name": "endDate"
+      },
+      {
+       "name": "timeZone"
+      }
+     ]
+    }
+   },
+   "id": "9937e025-06ba-4150-bc80-46f7f52833b6",
+   "typeVersion": 1.1,
+   "name": "When Executed by Another Workflow",
+   "type": "n8n-nodes-base.executeWorkflowTrigger",
+   "position": [
+    1680,
+    1088
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "formatDate",
+    "date": "={{ $json.startDate }}",
+    "format": "x",
+    "outputFieldName": "startDate",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.dateTime",
+   "typeVersion": 2,
+   "position": [
+    1904,
+    1088
+   ],
+   "id": "9f601695-9e14-4603-a99c-51c37a77a8c5",
+   "name": "Start_Date1"
+  },
+  {
+   "parameters": {
+    "operation": "formatDate",
+    "date": "={{ $('When Executed by Another Workflow').item.json.endDate }}",
+    "format": "x",
+    "outputFieldName": "endDate",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.dateTime",
+   "typeVersion": 2,
+   "position": [
+    2144,
+    1088
+   ],
+   "id": "a2a5e53d-a482-42c2-a3ec-95c1ef589d06",
+   "name": "End_Date1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "d0ce94e1-0143-4793-a4a1-ad9cd729bba3",
+       "name": "startDate",
+       "value": "={{ $('Start_Date1').item.json.startDate }}",
+       "type": "string"
+      },
+      {
+       "id": "2251b7c0-beb6-4dac-be4e-27eae005b324",
+       "name": "endDate",
+       "value": "={{ $json.endDate }}",
+       "type": "string"
+      },
+      {
+       "id": "8cccf26c-722e-4098-b887-94e557b99530",
+       "name": "timeZone",
+       "value": "={{ $('When Executed by Another Workflow').item.json.timeZone }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    2368,
+    1088
+   ],
+   "id": "f3dd6a18-fb8b-4e09-bf30-b90c02f73dc1",
+   "name": "Set_startDate_endDate1"
+  },
+  {
+   "parameters": {
+    "url": "=https://services.leadconnectorhq.com/calendars/sOweuQGXpXqgsckc1Hua/free-slots/",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "startDate",
+       "value": "={{ $json.startDate }}"
+      },
+      {
+       "name": "endDate",
+       "value": "={{ $json.endDate }}"
+      },
+      {
+       "name": "timezone",
+       "value": "={{ $json.timeZone }}"
+      }
+     ]
+    },
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    2592,
+    1088
+   ],
+   "id": "82d0d342-ccd3-4322-80d6-8910592b69ee",
+   "name": "getAvailableSlot1"
+  },
+  {
+   "parameters": {
+    "content": "## 1 Prompt Ads - Sub-Workflow",
+    "height": 352,
+    "width": 1216,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1600,
+    976
+   ],
+   "id": "7a2bade0-d4da-44c9-8855-ffe08c2c4e37",
+   "name": "Sticky Note15"
+  },
+  {
+   "parameters": {
+    "httpMethod": "POST",
+    "path": "e4cffeea-b611-4722-907d-4fc7554efe30",
+    "responseMode": "responseNode",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2.1,
+   "position": [
+    -1280,
+    1024
+   ],
+   "id": "3fd62a03-1194-45f8-8d0d-fc6d20457845",
+   "name": "Webhook1"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    400,
+    1264
+   ],
+   "id": "57cc2139-5136-415e-aaf4-aa00a40a496f",
+   "name": "Respond to Webhook8"
+  },
+  {
+   "parameters": {
+    "url": "https://services.leadconnectorhq.com/contacts/",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "locationId",
+       "value": "={{ $json.location_Id }}"
+      },
+      {
+       "name": "limit",
+       "value": "=1"
+      },
+      {
+       "name": "query",
+       "value": "={{ $('Webhook1').item.json.body.args.email }}"
+      }
+     ]
+    },
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    208,
+    1264
+   ],
+   "id": "8a183108-1d39-49da-a3da-4b1b3cc8debd",
+   "name": "getContact4",
+   "retryOnFail": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "content": "## Get Contact Details",
+    "height": 320,
+    "width": 616,
+    "color": 5
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    64,
+    1152
+   ],
+   "id": "0a6fbc23-1cab-4789-800c-17458e88415a",
+   "name": "Sticky Note17"
+  },
+  {
+   "parameters": {
+    "content": "## Set Static Fields",
+    "height": 496,
+    "width": 488,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -944,
+    928
+   ],
+   "id": "c73bc5f2-2388-4509-a03a-f6ce650499b3",
+   "name": "Sticky Note18"
+  },
+  {
+   "parameters": {
+    "content": "## Webhook Opt-in After Function Calling in Retell",
+    "height": 272,
+    "width": 408,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -1424,
+    928
+   ],
+   "id": "3c9a2fef-b0ae-4af3-9d68-c13d20da44dc",
+   "name": "Sticky Note19"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "4c3e426b-4418-47dc-b564-4625538b8e4c",
+       "name": "api_key",
+       "value": "YOUR_API_KEY",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -864,
+    1024
+   ],
+   "id": "7c482a08-7706-4f03-a6db-edca24e410c3",
+   "name": "Set _HighLevel_API_Key"
+  }
+ ],
+ "connections": {
+  "Create_Contact": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "get_available_slots": {
+   "ai_tool": [
+    [
+     {
+      "node": "GetAvailableSlot",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "getContact1": {
+   "main": [
+    [
+     {
+      "node": "GetContactAppointment",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "getTimezone2": {
+   "ai_tool": [
+    [
+     {
+      "node": "GetContactAppointment",
+      "type": "ai_tool",
+      "index": 0
+     },
+     {
+      "node": "BookAppointment",
+      "type": "ai_tool",
+      "index": 0
+     },
+     {
+      "node": "GetAvailableSlot",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "getContactAppointments1": {
+   "ai_tool": [
+    [
+     {
+      "node": "GetContactAppointment",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "CancelAppointment": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook4",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "bookAppointment1": {
+   "ai_tool": [
+    [
+     {
+      "node": "BookAppointment",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "GetAvailableSlot": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Simple Memory": {
+   "ai_memory": [
+    [
+     {
+      "node": "GetAvailableSlot",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Simple Memory1": {
+   "ai_memory": [
+    [
+     {
+      "node": "GetContactAppointment",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Simple Memory2": {
+   "ai_memory": [
+    [
+     {
+      "node": "BookAppointment",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "getContact3": {
+   "main": [
+    [
+     {
+      "node": "UpdateAppointment1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "GetContactAppointment": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "BookAppointment": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook5",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "UpdateAppointment1": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook6",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "GetAvailableSlot",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "BookAppointment",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "GetContactAppointment",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Calendar_Id": {
+   "main": [
+    [
+     {
+      "node": "Set_Location_Id",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Location_Id": {
+   "main": [
+    [
+     {
+      "node": "Switch",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Assignee_Id_User_Id": {
+   "main": [
+    [
+     {
+      "node": "Set_Calendar_Id",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Switch": {
+   "main": [
+    [
+     {
+      "node": "GetAvailableSlot",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Create_Contact",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "getContact",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "getContact4",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "getContact1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "CancelAppointment",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "getContact3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "getContact": {
+   "main": [
+    [
+     {
+      "node": "BookAppointment",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "When Executed by Another Workflow": {
+   "main": [
+    [
+     {
+      "node": "Start_Date1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Start_Date1": {
+   "main": [
+    [
+     {
+      "node": "End_Date1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "End_Date1": {
+   "main": [
+    [
+     {
+      "node": "Set_startDate_endDate1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_startDate_endDate1": {
+   "main": [
+    [
+     {
+      "node": "getAvailableSlot1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Webhook1": {
+   "main": [
+    [
+     {
+      "node": "Set _HighLevel_API_Key",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "getContact4": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook8",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set _HighLevel_API_Key": {
+   "main": [
+    [
+     {
+      "node": "Set_Assignee_Id_User_Id",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

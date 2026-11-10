@@ -1,0 +1,126 @@
+{
+ "name": "Retell Outbound Call Trigger",
+ "nodes": [
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.retellai.com/v2/create-phone-call",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"agent_id\": \"agent_660db39bddda73b1c162e550e0\",\n  \"retell_llm_dynamic_variables\": {\n    \"firstName\": \"{{ $('Webhook').item.json.body.name }}\",\n    \"email\": \"{{ $('Webhook').item.json.body.email }}\",\n    \"phoneNumber\": \"{{ $('Webhook').item.json.body.phone }}\"\n  },\n  \"from_number\": \"+10000000000\",\n  \"to_number\": \"{{ $('Webhook').item.json.body.phone }}\",\n  \"direction\": \"outbound\"\n}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    128,
+    -96
+   ],
+   "id": "dcc850d6-55de-4898-81a4-2dc2c49ed7e0",
+   "name": "Make_Call_to_Retell"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.4,
+   "position": [
+    320,
+    -96
+   ],
+   "id": "8328817b-28cf-4743-88a0-3db2335af6b2",
+   "name": "Respond to Webhook"
+  },
+  {
+   "parameters": {
+    "httpMethod": "POST",
+    "path": "5c716d01-9529-48f6-b5be-d7bec8d797f2",
+    "responseMode": "responseNode",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2.1,
+   "position": [
+    -240,
+    -96
+   ],
+   "id": "041e4b54-3cd3-456e-bb51-66519331bb4e",
+   "name": "Webhook"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "e3b5c74f-f316-4307-97c4-01afa70d3247",
+       "name": "Retell_API_Key",
+       "value": "key_2a31288bb792e59cf4fb31fd6075",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -64,
+    -96
+   ],
+   "id": "11e631d3-dbe4-49eb-bd27-c22c7141ac47",
+   "name": "SET_API_KEY"
+  }
+ ],
+ "connections": {
+  "Make_Call_to_Retell": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Webhook": {
+   "main": [
+    [
+     {
+      "node": "SET_API_KEY",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "SET_API_KEY": {
+   "main": [
+    [
+     {
+      "node": "Make_Call_to_Retell",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

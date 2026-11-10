@@ -1,0 +1,215 @@
+{
+ "name": "LinkedIn Post Generator and Publisher",
+ "nodes": [
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $json.Topic }}",
+    "hasOutputParser": true,
+    "options": {
+     "systemMessage": "You are a helpful  linkedin social media Agent assistant. You have to write the linkedin posts on the topic that is provide to you via previous node. You have to write a perfect linkedin post. Not too muvh long and not too much long. You should also care of the SEO. Also you have to write a prompt to generate an image related to the post.  will provide this post to an image genertaor and it will genertae an image related to the topic of post.Make sure that the prompt you write is related to the post content. You have to give outptu in a json format. There will be two key value pairs. One is for the text of the Post. and the other key value pair is for prompt. make sure that the Text and prompt are seperate"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    240,
+    0
+   ],
+   "id": "c2d30159-9af0-4b47-a865-1385ab3a311d",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "gpt-4o-mini",
+     "mode": "list",
+     "cachedResultName": "gpt-4o-mini"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    144,
+    272
+   ],
+   "id": "2270858e-137c-45db-81f5-c7fe27ef57f2",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "person": "HfM3V8ertP",
+    "text": "={{ $('AI Agent').item.json.output[\"Post Text\"] }}",
+    "shareMediaCategory": "IMAGE",
+    "additionalFields": {}
+   },
+   "type": "n8n-nodes-base.linkedIn",
+   "typeVersion": 1,
+   "position": [
+    912,
+    0
+   ],
+   "id": "a0b64df7-5ee2-4d30-9d88-7b17b699012d",
+   "name": "LinkedIn"
+  },
+  {
+   "parameters": {
+    "formTitle": "Linkedin Post",
+    "formDescription": "The Topic about linkedin Post",
+    "formFields": {
+     "values": [
+      {
+       "fieldLabel": "Topic",
+       "placeholder": "Write your topic here"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.formTrigger",
+   "typeVersion": 2.2,
+   "position": [
+    0,
+    0
+   ],
+   "id": "80ad5509-ba21-4a72-a7a3-5e00d5e26f32",
+   "name": "On form submission"
+  },
+  {
+   "parameters": {
+    "jsonSchemaExample": "{\n\t\"Post Text\": \"The text of the post\",\n\t\"Prompt\": \"The prompt for image generation\"\n}"
+   },
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.2,
+   "position": [
+    544,
+    304
+   ],
+   "id": "f228422e-af1d-48af-962c-1a3e572dd0ac",
+   "name": "Structured Output Parser"
+  },
+  {
+   "parameters": {
+    "resource": "image",
+    "prompt": "={{ $json.output.Prompt }}",
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.openAi",
+   "typeVersion": 1.8,
+   "position": [
+    672,
+    0
+   ],
+   "id": "d06f0b88-ff17-4d1f-84e1-1e0ace8c6db6",
+   "name": "OpenAI"
+  },
+  {
+   "parameters": {},
+   "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+   "typeVersion": 1,
+   "position": [
+    400,
+    320
+   ],
+   "id": "a761edef-5fec-44ac-b036-e125fce88ece",
+   "name": "Calculator"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+   "typeVersion": 1,
+   "position": [
+    288,
+    304
+   ],
+   "id": "202e2ca7-bec0-4d1d-b1b9-252a7559edad",
+   "name": "SerpAPI"
+  }
+ ],
+ "connections": {
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "OpenAI",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "On form submission": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Structured Output Parser": {
+   "ai_outputParser": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_outputParser",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI": {
+   "main": [
+    [
+     {
+      "node": "LinkedIn",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Calculator": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "SerpAPI": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

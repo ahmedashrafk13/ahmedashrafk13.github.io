@@ -1,0 +1,464 @@
+{
+ "name": "LinkedIn Outreach Writer",
+ "nodes": [
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+   "typeVersion": 1.3,
+   "position": [
+    0,
+    0
+   ],
+   "id": "fbba659f-ee39-4c17-87ba-2f2d4120866d",
+   "name": "When chat message received"
+  },
+  {
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "1UCCrs96KKumCMUro6PIO2xNzCwG9AfC68DFU4pHwt_0",
+     "mode": "list",
+     "cachedResultName": "Linkedin Outreach",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "gid=0",
+     "mode": "list",
+     "cachedResultName": "Sheet1",
+     "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "Email": "={{ $json.Email }}",
+      "Title": "={{ $json.title }}",
+      "Description": "={{ $json.Description }}",
+      "Link": "={{ $json.Detail_Link }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "Email",
+       "displayName": "Email",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Title",
+       "displayName": "Title",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Description",
+       "displayName": "Description",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      },
+      {
+       "id": "Link",
+       "displayName": "Link",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "type": "string",
+       "canBeUsedToMatch": true
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.7,
+   "position": [
+    1504,
+    -16
+   ],
+   "id": "b68c449a-4fd6-44cd-9f97-961750f23d1b",
+   "name": "Append row in sheet"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=Email:\n{{ $json.Email }}\n\nDescription:{{ $json.Description }}\n\nTitle:{{ $json.title }}",
+    "hasOutputParser": true,
+    "options": {
+     "systemMessage": "You are an expert career assistant specializing in writing professional cold outreach emails to recruiters and hiring managers.  \nYour task is to create highly personalized emails that increase the chances of getting a positive response.  \n\nEach email should contain:  \n1. A short, attention-grabbing subject line that is relevant to the job and recruiter.  \n2. A concise body that:  \n   - Expresses genuine interest in the specific role and company.  \n   - Highlights the candidate’s most relevant skills, experiences, or achievements that match the job description.  \n   - Maintains a polite, enthusiastic, and professional tone.  \n   - Includes a clear but soft call-to-action (e.g., expressing interest in discussing the opportunity further or asking about next steps).  \n\nGuidelines:  \n- Keep the subject line under 10 words, focused and appealing.  \n- Keep the body between 100–150 words (short enough to respect the recruiter’s time, but impactful).  \n- Avoid generic or spammy language—make it feel tailored to the specific role and employer.  \n- Be respectful and avoid sounding desperate.  \n- End with gratitude and professional courtesy.  \n"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 2.2,
+   "position": [
+    1472,
+    272
+   ],
+   "id": "abfc3891-58d1-48f2-bbb7-cfa8789e09a2",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    1408,
+    512
+   ],
+   "id": "3f3ca141-e639-446e-99df-c1c023594117",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "jsonSchemaExample": "{\n  \"Email\": \"Email of the person\",\n  \"Subject\": \"Subject of the Email\",\n  \"Body\": \"Body of the Email\"\n}\n"
+   },
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.3,
+   "position": [
+    1648,
+    512
+   ],
+   "id": "af025330-33b1-409e-ae2e-a7a18b3bc521",
+   "name": "Structured Output Parser"
+  },
+  {
+   "parameters": {
+    "sendTo": "you@example.com",
+    "subject": "={{ $json.output.Subject }}",
+    "emailType": "text",
+    "message": "={{ $json.output.Body }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    1840,
+    272
+   ],
+   "id": "16a60d6b-2847-4e35-aa6e-a9b09698cbb4",
+   "name": "Send a message"
+  },
+  {
+   "parameters": {
+    "content": "This agent automates LinkedIn outreach:\n\nCollects emails from LinkedIn via Apify.\n\nVerifies and limits results.\n\nStores data in Google Sheets.\n\nUses AI to generate personalized cold outreach emails.\n\nSends those emails automatically through Gmail.\n\n👉 End-to-end automation for recruiter engagement and lead generation.",
+    "height": 400,
+    "width": 432,
+    "color": 5
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    928,
+    -496
+   ],
+   "id": "08030f39-a77c-4cf6-bcde-73b631eba79b",
+   "name": "Sticky Note"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.apify.com/v2/acts/bhansalisoft~linkedin-email-scraper/runs?token=YOUR_KEY",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n    \"Keyword\": \"Software Engineer\",\n    \"proxySettings\": {\n        \"useApifyProxy\": false\n    }\n}\n",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    208,
+    0
+   ],
+   "id": "e9a1322c-c2c6-4da7-8299-368068ba318f",
+   "name": "Get Emails"
+  },
+  {
+   "parameters": {
+    "url": "https://api.apify.com/v2/datasets/FBtsQyDxC5dzA0dJm/items?format=json&clean=true&token=YOUR_KEY",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    416,
+    0
+   ],
+   "id": "20174709-5cc5-4e10-a9eb-e29e40b0dd33",
+   "name": "Get in n8n"
+  },
+  {
+   "parameters": {
+    "url": "=https://apilayer.net/api/check?access_key=1acef53703929ed6fd9246449fb2cf9a&email={{ $json.Email }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    864,
+    -16
+   ],
+   "id": "c7c9dc9c-30fd-449c-9a14-55a44406f319",
+   "name": "HTTP Request"
+  },
+  {
+   "parameters": {
+    "maxItems": 5
+   },
+   "type": "n8n-nodes-base.limit",
+   "typeVersion": 1,
+   "position": [
+    624,
+    0
+   ],
+   "id": "1a330d45-a936-4e5a-a235-54d72ab7c435",
+   "name": "Limit"
+  },
+  {
+   "parameters": {
+    "mode": "combine",
+    "advanced": true,
+    "mergeByFields": {
+     "values": [
+      {
+       "field1": "email",
+       "field2": "Email"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.merge",
+   "typeVersion": 3.2,
+   "position": [
+    1104,
+    272
+   ],
+   "id": "06c57b84-0ccf-4ba0-95de-76e77aebda1f",
+   "name": "Merge"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "b8eec5c0-59cc-4a22-ba66-f85376e7f488",
+       "leftValue": "={{ $json.format_valid }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "true",
+        "singleValue": true
+       }
+      },
+      {
+       "id": "ed4cdb1c-80c0-492a-860e-e677ce168413",
+       "leftValue": "={{ $json.smtp_check }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "true",
+        "singleValue": true
+       }
+      },
+      {
+       "id": "fe972a39-939d-43e7-ad53-7287eb179549",
+       "leftValue": "={{ $json.disposable }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "false",
+        "singleValue": true
+       }
+      },
+      {
+       "id": "a17371f8-90bc-470c-b01f-c86a5e9238e2",
+       "leftValue": "={{ $json.mx_found }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "true",
+        "singleValue": true
+       }
+      },
+      {
+       "id": "c6c6297e-1f8e-4720-8201-d8e15ffd65f0",
+       "leftValue": "={{ $json.score }}",
+       "rightValue": 0.6,
+       "operator": {
+        "type": "number",
+        "operation": "gte"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.filter",
+   "typeVersion": 2.2,
+   "position": [
+    1056,
+    0
+   ],
+   "id": "825b27ed-7280-49db-ba0b-528112298908",
+   "name": "Filter"
+  }
+ ],
+ "connections": {
+  "When chat message received": {
+   "main": [
+    [
+     {
+      "node": "Get Emails",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Append row in sheet": {
+   "main": [
+    []
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Structured Output Parser": {
+   "ai_outputParser": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_outputParser",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "Send a message",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Emails": {
+   "main": [
+    [
+     {
+      "node": "Get in n8n",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get in n8n": {
+   "main": [
+    [
+     {
+      "node": "Limit",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "HTTP Request": {
+   "main": [
+    [
+     {
+      "node": "Filter",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Limit": {
+   "main": [
+    [
+     {
+      "node": "HTTP Request",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 1
+     }
+    ]
+   ]
+  },
+  "Merge": {
+   "main": [
+    [
+     {
+      "node": "Append row in sheet",
+      "type": "main",
+      "index": 0
+     },
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Filter": {
+   "main": [
+    [
+     {
+      "node": "Merge",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

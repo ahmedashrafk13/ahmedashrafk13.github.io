@@ -1,0 +1,153 @@
+{
+ "name": "Slack Research Bot",
+ "nodes": [
+  {
+   "parameters": {
+    "trigger": [
+     "any_event",
+     "app_mention"
+    ],
+    "channelId": {
+     "__rl": true,
+     "value": "C099TJXBL6A",
+     "mode": "list",
+     "cachedResultName": "customer-feedback"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.slackTrigger",
+   "typeVersion": 1,
+   "position": [
+    0,
+    0
+   ],
+   "id": "dc35d56d-905d-40d6-9eb0-9f127aa7d987",
+   "name": "Slack Trigger"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "={{ $json.text }}",
+    "options": {
+     "systemMessage": "You are a helpful assistant. Give the answers in english"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    224,
+    0
+   ],
+   "id": "9b71555e-be9e-4047-a77f-a936d2007316",
+   "name": "AI Agent"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "deepseek/deepseek-v3-0324",
+     "mode": "list",
+     "cachedResultName": "deepseek/deepseek-v3-0324"
+    },
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    128,
+    224
+   ],
+   "id": "dd028720-2689-408f-8b13-c8f42fa76976",
+   "name": "OpenAI Chat Model"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+   "typeVersion": 1,
+   "position": [
+    480,
+    240
+   ],
+   "id": "42ff88fd-f10d-4a51-bb7e-afc0869150b2",
+   "name": "SerpAPI"
+  },
+  {
+   "parameters": {
+    "select": "channel",
+    "channelId": {
+     "__rl": true,
+     "value": "C099TJXBL6A",
+     "mode": "list",
+     "cachedResultName": "customer-feedback"
+    },
+    "text": "={{ $json.output }}",
+    "otherOptions": {
+     "thread_ts": {
+      "replyValues": {
+       "thread_ts": "={{ $('Slack Trigger').item.json.event_ts }}"
+      }
+     }
+    }
+   },
+   "type": "n8n-nodes-base.slack",
+   "typeVersion": 2.3,
+   "position": [
+    592,
+    0
+   ],
+   "id": "004f04d3-2ac0-4bc9-8cf3-067b2a080700",
+   "name": "Slack"
+  }
+ ],
+ "connections": {
+  "Slack Trigger": {
+   "main": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "SerpAPI": {
+   "ai_tool": [
+    [
+     {
+      "node": "AI Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "AI Agent": {
+   "main": [
+    [
+     {
+      "node": "Slack",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

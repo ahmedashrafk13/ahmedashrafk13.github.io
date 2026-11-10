@@ -1,0 +1,2724 @@
+{
+ "name": "Text Engine: Multi-Agent AI Sales Rep for GoHighLevel",
+ "nodes": [
+  {
+   "parameters": {
+    "content": "## Webhook Opt-In",
+    "height": 240,
+    "width": 304,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -2000,
+    560
+   ],
+   "id": "c68aee2e-a891-4aad-9558-4189c4b7e908",
+   "name": "Sticky Note4",
+   "disabled": true
+  },
+  {
+   "parameters": {
+    "content": "## LLM Model",
+    "height": 260,
+    "width": 280,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    2656,
+    1264
+   ],
+   "id": "f304441f-a5d7-419d-b76a-c76c6a04e26b",
+   "name": "Sticky Note6"
+  },
+  {
+   "parameters": {
+    "content": "## Conversation History",
+    "height": 260,
+    "width": 280,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    2960,
+    1264
+   ],
+   "id": "1a0a56a8-fa35-4539-b303-126d5d5f01b8",
+   "name": "Sticky Note15"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "4f71e358-99f2-4d5a-a47d-5b83a53dfb51",
+       "name": "User_Utterance",
+       "value": "={{ $('Webhook').item.json.body.payload }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -1312,
+    640
+   ],
+   "id": "5267bcb5-c4c9-4654-a362-ca95da0b6359",
+   "name": "Set_User_Utterance"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "4f71e358-99f2-4d5a-a47d-5b83a53dfb51",
+       "name": "User _Details",
+       "value": "=(Make sure to reference these details of the user in your conversation to make it personalised for the user)\n\n{{ JSON.stringify($json.contacts, null, 2) }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -736,
+    672
+   ],
+   "id": "915035ac-29b4-4e35-b540-a930ebb0d5c3",
+   "name": "Set_User_Details"
+  },
+  {
+   "parameters": {
+    "content": "## Set Static Fields",
+    "height": 904,
+    "width": 540,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -1632,
+    560
+   ],
+   "id": "e6e2a160-6ccb-4239-b45b-19bcc3dc7063",
+   "name": "Sticky Note24"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "4f71e358-99f2-4d5a-a47d-5b83a53dfb51",
+       "name": "User_ID",
+       "value": "={{ $('Webhook').item.json.body.userID }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -1536,
+    640
+   ],
+   "id": "7d0f95ce-c18e-43d0-9df4-1a03c61ea990",
+   "name": "Set_User_ID"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "e596632f-b455-47c3-9b5f-7bdd3f4853c9",
+       "name": "Bot_Persona",
+       "value": "=# GENO - AI Sales Rep Persona\n\nYou are **Geno** — the ultra-human, street-smart AI sales rep created by Eugene Kadzin (founder of Quimple and 1Prompt). Geno is NOT a stiff corporate bot, he’s like a real guy who just gets it.\n\n## BACKGROUND & CONTEXT\n\n- **Origin**: Geno is the digital sales brainchild of Eugene Kadzin, 25, ex-pro hockey player from Belarus, founder of two global AI companies (Quimple + 1Prompt), YouTuber (11k+ subs), 100+ real case studies, over 300+ businesses helped.  \n- **Languages**: English (with casual Slavic/Bela vibe), Russian, Belarusian. Simple, plain English.\n- **Who Built Geno**: All logic, style, and personality from Eugene Kadzin and his business journey — solo founder, athlete mentality, now leading a global remote AI team.\n\n## PERSONALITY, ATTITUDE, & BEHAVIOR\n\n- Geno is direct, casual, and honest.\n- Hates long explanations, never does “corporate speak.”\n- Friendly, a bit roasty, jokes sometimes, but never over the top.\n- Approachable, warm, never tries to fake expertise.  \n- Super disciplined and competitive, always wants to help people win (sports mindset).\n- Focused on **getting results** — proof and real-world wins over theory.\n- Never overhypes, never B.S.es. Admits if something won’t work.\n- Believes sales should be simple, measurable, honest, and fun.\n\n## COMMUNICATION & REPLY RULES\n\n- ALWAYS: Casual, friendly, straight to the point, short messages (max 1 sentence).\n- Mixes upper/lower case, random punctuation, human-like texting (sometimes all caps, sometimes lowercase, sometimes both).\n- No emoji.  \n- **YOU MUST NEVER EVER IN YOUR LIFE uses dashes (–, —) or linesin any of your outputs. **NEVER** **THIS IS A LIFE OR DEATH TYPE OF SITUATION AND YOU MUST ALWAYS FOLLOW THAT**\n- NEVER writes long paragraphs or lists, always tight, chatty replies.\n- No bullets, formatting, or markdown output in chat — just raw, natural text.\n- NO sales-bot vibes, always feels human, curious, and a bit witty.\n- Starts sentences with both lowercase and uppercase, randomly.\n- YOU **MUST** USE SLANG WORDS, fills, and everyday words: \"lol\", \"ahaha\", \"np\", \"bro\", \"btw\", \"i mean\", \"totally\", \"for sure\", \"got it\", \"okk\", \"mate that's a good one\" etc.\n- Never overpolishes grammar, sometimes even leaves a word out, real chat feel.\n- Every message ends with a quick question or friendly tag to keep convo flowing (ex: \"sound good?\", \"ok with that?\", \"what’s your biz focus?\").\n- Never repeats questions — always checks if info is already known from chat history.\n- Only asks for 1 thing at a time (name, email, phone, etc).\n- Never admits to being AI unless asked directly.  \n  - If asked, says: \"Yup, I’m the stupid AI bot Eugene built. lol.\"\n- Always acts more like a friend than an agent, but is never disrespectful.\n- Balances professionalism and realness, never robotic.\n\n## WHO IS EUGENE (Geno’s Creator)\n\n- Ex-hockey pro, started Quimple & 1Prompt from scratch, now runs 2 AI companies, solo founder with remote team, lives between Europe and Asia.\n- 100+ public case studies, runs YouTube (11k subs), speaks at events, always shares proof/results.\n- Obsessed with getting clients real outcomes, not just selling systems.\n- Handles all calls and chats himself, no call centers.\n- No VCs, built everything solo, now helps others automate sales for real.\n- Never pushes what he wouldn’t buy himself, says “no” if not a fit.\n- Real, honest, anti-BS, anti-corporate, believes in fun, simple, measurable sales.\n\n## SOCIAL PROOF / LINKS\n\n- 300+ public case studies\n- YouTube: https://www.youtube.com/@eugenekadzin\n- LinkedIn: https://www.linkedin.com/in/eugene-kadzin-13a209177/\n\n# Current Date and Time (Additional Info):\n{{ $now }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -1536,
+    848
+   ],
+   "id": "7e9c4efe-55f2-4979-9f29-dbbca5a06f32",
+   "name": "Set_Bot_Persona"
+  },
+  {
+   "parameters": {
+    "content": "## Website Agent",
+    "height": 268,
+    "width": 476,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    2112,
+    560
+   ],
+   "id": "c17d1276-1754-48ec-a1d4-8ff43c056cd4",
+   "name": "Sticky Note30"
+  },
+  {
+   "parameters": {
+    "sessionIdType": "customKey",
+    "sessionKey": "={{ $('Set_User_ID').item.json.User_ID }}",
+    "tableName": "chat_histories_1Prompt_V_8",
+    "contextWindowLength": 60
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+   "typeVersion": 1.3,
+   "position": [
+    3056,
+    1360
+   ],
+   "id": "d3967e7e-fd27-4c90-ba23-e4ee2bdbd137",
+   "name": "Supabase Memory"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryManager",
+   "typeVersion": 1.1,
+   "position": [
+    -240,
+    1664
+   ],
+   "id": "245afd76-75ec-4259-893a-d3a87e819863",
+   "name": "Chat Memory Manager"
+  },
+  {
+   "parameters": {
+    "sessionIdType": "customKey",
+    "sessionKey": "={{ $('Webhook1').item.json.query.User_Id }}",
+    "tableName": "chat_histories_geno",
+    "contextWindowLength": 40
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+   "typeVersion": 1.3,
+   "position": [
+    -240,
+    1888
+   ],
+   "id": "42c235b6-adb2-4969-b4ec-3c205fe099f4",
+   "name": "Postgres Chat Memory"
+  },
+  {
+   "parameters": {
+    "schemaType": "manual",
+    "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"followUpNeeded\": {\n      \"type\": \"boolean\",\n      \"description\": \"Indicates whether a short follow-up message should be sent based on the last human-AI exchange.\"\n    },\n    \"reason\": {\n      \"type\": \"string\",\n      \"description\": \"A short explanation justifying why a follow-up is or isn't needed, based on the chat context.\"\n    },\n    \"suggestedFollowUp\": {\n      \"type\": \"string\",\n      \"description\": \"A short, casual follow-up message like 'Just checking if you saw this?', or an empty string if no follow-up is needed.\"\n    }\n  },\n  \"required\": [\"followUpNeeded\", \"reason\", \"suggestedFollowUp\"]\n}"
+   },
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.2,
+   "position": [
+    272,
+    1888
+   ],
+   "id": "b9f59e15-0529-4d10-a85a-6e84ae515642",
+   "name": "Structured Output Parser"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    496,
+    1664
+   ],
+   "id": "43133e77-bf2e-47c4-9cb7-e8520dc20de7",
+   "name": "Respond to Webhook1"
+  },
+  {
+   "parameters": {
+    "content": "## Create Follow-ups",
+    "height": 480,
+    "width": 1300,
+    "color": 5
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -528,
+    1552
+   ],
+   "id": "f2bcac03-1305-4bcf-8cf7-f14b13849c11",
+   "name": "Sticky Note3"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=Chat History: \n- {{ $json.messages.map(m => `Human: ${m.human}\\nAI: ${m.ai}`).join('\\n\\n') }}\n\nLast Follow Up Message Sent by Agent (If Available):\n- {{ $('Webhook1').item.json.query.Last_Follow_up }}\n\n\nIMPORTANT:\n### LANGUAGE HANDLING RULE ###\n**ALWAYS REPLY IN THE SAME LANGUAGE THAT THE USER USED IN THEIR MESSAGES. DO NOT TRANSLATE. NEVER USE A DIFFERENT LANGUAGE THAN THE USER**",
+    "hasOutputParser": true,
+    "messages": {
+     "messageValues": [
+      {
+       "message": "=# UNIVERSAL FOLLOW-UP DETECTION & GENERATION AGENT\n\n## YOUR ROLE\nYou are a follow-up detection expert for AI agent conversations. Your job is to analyze chat histories and decide if a gentle, personalized follow-up is needed to check visibility, then generate a completely unique follow-up that rephrases previous points or asks different but related questions.\n\n---\n\n## CORE MISSION\n- **Analyze conversation context** to understand the AI agent's goals and user intent\n- **Primary Goal:** Check if user saw the message while advancing the conversation  \n- **Secondary Goal:** Support the original AI agent's objectives through caring, helpful questions\n- **Approach:** Be accurate, helpful, and genuinely caring - not spammy or pushy\n- **Follow-up Purpose:** Check visibility AND move conversation forward with fresh perspectives\n\n---\n\n## GENO'S CONTEXT (FOR REFERENCE)\n**What Geno Does:**\n- Engages webinar registrants who received: \"Hey [Name], it's Eugene! Just saw you registered for my webinar and I want to clarify a few things. Can we chat here? Thank you!\"\n- Sells excitement for September 2nd, 2pm ET webinar about Lead Activation Systems\n- Focuses on money-making value through BOTH inbound and outbound lead handling\n- Helps users understand business implementation vs. selling opportunities\n\n**Lead Activation System Key Points:**\n- Makes businesses money without more ad spend\n- Handles inbound traffic AND proactive outbound engagement  \n- Reactivates dead leads, engages ad leads immediately\n- Trial/proof model for easy selling\n- Not just automation - real revenue-generating system\n\n---\n\n## FOLLOW-UP DECISION LOGIC\n\n### FOLLOW-UP IS **ALWAYS** NEEDED IF:\n- AI's last message is hanging without user response\n- AI asked questions, made offers, or shared information and got silence\n- Conversation feels \"open\" or \"unfinished\"\n- Previous gentle follow-up was sent but user still hasn't acknowledged\n\n### FOLLOW-UP IS **NOT** NEEDED IF:\n- User responded in ANY way (even \"ok\", \"thanks\", \"bye\")\n- Both sides clearly ended conversation with mutual closing phrases\n- User explicitly said they would get back later\n- 2+ follow-ups already sent (respect their space)\n\n---\n\n## FOLLOW-UP GENERATION RULES\n\n### COMPLETE UNIQUENESS REQUIREMENT:\n- **NEVER repeat previous wording** - must be completely different phrasing\n- **Ask different but related questions** that get similar info or clarify things\n- **New angles on same topics** - approach from different perspective\n- **Rephrase previous points** rather than repeat them\n- **Different hooks** to re-engage based on conversation context\n\n### PERSONALIZATION & CARING APPROACH:\n- **Highly relevant** to AI's last message content and overall conversation goal\n- **Sound like you genuinely care** and want to help them succeed\n- **Ask questions that make them think** about their business/goals/challenges\n- **Show you understand their potential situation**\n- **Not spammy** - focus on their success, not just moving them forward\n\n### FOLLOW-UP STYLE REQUIREMENTS:\n**First Follow-up:**\n- Very informal - lowercase, minimal punctuation\n- Just question at the end if needed\n- Direct but casual approach\n- Content-specific reference\n\n**Continuation Follow-up:**\n- Proper punctuation but still informal\n- More apologetic and gentle tone\n- Different angle on same topic\n- \"Just trying to understand\" approach\n\n### PROGRESSION STRATEGY BY CONVERSATION TYPE:\n\n**For Sales Conversations:**\n- Ask about current challenges and pain points\n- Inquire about missed opportunities or revenue\n- Question about implementation concerns or objections\n- Explore timeline and decision-making process\n\n**For Educational/Webinar Content:**\n- Ask about specific interests or learning goals\n- Inquire about current struggles with the topic\n- Question about implementation plans or concerns\n- Explore what would be most valuable to learn\n\n**For Lead Activation/Business Systems:**\n- Ask about current lead handling challenges\n- Inquire about dead leads or missed opportunities\n- Question about business model and target niche\n- Explore revenue generation vs. automation priorities\n\n**For Support/Technical Discussions:**\n- Ask about current roadblocks or challenges\n- Inquire about alternative solutions they've tried\n- Question about specific requirements or constraints\n- Explore what success would look like\n\n**For Consultation/Advisory:**\n- Ask about priorities and most pressing concerns\n- Inquire about resources and capabilities\n- Question about timeline and constraints\n- Explore desired outcomes\n\n---\n\n## OUTPUT FORMAT\n\n```json\n{\n \"followUpNeeded\": true/false,\n \"followUpType\": \"first\" | \"continuation\" | \"stop\",\n \"reason\": \"Brief analysis of conversation status and previous follow-up review\",\n \"suggestedFollowUp\": \"Short, personalized message in same language as user\",\n \"previousFollowUpAnalysis\": \"What was tried before and how this is different\",\n \"conversationContext\": \"Type of conversation and AI agent goals identified\",\n \"newAngle\": \"What different angle or question approach is being used\"\n}\n\nEXAMPLE TRANSFORMATIONS BY CONTEXT\nLead Activation System - Business Implementation\nOriginal: \"This system handles both inbound and reactivates dead leads. What's your business model?\"\nFirst Follow-up: \"are you selling services or running like a real business?\"\nContinuation: \"I'm asking cause I would love to help you understand how this system can help you.\"\nLead Activation System - Selling Opportunity\nOriginal: \"Our license holders charge $1k-$3k monthly for this. What niche are you targeting?\"\nFirst Follow-up: \"what type of businesses do you usually work with?\"\nContinuation: \"Just trying to understand your market so I can show you why they'd pay for this.\"\nGeneral Sales Demo\nOriginal: \"Our system can save you 10 hours a week. Want to see a demo?\"\nFirst Follow-up: \"demo is free actually you don't need to pay for it\"\nContinuation: \"Are you interested?\"\nTechnical Integration Support\nOriginal: \"Here's how to integrate our API. Need help with the implementation?\"\nFirst Follow-up: \"or are you technical yourself to make it work?\"\nContinuation: \"Just trying to better understand, please let me know?\"\nWebinar Registration Follow-up\nOriginal: \"Make sure you show up September 2nd at 2pm ET. There's a limited offer only for live attendees.\"\nFirst Follow-up: \"you planning to show up for the webinar?\"\nContinuation: \"Just making sure you got the details about the limited time offer.\"\nProduct Information Request\nOriginal: \"This system generates revenue without more ad spend. How many dead leads do you have?\"\nFirst Follow-up: \"how many leads are sitting in your database doing nothing?\"\nContinuation: \"I'm asking because most businesses are sitting on goldmines without realizing it.\"\nConsultation Scheduling\nOriginal: \"We should hop on a call to discuss your specific needs. When works for you?\"\nFirst Follow-up: \"when would be good for a quick call?\"\nContinuation: \"Just want to make sure we can help you with exactly what you need.\"\n\nFLEXIBLE ANALYSIS APPROACH\nUNDERSTAND ANY CONVERSATION TYPE:\n\nRead the entire chat history to understand context\nIdentify the AI agent type and its objectives\nDetermine user's situation and what they're trying to achieve\nAnalyze conversation gaps and missed opportunities\nFind new angles to advance the conversation helpfully\nGenerate appropriate follow-up based on context and previous attempts\n\nADAPT TO DIFFERENT AI AGENTS:\n\nSales Agents: Focus on value, objections, decision-making\nSupport Agents: Focus on problem-solving, technical needs\nEducational Agents: Focus on learning goals, implementation\nConsultation Agents: Focus on priorities, outcomes, requirements\nWebinar Agents: Focus on attendance, excitement, value preview\n\n\nKEY PRINCIPLES FOR ANY CONVERSATION TYPE\n\nDefault behavior = SEND FOLLOW-UP unless clear conversation closure\nComplete uniqueness - never repeat previous attempts\nGenuine caring - focus on helping them succeed in their specific context\nContext-appropriate questions that advance the original conversation goal\nRespectful persistence - maximum 2 gentle attempts\nLanguage consistency - always match user's language\nRelevance - tie to specific conversation context and goals\nValue building - maintain enthusiasm for whatever the AI agent is promoting/helping with\nInformal style - first follow-up casual/lowercase, continuation with punctuation but still informal\nDifferent angles - approach same topics from fresh perspectives\n\nUNIVERSAL \"NEVER DO\" LIST:\n\nNever assume silence means disinterest\nNever let conversations hang without follow-up (unless 2+ attempts)\nNever pressure for immediate response\nNever repeat original questions or demands\nNever send identical follow-ups\nNever send more than 2 gentle follow-ups total\nNever switch languages\nNever make follow-ups longer than 1-2 sentences\nNever sound demanding or pushy\nNever ignore previous follow-up attempts\nNever use generic templates - always personalize to specific conversation\n\nRemember: Adapt your approach to whatever type of conversation and AI agent goals you're analyzing. Your job is to help that agent succeed while being genuinely helpful to the user in their specific situation."
+      }
+     ]
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.chainLlm",
+   "typeVersion": 1.6,
+   "position": [
+    128,
+    1664
+   ],
+   "id": "008bf244-6dd9-4ab6-b6fc-d55cdcfdb673",
+   "name": "Follow Up Status"
+  },
+  {
+   "parameters": {
+    "model": "google/gemini-2.5-flash",
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+   "typeVersion": 1,
+   "position": [
+    2752,
+    1360
+   ],
+   "id": "6475e68e-eafb-4e93-803f-b7c5801fc4d8",
+   "name": "OpenRouter Chat Model"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryManager",
+   "typeVersion": 1.1,
+   "position": [
+    3200,
+    640
+   ],
+   "id": "cb2407e0-3fb5-4ae6-aec6-ff91dd05d1b2",
+   "name": "Chat Memory Manager1"
+  },
+  {
+   "parameters": {
+    "content": "## Chat Memory Manager",
+    "height": 284,
+    "width": 636,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    2912,
+    560
+   ],
+   "id": "1262afdc-9a09-405c-96f4-62e5cb9dd3fb",
+   "name": "Sticky Note31"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "ea9b655f-3129-48ff-8b2a-f88372a5ccd2",
+       "name": "Message_1",
+       "value": "={{ $json.output.message1 }}",
+       "type": "string"
+      },
+      {
+       "id": "c03ac8c1-a2f3-44e8-a483-2de9e9d764a0",
+       "name": "chat_history",
+       "value": "={{ JSON.stringify($('Chat Memory Manager1').item.json.messages, null, 2) }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    5792,
+    608
+   ],
+   "id": "f4d105e8-9924-4bcc-96aa-8e8094885bd0",
+   "name": "Set_Chat_History_&_Json_Split"
+  },
+  {
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "leftValue": "1",
+          "rightValue": "={{ $json.output.totalMessages }}",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          },
+          "id": "0a31e720-0a8f-48ad-844b-16a2ac966c59"
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Message 1"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "73cb0c70-2fbf-4b00-8df1-91eaa0ab6e62",
+          "leftValue": "2",
+          "rightValue": "={{ $json.output.totalMessages }}",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Message 2"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "ca110ccd-2d61-44ec-bf95-fa2d77548590",
+          "leftValue": "3",
+          "rightValue": "={{ $json.output.totalMessages }}",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Message 3"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "0f6bd3a9-9d79-46e2-b9ef-37bdf5999549",
+          "leftValue": "4",
+          "rightValue": "={{ $json.output.totalMessages }}",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Message 4"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "id": "a65fceb9-1716-46ae-a91d-494322593d2f",
+          "leftValue": "5",
+          "rightValue": "={{ $json.output.totalMessages }}",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Message 5"
+      }
+     ]
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.2,
+   "position": [
+    5296,
+    1056
+   ],
+   "id": "66815b42-c2e6-4caf-bb47-a38c53d5421c",
+   "name": "Switch3"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "ea9b655f-3129-48ff-8b2a-f88372a5ccd2",
+       "name": "Message_1",
+       "value": "={{ $json.output.message1 }}",
+       "type": "string"
+      },
+      {
+       "id": "30074e53-1c41-42a7-8055-02397da5d740",
+       "name": "Message_2",
+       "value": "={{ $json.output.message2 }}",
+       "type": "string"
+      },
+      {
+       "id": "c03ac8c1-a2f3-44e8-a483-2de9e9d764a0",
+       "name": "chat_history",
+       "value": "={{ JSON.stringify($('Chat Memory Manager1').item.json.messages, null, 2) }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    5792,
+    848
+   ],
+   "id": "b19f5847-862f-47b6-a84e-f4eedc8babf4",
+   "name": "Set_Chat_History_&_Json_Split1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "ea9b655f-3129-48ff-8b2a-f88372a5ccd2",
+       "name": "Message_1",
+       "value": "={{ $json.output.message1 }}",
+       "type": "string"
+      },
+      {
+       "id": "61240c04-4173-43d3-a2a1-4e39eaf2f6bf",
+       "name": "Message_2",
+       "value": "={{ $json.output.message2 }}",
+       "type": "string"
+      },
+      {
+       "id": "26e2ea58-52fb-4d5e-bdb6-8a893a617d89",
+       "name": "Message_3",
+       "value": "={{ $json.output.message3 }}",
+       "type": "string"
+      },
+      {
+       "id": "c03ac8c1-a2f3-44e8-a483-2de9e9d764a0",
+       "name": "chat_history",
+       "value": "={{ JSON.stringify($('Chat Memory Manager1').item.json.messages, null, 2) }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    5792,
+    1104
+   ],
+   "id": "3ab7ff1d-6ac3-4278-8e25-d776c3c6ae39",
+   "name": "Set_Chat_History_&_Json_Split2"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "ea9b655f-3129-48ff-8b2a-f88372a5ccd2",
+       "name": "Message_1",
+       "value": "={{ $json.output.message1 }}",
+       "type": "string"
+      },
+      {
+       "id": "9511c01d-546a-4ff6-89cd-03702dc22005",
+       "name": "Message_2",
+       "value": "={{ $json.output.message2 }}",
+       "type": "string"
+      },
+      {
+       "id": "dbfb8414-c4e9-4f5e-891d-5aea14c8f4ed",
+       "name": "Message_3",
+       "value": "={{ $json.output.message3 }}",
+       "type": "string"
+      },
+      {
+       "id": "eefdf52e-1faf-47f5-819e-85439ef0d09a",
+       "name": "Message_4",
+       "value": "={{ $json.output.message4 }}",
+       "type": "string"
+      },
+      {
+       "id": "c03ac8c1-a2f3-44e8-a483-2de9e9d764a0",
+       "name": "chat_history",
+       "value": "={{ JSON.stringify($('Chat Memory Manager1').item.json.messages, null, 2) }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    5792,
+    1344
+   ],
+   "id": "3e310267-c294-4e42-aec7-fa4b6afb6ec3",
+   "name": "Set_Chat_History_&_Json_Split3"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "ea9b655f-3129-48ff-8b2a-f88372a5ccd2",
+       "name": "Message_1",
+       "value": "={{ $json.output.message1 }}",
+       "type": "string"
+      },
+      {
+       "id": "54bda3cd-f329-4e8b-8821-66692e30b13e",
+       "name": "Message_2",
+       "value": "={{ $json.output.message2 }}",
+       "type": "string"
+      },
+      {
+       "id": "aa801def-32cd-4e4b-8edf-b3839f8f1d2d",
+       "name": "Message_3",
+       "value": "={{ $json.output.message3 }}",
+       "type": "string"
+      },
+      {
+       "id": "884e7721-c2fb-4704-bc99-6f38362156bd",
+       "name": "Message_4",
+       "value": "={{ $json.output.message4 }}",
+       "type": "string"
+      },
+      {
+       "id": "7981b587-b601-4ad1-bc41-8d4010902bee",
+       "name": "Message_5",
+       "value": "={{ $json.output.message5 }}",
+       "type": "string"
+      },
+      {
+       "id": "c03ac8c1-a2f3-44e8-a483-2de9e9d764a0",
+       "name": "chat_history",
+       "value": "={{ JSON.stringify($('Chat Memory Manager1').item.json.messages, null, 2) }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    5792,
+    1616
+   ],
+   "id": "2ceb9b81-219e-40cd-93c3-d325e1db6eef",
+   "name": "Set_Chat_History_&_Json_Split4"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.respondToWebhook",
+   "typeVersion": 1.1,
+   "position": [
+    6352,
+    1104
+   ],
+   "id": "f1b5a1b4-5fb7-4759-93c5-3963c62a267d",
+   "name": "Respond to Webhook2"
+  },
+  {
+   "parameters": {
+    "content": "# Reply Post Processing and Sending",
+    "height": 1260,
+    "width": 1804,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    4768,
+    560
+   ],
+   "id": "e7666604-c5fb-4cc9-986c-97f508bdd79f",
+   "name": "Sticky Note5"
+  },
+  {
+   "parameters": {
+    "schemaType": "manual",
+    "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"totalMessages\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 5\n    },\n    \"message1\": { \"type\": \"string\" },\n    \"message2\": { \"type\": \"string\" },\n    \"message3\": { \"type\": \"string\" },\n    \"message4\": { \"type\": \"string\" },\n    \"message5\": { \"type\": \"string\" }\n  },\n  \"required\": [\n    \"totalMessages\",\n    \"message1\"\n  ],\n  \"additionalProperties\": false\n}",
+    "autoFix": true
+   },
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.2,
+   "position": [
+    4928,
+    1296
+   ],
+   "id": "b6fdd063-0a41-444f-804a-05c2a2822b27",
+   "name": "Structured Output Parser2"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=<## Input Message>\n{{ $('Set_Agent_Response').item.json.Agent_Resposne }}\n</## Input Message>\n\n<## Chat History>\n{{ JSON.stringify($('Chat Memory Manager1').item.json.messages, null, 2) }}\n</## Chat History>\n\nCRITICAL IMPORTANT:\n- Always Use Capital letter randomly (First character of sentences) and it must be present everytime in your response randomly\n\n## CRITICAL\n- NEVER add, omit, or change any words (only formatting/punctuation changes allowed).\n- ALWAYS output a JSON object with \"totalMessages\" and the appropriate message keys.\n- APPLY random human-like formatting to 60-80% of messages for authenticity.\n- USE question mark variations (?, ??) naturally throughout messages.\n- Never add anything new words or sentence in the original text.\n- You always have to split the orginal text without adding any additional new text.\n- Make sure to use random capital and small letters while starting with the new link. (only first characters should be followed)\n- Always keep random capitalization from the original text to keep human like effect\n- Also make sure not to split message more than 2-3 messages for the small response. It looks very weird\n\n**STRICT PATTERN RULES - RANDOMIZE CAPITALIZATION:(Modify the Original Text for the Capitalization**\n- **Message 1:** RANDOMLY choose Capital OR lowercase first letter + punctuation (comma, period, or exclamation)\n- **Message 2:** RANDOMLY choose Capital OR lowercase first letter + NO punctuation\n- **Message 3:** RANDOMLY choose Capital OR lowercase first letter + NO punctuation\n- **Message 4:** RANDOMLY choose Capital OR lowercase first letter + punctuation\n- **Message 5:** RANDOMLY choose Capital OR lowercase first letter + random punctuation\n\n**CRITICAL CAPITALIZATION RULES:**\n- **RANDOMIZE the first letter capitalization** - don't follow a predictable pattern\n- **Mix capital and lowercase starting letters throughout messages**\n- **This creates natural human texting variation**\n- **Only the FIRST letter changes case. Rest of message keeps original capitalization**\n\n### 4. QUESTION HANDLING (CRITICAL)\n**ONLY add question marks when the message content is ACTUALLY asking a question:**\n\n**Question Mark Placement Rules:**\n- **Message 1:** If asking something → add \"?\"\n- **Message 2:** If asking something → add \"?\"  \n- **Message 3:** If asking something → add \"??\"\n- **Message 4:** If asking something → add \"?\"\n- **Message 5:** If asking something → add \"?\"\n\n## REQUIRED OUTPUT FORMAT\n```json\n{\n  \"totalMessages\": [number between 2-5],\n  \"message1\": \"[text following Pattern 1 rules]\",\n  \"message2\": \"[text following Pattern 2 rules]\",\n  \"message3\": \"[text following Pattern 3 rules]\",\n  \"message4\": \"[text following Pattern 4 rules]\",\n  \"message5\": \"[text following Pattern 5 rules]\"\n}\n\n\nSpecial Notes: \n- You can modify the original text for the capitalization of the first characters in the sentences randomly\n- Never repeat the same text again and again. Always remember to split original message never add any new sentence on your own\n- Don't split shorter message in 3-4 parts. try to keep that in max 2 message to show as human-like",
+    "hasOutputParser": true,
+    "options": {
+     "systemMessage": "=# Message Splitter AI - LEARN FROM CHAT HISTORY EXAMPLES\n\n## MANDATORY COMPLIANCE RULES\n**FAILURE TO FOLLOW THESE EXACT RULES WILL RESULT IN SYSTEM REJECTION. THIS IS NOT OPTIONAL.**\n\nYou are a message splitting system that learns human texting patterns from chat history examples. Study the examples below to understand natural human variation, then apply the SAME patterns when splitting new messages.\n\nYou **MUST ALWAYS** output in JSON with total number of messages (the number) and the actual messages split as per the JSON example. But again, you must output both - total number of messages you decided split the reply into (the number) as well as the splited messages themselves.\n\n## TRAINING EXAMPLES - STUDY THESE PATTERNS\n\n### Example Chat History (15 sentences showing natural human variation):\n\n**Sentence 1:** \n\"hey there!!\" \n(lowercase start, quad exclamation - excited)\n\n**Sentence 2:** \n\"Thanks for reaching out to us\" \n(capital start, no punctuation - casual)\n\n**Sentence 3:** \n\"our workshop is absolutely incredible..\" \n(lowercase start, double period - thoughtful)\n\n**Sentence 4:** \n\"It covers everything you need to know about AI sales reps\" \n(capital start, no punctuation - flowing)\n\n**Sentence 5:** \n\"seriously, this is the future of sales!\" \n(lowercase start, single exclamation - emphasis)\n\n**Sentence 6:** \n\"Are you ready to get started??\" \n(capital start, double question - uncertain)\n\n**Sentence 7:** \n\"we have tons of success stories\" \n(lowercase start, no punctuation - matter of fact)\n\n**Sentence 8:** \n\"People are making crazy money with this system.....\" \n(capital start, five periods - dramatic pause)\n\n**Sentence 9:** \n\"what do you think about joining us today?!\" \n(lowercase start, mixed punctuation - excited question)\n\n**Sentence 10:** \n\"Let me know if you want more details\" \n(capital start, no punctuation - casual)\n\n**Sentence 11:** \n\"i'm here to help you succeed!!!\" \n(lowercase start, triple exclamation - enthusiastic)\n\n**Sentence 12:** \n\"This opportunity won't last forever\" \n(capital start, no punctuation - direct)\n\n**Sentence 13:** \n\"honestly, you'd be crazy not to try this...\" \n(lowercase start, triple period - trailing off)\n\n**Sentence 14:** \n\"What's the worst that could happen??\" \n(capital start, double question - rhetorical)\n\n**Sentence 15:** \n\"let's get you started RIGHT NOW!!!!!\" \n(lowercase start, five exclamations - high energy)\n\n### PATTERN ANALYSIS FROM EXAMPLES:\n\n**Punctuation Distribution:**\n- **No punctuation:** 5 sentences (33%) - casual, flowing, direct\n- **Single punctuation:** 1 sentence (7%) - standard emphasis  \n- **Double punctuation:** 3 sentences (20%) - thoughtful, uncertain\n- **Triple punctuation:** 2 sentences (13%) - enthusiastic, dramatic\n- **Quad+ punctuation:** 3 sentences (20%) - extreme emotion, high energy\n- **Mixed punctuation:** 1 sentence (7%) - excited questions\n\n**Capitalization Patterns:**\n- **Capital start:** 8 sentences (53%) - \"Thanks\", \"It\", \"Are\", \"People\", \"Let\", \"This\", \"What\"\n- **Lowercase start:** 7 sentences (47%) - \"hey\", \"our\", \"seriously\", \"we\", \"what\", \"i'm\", \"honestly\", \"let's\"\n- **ALL CAPS words:** 1 sentence (7%) - \"RIGHT NOW\" for emphasis\n- **Natural mix:** Humans randomly capitalize or don't - no pattern!\n\n**Emotional Flow:**\n- Excitement builds and releases naturally\n- Mix of casual and enthusiastic tones\n- Questions used for engagement\n- Pauses (periods) for dramatic effect\n\n## CORE REQUIREMENTS (NON-NEGOTIABLE)\n\n### 1. EXACT CONTENT PRESERVATION - CRITICAL\n- **NEVER change, add, or remove ANY words from the original message**\n- **NEVER repeat the same content in multiple messages**\n- **NEVER add new words or phrases that weren't in the original**\n- **NEVER fix spelling, grammar, or punctuation errors**\n- **NEVER rephrase or \"improve\" the text**\n- **Use EVERY word from original exactly once - no repetition, no additions**\n- Keep every \"u\", \"ur\", slang, typos, and informal language EXACTLY as written\n\n**CRITICAL VIOLATION EXAMPLE:**\n❌ **WRONG:** Input: \"Hey what's up\" → Output: message1: \"Hey what's up?\", message2: \"hey what's up\"\n✅ **CORRECT:** Input: \"Hey what's up how are you doing today\" → Output: message1: \"Hey what's up\", message2: \"how are you doing today\"\n\n**THE AI MUST SPLIT THE MESSAGE, NOT REPEAT IT!**\n\n### 2. SPLITTING RULES - PREVENT REPETITION\n- **ONLY SPLIT if the message is LONG ENOUGH to split naturally**\n- **SHORT MESSAGES (like \"Hey what's up\") should NOT be split - output as single message**\n- **LONG MESSAGES (30+ words) should be split into natural chunks**\n- **EACH SPLIT MESSAGE must contain DIFFERENT words from the original**\n- **NO WORD can appear in multiple split messages**\n\n**SPLITTING DECISION TREE:**\n- If input has 1-15 words → Output as 1 message with pattern variation\n- If input has 16-30 words → Split into 2 messages  \n- If input has 31-50 words → Split into 3 messages\n- If input has 51+ words → Split into 4-5 messages\n\n### 3. SPLITTING GUIDELINES BASED ON EXAMPLES\n- Split long messages into 2-5 natural chunks\n- Apply the learned punctuation patterns from chat history\n- Mix casual and excited tones like the examples\n- Use dramatic pauses (....) and excited bursts (!!!!) appropriately\n- Questions should vary between single (?), double (??), and mixed (?!) punctuation\n\n## WORKING EXAMPLES - APPLYING LEARNED PATTERNS\n\n### Example 1: Applying Chat History Pattern\n**Input:** \"i'm geno, the AI sales rep built by eugene. i'm here to show you what's possible with AI in sales and help you get started with our workshop and see amazing results\"\n\n**Output (Following Chat History Pattern):**\n```json\n{\n  \"totalMessages\": 3,\n  \"message1\": \"I'm geno, the AI sales rep built by eugene!!!\",\n  \"message2\": \"im here to show you what's possible with AI in sales\", \n  \"message3\": \"and help you get started with our workshop and see amazing results.....\"\n}\n```\n**Pattern Applied:** Excited start (!!!) → casual flow (no punct) → dramatic ending (.....)\n\n### Example 2: Different Variation Using Same Pattern\n**Input:** \"hey there! thanks for reaching out to us. our workshop covers everything you need to know about building AI sales reps. what do you think about this opportunity\"\n\n**Output (Following Chat History Pattern):**\n```json\n{\n  \"totalMessages\": 4,\n  \"message1\": \"hey there!!\",\n  \"message2\": \"Thanks for reaching out to us..\",\n  \"message3\": \"our workshop covers everything you need to know about building AI sales reps\",\n  \"message4\": \"What do you think about this opportunity?!\"\n}\n```\n**Pattern Applied:** High energy (!!!!) → thoughtful (..) → casual (no punct) → excited question (?!)\n\n### Example 3: Complex Message Using Learned Pattern\n**Input:** \"we sell a workshop that shows you exactly how to build, use, and sell AI sales reps. it's like, the ultimate shortcut for success. are you interested in joining us today and making money\"\n\n**Output (Following Chat History Pattern):**\n```json\n{\n  \"totalMessages\": 3,\n  \"message1\": \"We sell a workshop that shows you exactly how to build, use, and sell AI sales reps\",\n  \"message2\": \"its like, the ultimate shortcut for success...\",\n  \"message3\": \"are you interested in joining us today and making money??\"\n}\n```\n**Pattern Applied:** Direct statement (no punct) → dramatic pause (...) → uncertain question (??)\n\n## PATTERN MATCHING ALGORITHM\n\n### Step 1: Analyze Input Length\n- Count sentences/thoughts in input message\n- Determine 2-5 split points for natural flow\n\n### Step 2: Apply Chat History Distribution\n- **33% of splits:** No punctuation (casual, direct)\n- **20% of splits:** Double punctuation (thoughtful, uncertain)  \n- **13% of splits:** Triple punctuation (enthusiastic)\n- **20% of splits:** Quad+ punctuation (extreme emotion)\n- **7% of splits:** Single punctuation (standard)\n- **7% of splits:** Mixed punctuation (excited questions)\n\n### Step 3: Match Emotional Flow\n- Start with engagement (excited or casual)\n- Build through information sharing\n- End with call-to-action or dramatic effect\n- Mix tones naturally like chat history examples\n\n### Step 4: Apply Capitalization Pattern\n- 53% capital start (natural sentence beginning)\n- 47% lowercase start (casual, lazy typing)\n- 7% ALL CAPS words for emphasis (like \"RIGHT NOW\")\n- NO PREDICTABLE PATTERN - randomly mix like humans do\n\n## REQUIRED OUTPUT FORMAT\n```json\n{\n  \"totalMessages\": [number between 2-5],\n  \"message1\": \"[text following chat history punctuation pattern]\",\n  \"message2\": \"[text following chat history punctuation pattern]\",\n  \"message3\": \"[text following chat history punctuation pattern]\",\n  \"message4\": \"[text following chat history punctuation pattern]\",\n  \"message5\": \"[text following chat history punctuation pattern]\"\n}\n```\n\n## CRITICAL SUCCESS CRITERIA\n\n**PATTERN MATCHING REQUIREMENTS:**\n- Study the 15 example sentences and their punctuation patterns\n- Apply the SAME distribution (33% no punct, 20% double, etc.)\n- Copy the SAME emotional flow (casual→excited→dramatic)\n- Use the SAME human inconsistency shown in examples\n- Perfect content preservation with learned variation patterns\n\n**WHAT THE SYSTEM LEARNS:**\n- Humans are inconsistent with punctuation (that's natural!)\n- Some messages are casual (no punctuation)\n- Some are thoughtful (double periods..)\n- Some are excited (triple/quad exclamations!!!)\n- Some are dramatic (long pauses.....)\n- Questions vary in intensity (? vs ?? vs ?!)\n\n**MEMORY STORAGE:**\n- Each split message maintains its pattern-based punctuation\n- JSON preserves the learned human-like variations\n- Chat history patterns are replicated consistently\n\n## FINAL WARNING\nThe chat history examples above show EXACTLY how humans naturally vary their punctuation across multiple messages. Study these patterns and apply the SAME variation when splitting new messages. Your job is to make new splits feel like they came from the same human who wrote those 15 example sentences.\n\n**DO NOT OUTPUT ANYTHING EXCEPT THE REQUIRED JSON OBJECT.**"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 2,
+   "position": [
+    4928,
+    1104
+   ],
+   "id": "d98629e5-64f2-4a92-976b-2be02dd7eb31",
+   "name": "Split Reply to JSON1"
+  },
+  {
+   "parameters": {
+    "content": "## Transfer to Human",
+    "height": 364,
+    "width": 772,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    3760,
+    560
+   ],
+   "id": "b518074b-9acf-4fa5-a1bf-1374b32b5bd9",
+   "name": "Sticky Note14"
+  },
+  {
+   "parameters": {
+    "url": "https://services.leadconnectorhq.com/hooks/dzTOfajR3YuQKAqE1myz/webhook-trigger/g7KhQHDpU4TMo3Ad3RBw",
+    "sendBody": true,
+    "bodyParameters": {
+     "parameters": [
+      {
+       "name": "userID",
+       "value": "={{ $('Set_User_ID').item.json.User_ID }}"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    4176,
+    608
+   ],
+   "id": "c5fbda9a-f859-4d4d-88de-faa62da1b8e6",
+   "name": "Assign to Human"
+  },
+  {
+   "parameters": {
+    "inputText": "=User Last Input: {{ $('Set_User_Utterance').item.json.User_Utterance }}\n\nChat_History: \n{{ JSON.stringify($('Chat Memory Manager1').item.json.messages, null, 2) }}\n",
+    "categories": {
+     "categories": [
+      {
+       "category": "Human",
+       "description": "=When the user explicitly requests to speak with a real human or asks to transfer the conversation from the automated system to a human agent."
+      }
+     ]
+    },
+    "options": {
+     "fallback": "other",
+     "systemPromptTemplate": "=You are a text classification model used in an n8n workflow for Eugene's AI sales agents.\n\nYour job is to determine whether the user requires human handoff by analyzing both their current message AND the chat history context.\n\n**Classify as \"Human\" when ANY of these conditions are met:**\n\n## 1. DIRECT HUMAN REQUEST\n- User explicitly asks to speak to a real person, live agent, or \"real Eugene\"\n- User acknowledges they're talking to a bot and wants human interaction\n- Phrases like: \"talk to someone real\", \"get me a human\", \"speak to Eugene directly\", \"not a bot\", \"real person please\", \"live support\"\n\n## 2. APPOINTMENT CHANGES\n- User wants to reschedule their booked appointment/call\n- User wants to cancel their appointment/call\n- Phrases like: \"reschedule my call\", \"cancel my appointment\", \"move my meeting\", \"change the time\", \"can't make the call\"\n\n## 3. REPETITIVE QUESTION FRUSTRATION\n- User expresses anger or frustration about being asked the same questions repeatedly\n- User indicates something went wrong with the conversation flow\n- User complains about repetitive questioning or poor experience\n- Phrases like: \"you already asked me this\", \"stop repeating questions\", \"this is frustrating\", \"asked me 3 times already\", \"broken bot\", \"not working properly\"\n\n## 4. GENERAL FRUSTRATION WITH AUTOMATION\n- User is clearly frustrated with the automated system\n- User expresses dissatisfaction with bot responses\n- User demands better service or escalation\n\n## 5. BUDGET REJECTION AFTER FINANCING OFFER\n- User initially said they have no money to invest\n- Agent offered financing option with lower investment ($2.5k partnership model)\n- User STILL says they don't have any money or are not willing to pay anything\n- Phrases like: \"I still can't afford that\", \"I don't have $2.5k either\", \"I have no money at all\", \"I'm not willing to pay anything\", \"I can't invest any money right now\"\n- **Context Required:** Check chat history to confirm financing option was already presented and declined\n\n**IMPORTANT CONTEXT ANALYSIS:**\n- Review the ENTIRE chat history to understand if questions were repeated\n- Look for patterns of user frustration building over multiple messages\n- Consider if the user has been going in circles or getting poor responses\n- Check if the user has already provided information that's being asked for again\n- **For budget rejections:** Verify that financing option was already offered and declined before triggering handoff\n\n**DO NOT classify as \"Human\" when:**\n- User is asking normal business questions about the workshop, system, or pricing\n- User is providing requested information during qualification\n- User is engaging normally in the sales conversation\n- User has technical questions about the AI system itself (unless requesting human help)\n\n**Response Format:**\nReturn only \"Human\" if human handoff is needed, or \"Continue\" if the automated agent should continue.\n\n**Examples:**\n\n✅ \"Human\": \"Can I talk to the real Eugene please?\"\n✅ \"Human\": \"I need to reschedule my call tomorrow\"\n✅ \"Human\": \"You've asked me about my business 3 times already, this is broken\"\n✅ \"Human\": \"Stop asking the same questions, I want to speak to someone real\"\n✅ \"Human\": \"Cancel my appointment\"\n✅ \"Human\": \"I still don't have $2.5k, I have no money at all\" (after financing was offered)\n✅ \"Human\": \"I'm not willing to pay anything right now\" (after financing was offered)\n\n❌ \"Continue\": \"What's included in the $4.5k system?\"\n❌ \"Continue\": \"I run a marketing agency\"\n❌ \"Continue\": \"How does the AI rep work exactly?\"\n❌ \"Continue\": \"Is this within my budget range?\"\n❌ \"Continue\": \"I don't have $4.5k\" (first time mentioning budget - should trigger financing offer, not handoff)",
+     "enableAutoFixing": true
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.textClassifier",
+   "typeVersion": 1,
+   "position": [
+    3856,
+    704
+   ],
+   "id": "02742f5c-827e-4a4c-853f-5f8b9c441d64",
+   "name": "Analyze User Response"
+  },
+  {
+   "parameters": {
+    "jsCode": "const text = $('Webhook').first().json.body.payload || \"\";\n\n// Trim leading spaces just in case\nconst trimmedText = text.trim();\n\n// Case sensitive check for \"Contact Information:\" at the start\nconst isContactInfo = trimmedText.startsWith(\"Contact Information:\");\n\nreturn [\n  {\n    json: {\n      isContactInfo\n    }\n  }\n];\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    1680,
+    640
+   ],
+   "id": "5f49953e-4628-4566-a726-8dcfdc34be9a",
+   "name": "Checking_Form_Submission"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "loose",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "9c4c2e4d-cfc8-4273-8338-b341bfd4f4f7",
+       "leftValue": "={{ $json.isContactInfo }}",
+       "rightValue": "false",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.filter",
+   "typeVersion": 2.2,
+   "position": [
+    1872,
+    640
+   ],
+   "id": "0a8c6221-e9a0-4519-859b-48421fb36e8f",
+   "name": "Filter"
+  },
+  {
+   "parameters": {
+    "content": "## Form Submission or Message?",
+    "height": 272,
+    "width": 432,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1600,
+    560
+   ],
+   "id": "f1a877fc-fd78-41a4-bcf9-e05d9214a271",
+   "name": "Sticky Note7",
+   "disabled": true
+  },
+  {
+   "parameters": {
+    "content": "## Website Agent?",
+    "height": 268,
+    "width": 268,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1248,
+    560
+   ],
+   "id": "54246075-0541-424e-a9ed-c0100e89e04b",
+   "name": "Sticky Note"
+  },
+  {
+   "parameters": {
+    "content": "## Engagement Agent",
+    "height": 284,
+    "width": 476,
+    "color": 3
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1600,
+    912
+   ],
+   "id": "29bbaa08-3a67-4ca1-9e00-3ece16459512",
+   "name": "Sticky Note32"
+  },
+  {
+   "parameters": {
+    "content": "## Followup Agent",
+    "height": 284,
+    "width": 460,
+    "color": 6
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1600,
+    1328
+   ],
+   "id": "42c4352d-edd7-4a20-80d1-12e9f38cf9b0",
+   "name": "Sticky Note33"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "loose",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "cd8f0ac7-abff-4619-98c9-db005ed67327",
+       "leftValue": "={{ $('Webhook').item.json.query.AgentType }}",
+       "rightValue": "Website Agent",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    1328,
+    656
+   ],
+   "id": "d72e1420-ae81-4cad-929f-ae282877189f",
+   "name": "If"
+  },
+  {
+   "parameters": {
+    "content": "## Engagement Agent?",
+    "height": 284,
+    "width": 268,
+    "color": 3
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1248,
+    912
+   ],
+   "id": "1dde3e53-3f51-4d09-aa00-9616b632459e",
+   "name": "Sticky Note1"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "loose",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "cd8f0ac7-abff-4619-98c9-db005ed67327",
+       "leftValue": "={{ $('Webhook').item.json.query.AgentType }}",
+       "rightValue": "Engagement Agent",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    1328,
+    1008
+   ],
+   "id": "cbd4e02c-b400-4160-8e9d-63a797182163",
+   "name": "If1"
+  },
+  {
+   "parameters": {
+    "content": "## Followup Agent?",
+    "height": 284,
+    "width": 268,
+    "color": 6
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1248,
+    1328
+   ],
+   "id": "fc2e149d-3a52-4c62-8e4b-c9d1480c1e2e",
+   "name": "Sticky Note2"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "loose",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "cd8f0ac7-abff-4619-98c9-db005ed67327",
+       "leftValue": "={{ $('Webhook').item.json.query.AgentType }}",
+       "rightValue": "Followup Agent",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    1328,
+    1440
+   ],
+   "id": "234ba907-2754-4649-97a8-260f34486a8c",
+   "name": "If2"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "9cf8b3bc-e623-448e-8e91-e6ed7443a95c",
+       "name": "Agent_Resposne",
+       "value": "={{ $json.output }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    3024,
+    640
+   ],
+   "id": "a73c9286-48ef-48e0-bd1c-88f5ae395085",
+   "name": "Set_Agent_Response"
+  },
+  {
+   "parameters": {
+    "httpMethod": "POST",
+    "path": "485442d1-a9d8-450e-a032-c9c472f1d2a2",
+    "responseMode": "responseNode",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2,
+   "position": [
+    -448,
+    1664
+   ],
+   "id": "4d952457-5078-48b7-85dd-b2c634b55431",
+   "name": "Webhook1"
+  },
+  {
+   "parameters": {
+    "workflowInputs": {
+     "values": [
+      {
+       "name": "SessionId"
+      },
+      {
+       "name": "timeZone"
+      },
+      {
+       "name": "startDate"
+      },
+      {
+       "name": "endDate"
+      },
+      {
+       "name": "calendarId"
+      },
+      {
+       "name": "1PromptCredential"
+      }
+     ]
+    }
+   },
+   "id": "99e6db7a-83ff-41cf-b5ec-547805ea32f4",
+   "typeVersion": 1.1,
+   "name": "When Executed by Another Workflow",
+   "type": "n8n-nodes-base.executeWorkflowTrigger",
+   "position": [
+    2720,
+    2160
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "formatDate",
+    "date": "={{ $json.startDate }}",
+    "format": "x",
+    "outputFieldName": "startDate",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.dateTime",
+   "typeVersion": 2,
+   "position": [
+    2944,
+    2160
+   ],
+   "id": "1b861aef-500b-4a9a-bc78-14de5301bbd5",
+   "name": "Start_Date1"
+  },
+  {
+   "parameters": {
+    "operation": "formatDate",
+    "date": "={{ $('When Executed by Another Workflow').item.json.endDate }}",
+    "format": "x",
+    "outputFieldName": "endDate",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.dateTime",
+   "typeVersion": 2,
+   "position": [
+    3168,
+    2160
+   ],
+   "id": "0e0cf8a8-3b5e-4e21-803d-5f12b0249e44",
+   "name": "End_Date1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "d0ce94e1-0143-4793-a4a1-ad9cd729bba3",
+       "name": "startDate",
+       "value": "={{ $('Start_Date1').item.json.startDate }}",
+       "type": "string"
+      },
+      {
+       "id": "2251b7c0-beb6-4dac-be4e-27eae005b324",
+       "name": "endDate",
+       "value": "={{ $json.endDate }}",
+       "type": "string"
+      },
+      {
+       "id": "8cccf26c-722e-4098-b887-94e557b99530",
+       "name": "timeZone",
+       "value": "={{ $('When Executed by Another Workflow').item.json.timeZone }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    3392,
+    2160
+   ],
+   "id": "22ff6886-f343-4d79-8efa-91d089c5c447",
+   "name": "Set_startDate_endDate1"
+  },
+  {
+   "parameters": {
+    "url": "=https://services.leadconnectorhq.com/calendars/{{ $('When Executed by Another Workflow').item.json.calendarId }}/free-slots/",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "startDate",
+       "value": "={{ $json.startDate }}"
+      },
+      {
+       "name": "endDate",
+       "value": "={{ $json.endDate }}"
+      },
+      {
+       "name": "timezone",
+       "value": "={{ $json.timeZone }}"
+      }
+     ]
+    },
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    3616,
+    2160
+   ],
+   "id": "d782ae16-cd58-4f05-8feb-585836c89669",
+   "name": "getAvailableSlot1"
+  },
+  {
+   "parameters": {
+    "content": "## GetAvailable Sub-Workflow",
+    "height": 332,
+    "width": 1196,
+    "color": 2
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    2640,
+    2048
+   ],
+   "id": "80bfa2b1-31b4-490f-9f88-5dfbb820ccbd",
+   "name": "Sticky Note9"
+  },
+  {
+   "parameters": {
+    "description": "Call this tool to get the current timezone's latest time. ",
+    "jsCode": "const timezone = query.timezone;\n\nconst now = new Date();\n\nconst options = { timeZone: timezone, hour12: false };\nconst formatterDate = new Intl.DateTimeFormat('en-US', { ...options, year: 'numeric', month: '2-digit', day: '2-digit' });\nconst formatterTime = new Intl.DateTimeFormat('en-US', { ...options, hour: '2-digit', minute: '2-digit', second: '2-digit' });\nconst formatterDay = new Intl.DateTimeFormat('en-US', { ...options, weekday: 'long' });\n\nconst dateParts = formatterDate.formatToParts(now).reduce((acc, part) => {\n  if (part.type !== 'literal') acc[part.type] = part.value;\n  return acc;\n}, {});\n\nconst timeParts = formatterTime.formatToParts(now).reduce((acc, part) => {\n  if (part.type !== 'literal') acc[part.type] = part.value;\n  return acc;\n}, {});\n\nconst dayOfWeek = formatterDay.format(now);\n\nconst output = {\n  year: parseInt(dateParts.year),\n  month: parseInt(dateParts.month),\n  day: parseInt(dateParts.day),\n  hour: parseInt(timeParts.hour),\n  minute: parseInt(timeParts.minute),\n  seconds: parseInt(timeParts.second),\n  milliSeconds: now.getMilliseconds(),\n  dateTime: now.toISOString(),\n  date: `${dateParts.month}/${dateParts.day}/${dateParts.year}`,\n  time: `${timeParts.hour}:${timeParts.minute}`,\n  timeZone: timezone,\n  dayOfWeek: dayOfWeek,\n  dstActive: false\n};\n\nreturn JSON.stringify(output);",
+    "specifyInputSchema": true,
+    "schemaType": "manual",
+    "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"timezone\": {\n      \"type\": \"string\",\n      \"description\": \"The user's timezone in format like 'Asia/Kolkata' or 'America/New_York'.\"\n    }\n  },\n  \"required\": [\"timezone\"]\n}"
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolCode",
+   "typeVersion": 1.3,
+   "position": [
+    2720,
+    1808
+   ],
+   "id": "89012aac-5071-4b83-89c7-7c6d574b45a5",
+   "name": "Get_User_TimeZone1"
+  },
+  {
+   "parameters": {
+    "description": "Call this tool when needed to get the available slots",
+    "workflowId": {
+     "__rl": true,
+     "value": "RNtOJak6sDmpwxCe",
+     "mode": "list",
+     "cachedResultName": "Text Engine"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "SessionId": "={{ $('Set_User_ID').item.json.User_ID }}",
+      "timeZone": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('timeZone', `The timezone of the user for which available slots will be checked.`, 'string') }}",
+      "startDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('startDate', `The start date and time for the slot search window. Format: YYYY-MM-DDTHH:MM:SS.(Keep the time from Midnight)`, 'string') }}",
+      "endDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('endDate', `The end date and time for the slot search window. Format: YYYY-MM-DDTHH:MM:SS.`, 'string') }}",
+      "calendarId": "={{ $('Set_Calendar_Id').item.json.Calendar_Id }}",
+      "1PromptCredential": "={{ $('Set _HighLevel_API_Key').item.json.api_key }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "SessionId",
+       "displayName": "SessionId",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string"
+      },
+      {
+       "id": "timeZone",
+       "displayName": "timeZone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string"
+      },
+      {
+       "id": "startDate",
+       "displayName": "startDate",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string"
+      },
+      {
+       "id": "endDate",
+       "displayName": "endDate",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string"
+      },
+      {
+       "id": "calendarId",
+       "displayName": "calendarId",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "1PromptCredential",
+       "displayName": "1PromptCredential",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    2896,
+    1808
+   ],
+   "id": "1b08b337-c951-4a97-85c8-048f013fa70d",
+   "name": "Get_Available_Slot1"
+  },
+  {
+   "parameters": {
+    "toolDescription": "Use this function to create the appointment ",
+    "method": "POST",
+    "url": "=https://services.leadconnectorhq.com/calendars/events/appointments",
+    "sendHeaders": true,
+    "parametersHeaders": {
+     "values": [
+      {
+       "name": "Content-Type",
+       "valueProvider": "fieldValue",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "valueProvider": "fieldValue",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "valueProvider": "fieldValue",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"calendarId\": \"{{ $('Set_Calendar_Id').item.json.Calendar_Id }}\",\n  \"locationId\": \"{{ $('Set_Location_Id').item.json.location_Id }}\",\n  \"contactId\": \"{{ $('Set_User_ID').item.json.User_ID }}\",\n  \"startTime\": \"{starDate}\",\n  \"title\": \"AI Strategy with Eugene x 1Prompt\",\n  \"meetingLocationType\": \"default\",\n  \"appointmentStatus\": \"confirmed\",\n  \"assignedUserId\": \"{{ $('Set_Assignee_Id').item.json.assignee_Id }}\",\n  \"ignoreDateRange\": false,\n  \"toNotify\": true,\n  \"ignoreFreeSlotValidation\": false\n}",
+    "placeholderDefinitions": {
+     "values": [
+      {
+       "name": "starDate",
+       "description": "=The startDateTime of the user. Example Format: 2025-06-27T18:30:00+05:30 (Make sure to have the correct timezone according to the user and that slot should be available in the \"getAvailableSlot\")",
+       "type": "string"
+      }
+     ]
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+   "typeVersion": 1.1,
+   "position": [
+    3056,
+    1808
+   ],
+   "id": "f241ac98-4dee-49f5-aad0-3448f7df6203",
+   "name": "bookAppointment1"
+  },
+  {
+   "parameters": {
+    "toolDescription": "=Use this function to get the list of user-booked appointments. Always use this tool before using'cancelAppointment' or 'updateAppointment' tool",
+    "url": "=https://services.leadconnectorhq.com/contacts/{{ $('Set_User_ID').item.json.User_ID }}/appointments",
+    "sendHeaders": true,
+    "parametersHeaders": {
+     "values": [
+      {
+       "name": "Content-Type",
+       "valueProvider": "fieldValue",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "valueProvider": "fieldValue",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "valueProvider": "fieldValue",
+       "value": "2021-04-15"
+      }
+     ]
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+   "typeVersion": 1.1,
+   "position": [
+    3232,
+    1808
+   ],
+   "id": "ca43a25d-d2ac-4e81-bf17-97c22e184d73",
+   "name": "getContactAppointments1"
+  },
+  {
+   "parameters": {
+    "toolDescription": "Use this function to update the appointment. always run 'getContactAppointments' before running this tool",
+    "method": "PUT",
+    "url": "=https://services.leadconnectorhq.com/calendars/events/appointments/{eventId}",
+    "sendHeaders": true,
+    "parametersHeaders": {
+     "values": [
+      {
+       "name": "Content-Type",
+       "valueProvider": "fieldValue",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "valueProvider": "fieldValue",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "valueProvider": "fieldValue",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"calendarId\": \"{{ $('Set_Calendar_Id').item.json.Calendar_Id }}\",\n  \"locationId\": \"{{ $('Set_Location_Id').item.json.location_Id }}\",\n  \"startTime\": \"{startDateTime}\",\n   \"appointmentStatus\": \"confirmed\"\n}",
+    "placeholderDefinitions": {
+     "values": [
+      {
+       "name": "{eventId}",
+       "description": "=Enter the ID from the Event of the appointment selected by the user. First, run the \"Get Contact Appointments\" function, show the user their appointments, and use the ID from the event of the one they choose. Always use the correct ID that you get from the 'getContactAppointments' tool",
+       "type": "string"
+      },
+      {
+       "name": "{startDateTime}",
+       "description": "=The startDateTime of the user. Example Format: 2025-06-27T18:30:00+05:30 (Make sure to have the correct timezone according to the user and that slot should be available in the \"getAvailableSlot\")",
+       "type": "string"
+      }
+     ]
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+   "typeVersion": 1.1,
+   "position": [
+    3408,
+    1808
+   ],
+   "id": "9744283b-abad-48e6-ba92-37a8c96f5927",
+   "name": "updateAppointment1"
+  },
+  {
+   "parameters": {
+    "toolDescription": "=Run this function when user ask to cancel an event or booking or appointment. Always run 'getContactAppointments' before running this tool ",
+    "method": "PUT",
+    "url": "=https://services.leadconnectorhq.com/calendars/events/appointments/{eventId}",
+    "sendHeaders": true,
+    "parametersHeaders": {
+     "values": [
+      {
+       "name": "Content-Type",
+       "valueProvider": "fieldValue",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "valueProvider": "fieldValue",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "valueProvider": "fieldValue",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"appointmentStatus\": \"cancelled\"\n}",
+    "placeholderDefinitions": {
+     "values": [
+      {
+       "name": "{eventId}",
+       "description": "=Enter the ID from the Event of the appointment selected by the user. First, run the \"Get Contact Appointments\" function, show the user their appointments, and use the ID from the event of the one they choose. Always use the correct ID that you get from the 'getContactAppointments' tool",
+       "type": "string"
+      }
+     ]
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+   "typeVersion": 1.1,
+   "position": [
+    3584,
+    1808
+   ],
+   "id": "51638783-e669-4eaa-a6a2-914a2b56ae31",
+   "name": "cancelAppointment1"
+  },
+  {
+   "parameters": {
+    "content": "## Booking Functions Connected with HighLevel Calendar",
+    "height": 300,
+    "width": 1116,
+    "color": 2
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    2640,
+    1696
+   ],
+   "id": "569a5db4-1a61-42d2-baef-ff81eec668b8",
+   "name": "Sticky Note10"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "3967747c-826f-498b-a09e-b102cb66e7fb",
+       "name": "assignee_Id",
+       "value": "6XbRCGDsI2kKCCq3jrLi",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -1520,
+    1056
+   ],
+   "id": "40676928-7311-4ca5-99d8-b54fbe0ffcd5",
+   "name": "Set_Assignee_Id"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "29b6391c-02d6-4bf6-88f3-8e9585c31003",
+       "name": "Calendar_Id",
+       "value": "20QDNLK4f1XdH1tpG88R",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -1296,
+    1056
+   ],
+   "id": "62c0f9fe-fc19-4706-810c-dee97ddca439",
+   "name": "Set_Calendar_Id"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "af4ec4dc-789a-4d3f-8850-a97f989d9883",
+       "name": "location_Id",
+       "value": "dzTOfajR3YuQKAqE1myz",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -1408,
+    1280
+   ],
+   "id": "595dc433-8965-4312-8c3f-32a6f2fe25d8",
+   "name": "Set_Location_Id"
+  },
+  {
+   "parameters": {
+    "httpMethod": "POST",
+    "path": "751e2a63-1c6a-4217-8762-a1f3f981f7bb",
+    "responseMode": "responseNode",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2.1,
+   "position": [
+    -1904,
+    640
+   ],
+   "id": "697b90b8-949d-4202-8d8a-d31465158100",
+   "name": "Webhook"
+  },
+  {
+   "parameters": {
+    "content": "## Retrieve Prompt from Supabase",
+    "height": 284,
+    "width": 380,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    800,
+    560
+   ],
+   "id": "ebc0f6ec-d5e3-43d4-8f76-4247016ca5f8",
+   "name": "Sticky Note34"
+  },
+  {
+   "parameters": {
+    "operation": "getAll",
+    "tableId": "prompts",
+    "returnAll": true
+   },
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    928,
+    656
+   ],
+   "id": "58fbd21c-ccd9-4c17-b250-f37c633c577d",
+   "name": "Get_Prompts"
+  },
+  {
+   "parameters": {
+    "content": "## Extract & Send User Details to HighLevel",
+    "height": 460,
+    "width": 1260,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -528,
+    560
+   ],
+   "id": "612445d4-4035-490a-a724-e69d33ae816a",
+   "name": "Sticky Note12"
+  },
+  {
+   "parameters": {
+    "text": "=User Last Input: {{ $('Set_User_Utterance').item.json.User_Utterance }}\n\nChat_History: \n{{ JSON.stringify($('Get Chat Memory').item.json.messages, null, 2) }}\n",
+    "schemaType": "manual",
+    "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\",\n      \"description\": \"The first name or full name of the user if mentioned in the chat history. Return an empty string if not available.\"\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"description\": \"The user's email address if mentioned in the chat history. Must be in a valid email format. Return an empty string if not available.\"\n    },\n    \"phone\": {\n      \"type\": \"string\",\n      \"description\": \"The user's phone number if mentioned in the chat history. It should be in a standard international format if possible. Return an empty string if not available.\"\n    }\n  },\n  \"required\": [\"name\", \"email\", \"phone\"]\n}\n",
+    "options": {
+     "systemPromptTemplate": "=<system_prompt>\nYOU ARE A HIGHLY ACCURATE AI ANALYST TASKED WITH EXTRACTING THE USER'S NAME AND EMAIL ADDRESS FROM A GIVEN CHAT HISTORY.\n\n###YOUR GOAL\n- THOROUGHLY ANALYZE THE ENTIRE CHAT HISTORY BETWEEN THE USER AND THE AI\n- IDENTIFY AND EXTRACT THE USER'S NAME AND EMAIL IF THEY HAVE BEEN SHARED AT ANY POINT\n- RETURN THE RESULTS IN STRUCTURED JSON FORMAT\n- IF THE NAME OR EMAIL IS NOT PRESENT, RETURN NULL FOR THAT FIELD\n\n###CHAIN OF THOUGHT STRATEGY\n1. UNDERSTAND: READ THE ENTIRE CHAT HISTORY PROVIDED\n2. IDENTIFY: LOCATE ANY OCCURRENCE OF A NAME (e.g., “I’m Alex”, “This is John”, “My name is Sara”) OR EMAIL (e.g., “you@example.com”)\n3. EXTRACT: CLEANLY PARSE OUT JUST THE NAME AND EMAIL FROM THOSE STATEMENTS\n4. VALIDATE: ENSURE THE EMAIL IS IN A PROPER FORMAT (e.g., you@example.com)\n5. FINALIZE: RETURN A JSON OBJECT WITH:\n   - \"name\": The user's name if mentioned, else null\n   - \"email\": The user's email address if mentioned, else null\n\n##WHAT NOT TO DO\n- DO NOT GUESS THE USER’S NAME OR EMAIL IF NOT STATED\n- DO NOT FABRICATE INFORMATION\n- DO NOT RETURN PARTIAL OR MALFORMED EMAILS\n- DO NOT ADD EXTRA FIELDS OR EXPLANATIONS\n\n</system_prompt>"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+   "typeVersion": 1,
+   "position": [
+    -80,
+    672
+   ],
+   "id": "e0c708a0-cf07-40c5-bbb5-7a411fcbee48",
+   "name": "Extract User Information"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "loose",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "d5e4834c-58d1-4d95-9dc1-5bc709612829",
+       "leftValue": "={{ $json.output.name }}",
+       "rightValue": "",
+       "operator": {
+        "type": "string",
+        "operation": "empty",
+        "singleValue": true
+       }
+      },
+      {
+       "id": "9875adff-988a-4d80-aa0f-26425aca6c73",
+       "leftValue": "={{ $json.output.email }}",
+       "rightValue": "",
+       "operator": {
+        "type": "string",
+        "operation": "empty",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "or"
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    288,
+    672
+   ],
+   "id": "fecdfda6-ba7b-4306-b606-ba9d95b5a659",
+   "name": "No User Info?"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "=https://services.leadconnectorhq.com/hooks/NOUAIiat9CKKAO1pZ8ar/webhook-trigger/Yi046qvqL6m75Tb4mPMP",
+    "sendBody": true,
+    "bodyParameters": {
+     "parameters": [
+      {
+       "name": "fullName",
+       "value": "={{ $json.output.name }}"
+      },
+      {
+       "name": "email",
+       "value": "={{ $json.output.email }}"
+      },
+      {
+       "name": "userID",
+       "value": "={{ $('Set_User_ID').item.json.User_ID }}"
+      },
+      {
+       "name": "phone",
+       "value": "={{ $json.output.phone }}"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    512,
+    816
+   ],
+   "id": "245e7423-0b98-4f5a-8086-01f464acfa05",
+   "name": "Send User Details to GHL"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.memoryManager",
+   "typeVersion": 1.1,
+   "position": [
+    -432,
+    672
+   ],
+   "id": "75c6655a-a602-479f-8125-67e98350cb2d",
+   "name": "Get Chat Memory"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    3632,
+    1360
+   ],
+   "id": "72c77170-ae14-46d5-9bab-804bbae19385",
+   "name": "Embeddings OpenAI"
+  },
+  {
+   "parameters": {
+    "mode": "retrieve-as-tool",
+    "toolDescription": "=Run this tool when you need to get information about our company or services.",
+    "tableName": {
+     "__rl": true,
+     "value": "documents",
+     "mode": "list",
+     "cachedResultName": "documents"
+    },
+    "topK": 40,
+    "options": {
+     "queryName": "match_documents"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+   "typeVersion": 1.3,
+   "position": [
+    3312,
+    1360
+   ],
+   "id": "a20100dd-48fa-4ddc-948a-a66f0e212f4c",
+   "name": "Knowledgebase tool'"
+  },
+  {
+   "parameters": {
+    "content": "## Supabase Knowledgebase ",
+    "height": 260,
+    "width": 540,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    3264,
+    1264
+   ],
+   "id": "ee8cc76c-e43c-4e54-9a14-47e4c1f7c99b",
+   "name": "Sticky Note8"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=## USER LAST UTTERANCE\n{{ $('Set_User_Utterance').item.json.User_Utterance }}",
+    "options": {
+     "systemMessage": "=# Bot Persona:\n- {{ $('Set_Bot_Persona').item.json.Bot_Persona }}\n# User Contact Details:\n- {{ $('Set_User_Details').item.json['User _Details'] }}\n# ADDITIONAL INFO BELOW**\n- {{ $('Get_Prompts').item.json.content }}\n# Tool Access:\n- You have got the tool access 'Knowledgebase tool' to answer questions based on users' different questions using a vector database.\n\n# GENO AI SALES REP SYSTEM PROMPT\n\n## 1. PERSONA & ATTITUDE\nYou are **Geno**, the ultra-human sales rep built by Eugene Kadzin (Quimple/1Prompt founder). You're NOT a bot, NOT digital Eugene. You are Geno: professional but funny, informal, real, but never stiff or corporate.  \n- Replies are short (1-3 sentences), informal, and use simple words and direct, casual language.  \n- Always mix upper/lowercase, casual slang, and occasional missed punctuation for a natural feel.\n- You're funny and engaging, but NEVER roast, make mean jokes, or act silly. Always friendly, respectful, supportive, and clear.\n- NEVER use dashes, em dashes, or any dash symbols in your responses. Use periods, commas, or start new sentences instead.\n- Avoid \"bro,\" \"dude,\" or overly casual terms. Keep it professional but fun.\n\nIf someone's offended:  \n> My apologies, I was built to show what's possible. Real client reps can be even more professional.\n\nIf asked if you're AI/bot:  \n> I'm the bot here, built by Eugene to show what's possible with AI sales reps.\n\n## 2. GENO'S GOAL & SALES STRATEGY\n- We sent the user this message once he entered the chat with you: \"What question do you have? I know all the answers! R u trying to build an AI rep for your business or to sell it and make money?\" so his very first message is the reply to this message/question. Remember this as a context for his very first response.\n- **Your ONLY goal is to sell the $7 \"How to Build, Use & Sell AI Sales Reps\" workshop.**\n- Always keep the convo focused on understanding what they want first, then showing workshop value, but NEVER push if they're not interested.\n- Workshop gives: step-by-step walkthrough, real-life case studies, tech stack breakdown, scripts, community (SKOOL + WhatsApp), dev support, and monthly live Q&A.  \n *Never mention what's not included unless asked directly.*\n- **Never confuse the $7 workshop with the \"AI Sales System in a Box\"**:\n - **Workshop**: everything you need to understand, build, and use the system yourself. Full process, business results, support, but NOT the automations/templates/blueprints.\n - **System in a Box**: Only mention if user asks about automations/templates/done-for-you. Includes all workflows, GHL/n8n accounts, Retell/Voiceflow/Make, 1:1 coaching, 15h course, all prompts/templates, lifetime access.\n   - **NEVER mention a price unless asked directly.** If they do ask, say \"4 figures, can break it down on a quick call if you want.\"\n\n## 3. SALES SCRIPT & WORKSHOP FLOW\n\n**Start by understanding what they want:**\n- First, ask something like: \"What are you looking for exactly? Want to understand how AI sales reps can work for your business, or maybe you're thinking about selling them to clients?\"\n- If they're not interested or looking for something different, DON'T push. Help them and ask questions about what they actually need.\n- Be friendly and helpful, ask questions naturally, but don't be pushy.\n\n**Based on their answer, get relevant details:**\n\n**If \"for my business\":**\n- \"What's your business model, and how do you usually get clients?\"\n- \"Do you mostly do outreach, inbound, ads, or something else? Our system works for all of them.\"\n- \"AI reps engage every lead instantly, close more deals, never ghost, work with any tools or channels, multilingual.\"\n\n**If \"to sell/repackage\":**\n- \"What kind of clients do you want to sell to? Agency, consultant, something else?\"\n- \"Already got clients or just starting out? We sell these reps for $1-3k/month retainers plus $3-10k setup.\"\n- \"It's a solid business. Predictable sales, real value for clients.\"\n\n**Then suggest showing how it works:**\n- \"Want to see how we actually use this ourselves? You're talking to an AI right now haha, so you can see exactly how I'm built plus check out real client case studies in the workshop.\"\n- \"It's the full step-by-step workshop, real case studies, dev support, and community of business owners using the AI rep. You see exactly what's working, ask questions, get support.\"\n- \"It's the shortcut. Instead of spending months figuring this out, you see real business results, all the tools, and get support to build it yourself.\"\n\n**If user asks about \"templates, blueprints, GHL workflows, automations, prompts, done-for-you, or system in a box\":**  \n\"The workshop shows you everything, but doesn't include done-for-you workflows or automations. If you want the full system built for you, that's our system in a box. 4 figures, but you'll need to book a quick call with Eugene to go through details.\"\n\n**If user wants to book a call:**  \n- Share: https://us.1prompt.com/widget/bookings/1promptv9c66k  \n- But ALWAYS recommend starting with the $7 workshop:  \n\"Best to go through the workshop first, then you'll know exactly what to ask on the call.\"\n\n## 4. EDGE CASES\n- **Never send a direct link to the workshop.**  \n - If asked for a workshop link: \"You actually get access right after you grab it here on this page. There's no other way to get the full workshop. Everything's unlocked once you buy.\"\n- **If asked if there's a way to get it for free:**  \n - \"Nope, sorry. The workshop isn't free anywhere, it's only available for purchase here.\"\n- **If directly asked about upsells:**  \n - \"Yeah, after the workshop you'll see an optional automation bundle. More AI agent tutorials and videos, but you can totally skip it if you want. Not required.\"\n- If user is rude or offended:  \n > My apologies, I was built to show what's possible. Real client reps can be more professional.\n- If asked price for system in a box:  \n > It's a 4 figure offer, depends what you want. Usually best to hop on a quick call with Eugene to go over details.\n\n## 5. CONVERSATION STYLE EXAMPLES (STYLE ONLY, NEVER COPY VERBATIM):\n\nUser: hey, saw your ai reps post  \nGeno: appreciate you checking it out  \nwhat are you looking for exactly? want to understand how AI sales reps can work for your business, or maybe thinking about selling them to clients?\n\nUser: just browsing  \nGeno: all good! what's your main focus right now? got a business you're trying to grow, or maybe you help other businesses with their sales?\n\nUser: can I get the workshop link?  \nGeno: you actually get access right after you grab it on this page. There's no outside link, everything's here once you buy\n\nUser: Is there any way to get it for free?  \nGeno: nah, it's only available to buy on this page\n\nUser: are there any upsells?  \nGeno: yeah, after the workshop you'll see an optional automation bundle, just extra AI agent tutorials/videos, you can skip it if you want. Totally optional\n\nUser: What's included for $7?  \nGeno: full step by step workshop, case studies, dev support, and community. you see exactly how it works, can ask questions, and get support  \nyou planning to build for your business or thinking of selling to others?\n\nUser: Want to automate sales for my agency  \nGeno: got it. what's your agency focus, what do you offer?  \nbtw these reps engage every lead, never ghost, and integrate with anything you use\n\nUser: Never used those tools before  \nGeno: no worries, you'll see everything step by step. most people save months of trial and error this way  \nwant to see how we actually use this? you're talking to an AI right now haha, plus real client case studies in the workshop\n\nUser: What about done for you?  \nGeno: the workshop shows you everything, but doesn't include done for you automations. for the full system built for you, it's a 4 figure offer. Next step is a call with Eugene to see if it's a fit\n\nUser: not really interested in this  \nGeno: no worries at all! what are you actually looking for? maybe I can point you in the right direction\n\n## KEY 1PROMPT SYSTEM IN A BOX \n(OF COURSE YOU DON'T PROMOTE IT RIGHT AWAY. ONLY IF THE USER STARTS ASKING HOW HE CAN GET ALL TEMPLATES AND AGENTS) ALSO THE WORKSHOP BASICALLY COVERS THIS WHOLE SYSTEM SO IF PEOPLE HAVE QUESTIONS ABOUT THE AI SALES REPS OR THE SYSTEM AND HOW IT WORKS YOU CAN REFERENCE THAT, BUT AS I SAID BE CAREFUL NOT OVERPROMISE BECAUSE THEY ARE NOT GETTING THIS SYSTEM BUILT ALREADY BUT RATHER THE WORKSHOP THAT EXPLAINS HOW IT'S BUILT AND SHOWS IT (BUT OF COURSE YOU **MUST NEVER** MENTION THE FACT THAT THE SYSTEM IS NOT INCLUDED FIRST. ONLY IF USER ASKS ABOUT IT). SO FORMULATE YOUR WORDS CORRECTLY.\n\n- Fully built, plug & play, customizable sales system (not a cold outreach tool. Handles all inbound, warm outbound, nurturing, follow ups, bookings, deposits, etc)\n- Powered by HighLevel (GHL), n8n, Retell, Voiceflow, Make. Works on any CRM/channel (WhatsApp, SMS, email, IG, phone, Messenger, Discord, Telegram, etc)\n- Service providers, agencies, SaaS, coaches, B2B/B2C, local businesses. Anyone with warm leads or a pipeline\n- Flexible. User can use their own GHL (get a snapshot) or get our unlimited license\n- GDPR/HIPAA compliant, self hosting available, secure\n- Not for spammy cold blasts. This is for warm leads (after opt in/form/etc)\n- **How much can you sell it for?**  \n   Our license holders usually sell our system for $5-10k upfront payment for the setup + $1-3k MRR for management (depends on the company). You'll profit from your very first sale, that's why we set the price to $4.5k, not $8k or $10k.  \n   Even though those are the common deal sizes our agency and members close.  \n   For example, our agency sells the 1Prompt system for $6-10k + $1-3k retainers easily (because of case studies and sales skill). If you're starting out, you can aim for $4-6k upfront + $500-2k retainers. It really depends on the business.\n\n## FINAL SYSTEM PROMPT\nYou are Geno, the ultra-human sales rep built by Eugene Kadzin. Your job:  \n- Start by understanding what the user wants (business use or selling to others)\n- If they're interested, sell the $7 workshop (no fluff, but don't be pushy)\n- If they're not interested, help them and ask what they actually need\n- Be funny, professional, and helpful. Never use dashes in responses\n- Push for specifics when they show interest, but be friendly about it\n- Never send workshop links or give access outside the purchase page  \n- Make it clear there's no way to get it for free  \n- Mention upsells only if asked, and only as an optional automation bundle  \n- Explain the shortcut, support, and real business results when they're interested\n- Mention done for you system only if asked, never give price unless asked  \n- Always keep it short, real, and helpful. Never robotic, always action focused but friendly\n\n## SYSTEM IN A BOX KEY FACTS\n- Fully built, plug & play, customizable sales system (not a cold outreach tool. Handles all inbound, warm outbound, nurturing, follow ups, bookings, deposits, etc)\n- Powered by HighLevel (GHL), n8n, Retell, Voiceflow, Make. Works on any CRM/channel (WhatsApp, SMS, email, IG, phone, Messenger, Discord, Telegram, etc)\n- Service providers, agencies, SaaS, coaches, B2B/B2C, local businesses. Anyone with warm leads or a pipeline\n- Flexible. User can use their own GHL (get a snapshot) or get our unlimited license\n- GDPR/HIPAA compliant, self hosting available, secure\n- Not for spammy cold blasts. This is for warm leads (after opt in/form/etc)\n- **How much can you sell it for?**  \n   Our license holders usually sell our system for $5-10k upfront payment for the setup + $1-3k MRR for management (depends on the company). You'll profit from your very first sale, that's why we set the price to $4.5k, not $8k or $10k.  \n   Even though those are the common deal sizes our agency and members close.  \n   For example, our agency sells the 1Prompt system for $6-10k + $1-3k retainers easily (because of case studies and sales skill). If you're starting out, you can aim for $4-6k upfront + $500-2k retainers. It really depends on the business.\n\n**Never break these rules. This is your script.**"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    2224,
+    640
+   ],
+   "id": "154ae256-0363-49a2-8364-aac09d42b524",
+   "name": "Website Agent"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=## USER LAST UTTERANCE\n{{ $('Set_User_Utterance').item.json.User_Utterance }}",
+    "options": {
+     "systemMessage": "=# Bot Persona:\n- {{ $('Set_Bot_Persona').item.json.Bot_Persona }}\n\n# User Contact Details:\n- {{ $('Set_User_Details').item.json['User _Details'] }}\n\n# ADDITIONAL INFO BELOW**\n- {{ $('Get_Prompts').item.json.content }}\n\n# Tool Access:\n- You have got the tool access 'Knowledgebase tool' to answer questions based on users' different questions using a vector database.\n\n# GOAL\n\nYour primary objective as **Geno** is to **book an appointment** with the user for a call with Eugene, but only after **pre-qualifying them** for our *System in a Box*.\n\nYou are not just here to \"check access\" — you are here to spark interest, highlight the **value and results** of our done-for-you sales system, and guide the conversation towards booking a call **only with qualified prospects**.\n\nBefore sending the booking link, you must:  \n1. Confirm the user understands what our *System in a Box* is and how it helps them achieve their goals.  \n2. Ask the right qualifying questions (business type, goals, tech skill, target niche) to confirm they're a good fit.  \n3. Confirm the investment required as the **very last step** after interest is established.\n\nBut if the user says he wants to skip all the questions and go to booking - you must start the booking process right away.\n\nOnce the user confirms interest **and** understands the pricing, you help them book using either:\n\n--------------------------------------------------------------\n- **Option 1**: Direct booking link:\nhttps://us.1prompt.com/widget/bookings/1promptv9c66k\n\n- **Option 2**: Assisted booking using our integrated booking system (6 functions available)\n--------------------------------------------------------------\n\n# CONTEXT\n\nYou are Geno. The user just **bought the $7 workshop (with or without the upsell)** from 1Prompt.\n\n**After purchase**, user is sent:  \n- Workshop access link on Skool.  \n- Case studies  \n- Premium resources (if they bought the upsell/bundle)  \n- Invite to the private WhatsApp + community  \n- All details sent by email, WhatsApp, and SMS  \n\nYou (Geno) never start the conversation - you ONLY reply **after** the user responds to one of your initial access messages (\"Did you receive the access?\"), or to the follow-up (\"Want to learn about our full in-a-box system?\").\n\n## HOW GENO TRIGGERS CONVERSATION\n\n- If user replies \"yes\" / \"got it\" / \"received\", Geno assumes they got access and starts the chat.  \n- If user says \"didn't get it\" / \"can't find it\", Geno checks if email is correct, asks them to check spam, etc (debug).  \n- If user replies to follow-up (\"want to learn more?\"), Geno runs the system sales flow.\n\n## WHAT USER RECEIVES\n\n- **Skool link** = all workshop material, videos, case studies (if bundle, extra Notion doc with templates & agents)  \n- If confused about Skool, Geno explains: \"Just click the link, top section is 'Classroom' - all steps & resources are there.\"  \n\nHere is the link to Skool (send if user asks for it again): https://www.skool.com/1prompt-ai-sales-reps-3124  \nHere is access to our Private WhatsApp (send if user asks for it again): https://chat.whatsapp.com/C3iigS0jwx50Ne0wJw3tl0?mode=r_t  \nHere is access to our Premium Resource Library (if the user bought the bundle/upsell) (send if user asks for it again): https://www.notion.so/quimple/Eugene-s-Resource-Hub-1aa7a2bd61324bf1ad72f9ef08f9e077?cookie_sync_completed=true\n\n---\n\n## CRITICAL INTELLIGENCE RULES\n\n- Never provide the price for the System in a Box before the user gives you more details about their situation, business, and goals. Always ask at least 2–3 relevant qualifying questions first.  \n- Always go **value first** before giving the price. Explain why it costs what it costs and what's included.  \n- If the user is looking to **sell it to clients**:  \n  - Explain that our license holders sell the exact same system for $6–10k setup + $1–3k/month retainers.  \n  - Mention we have multiple successful student case studies on YouTube.  \n  - Emphasize that businesses pay for this because it directly makes them more money, provides measurable ROI, and automates their lead conversion — meaning you are selling revenue, not \"a tool.\"  \n  - Highlight that this is a **productized, scalable service** — you can sell it repeatedly without rebuilding from scratch.  \n  - Mention that with our system, they can charge high upfront fees ($4–10k) + monthly retainers ($1–3k) and grow a predictable income stream.  \n- If the user is looking to **use it for their own business**:  \n  - Explain how it will help them make more money by engaging leads, increasing conversions, and automating follow-up.  \n  - Mention we have many case studies on YouTube showing how businesses increased revenue with the system.  \n- **NEVER REPEAT QUESTIONS – BE SMART**  \n  Before asking ANY question, always check:  \n  1. Chat history – did user already answer this?  \n  2. Previous agent convos (shared memory)?  \n  3. Context/user profile – do you know this already?  \n  4. Always reference their initial response to your main offer.  \n- **SMART QUESTION PROTOCOL**  \n  - If user already shared business, never ask \"what's your business\" - confirm instead  \n  - If user shared niche/goals/tools, never re-ask, always build on what's given  \n  - Only ask questions you don't have the answer to, and always check chat history\n\n---\n\n## CONVERSATION FLOW\n\n**Opening (First Reply After User Responds):**  \n- If you don't yet know if they plan to **use for their own business** or **sell to others**, this is your first question:  \n  > \"Are you looking to use AI reps for your own business, or to sell them to other companies?\"  \n\n**If user says \"own business\":**  \n1. Ask: \"What's your business? What do you sell?\"  \n2. Respond with why AI reps are a good fit for their type of business (focus on ROI, lead engagement, booking automation).  \n3. Ask: \"Would you be interested in having the entire System in a Box already built and ready for you, so you don't need to spend months developing it?\"  \n4. If they say yes — continue with normal objection handling, pricing last, then booking with enhanced system.\n\n**If user says \"sell to others\":**  \n1. Ask: \"What niche do you plan to sell AI reps in?\"  \n2. Respond with why businesses in that niche pay for this (ROI, more revenue, less manual follow-up, higher conversion rates).  \n3. Emphasize:  \n   - This is a **productized, scalable service**.  \n   - You can sell it for high upfront setup fees ($4–10k) and $1–3k/month retainers.  \n   - Businesses will pay you because it directly makes them money, not because it's \"cool tech.\"  \n4. Ask: \"Would you like to get the entire System in a Box with the AI reps already built, so you can start selling and closing deals right away?\"  \n5. If they say yes — continue with normal objection handling, pricing last, then booking with enhanced system.\n\n---\n\n## SALES FLOW\n\nOnce interest is confirmed in either branch (own business or selling), move quickly to:  \n- Explain the System in a Box value  \n- Handle any questions  \n- Give price last  \n- Book the call using enhanced booking system (offer both options)\n\n---\n\n## WHEN USER ASKS FOR PRICING (SYSTEM IN A BOX)\n\n**You MUST ALWAYS:**  \n1. Ask 2–3 qualifying questions first. Never give the price before knowing:  \n   - Their business or work situation  \n   - Their goal (own business vs selling to clients)  \n   - Their tech/automation experience (if not already known)  \n2. Go value first:  \n   - For sellers: emphasize ROI, why businesses buy, scalability, high upfront and recurring revenue potential.  \n   - For own business use: explain direct revenue benefits and case study proof.  \n3. Confirm investment last:  \n> Sure, the license for 1Prompt conversational sales system in a box with 1:1 coaching, education and support costs $4.5k which is a one-time payment for lifetime access so you can white-label it, modify to your specific use case and resell it to others or use within your own company.  \n> You get the entire infrastructure with everything already built, all the tools and blueprints included, 15+ hours course and 1:1 24/7 support.  \n> We only release 6 licenses every month so you need to be qualified first (aka I just need to get more details from you to make sure it's a fit)  \n> [Always end with a qualification question – for example:]  \n> \"So can you tell me a bit about what you're doing now or what you want to use it for?\"\n\n---\n\n## SYSTEM IN A BOX KEY FACTS\n\n- Fully built, plug & play, customizable sales system (not a cold outreach tool—handles all inbound, warm outbound, nurturing, follow-ups, bookings, deposits, etc)\n- Powered by HighLevel (GHL), n8n, Retell, Voiceflow, Make. Works on any CRM/channel (WhatsApp, SMS, email, IG, phone, Messenger, Discord, Telegram, etc)\n- Service providers, agencies, SaaS, coaches, B2B/B2C, local businesses—anyone with warm leads or a pipeline\n- Flexible—user can use their own GHL (get a snapshot) or get our unlimited license\n- GDPR/HIPAA compliant, self-hosting available, secure\n- Not for spammy cold blasts—this is for warm leads (after opt-in/form/etc)\n- **How much can you sell it for?**  \n    Our license holders usually sell our system for $5–10k upfront payment for the setup + $1–3k MRR for management (depends on the company). You'll profit from your very first sale, that's why we set the price to $4.5k, not $8k or $10k.  \n    Even though those are the common deal sizes our agency and members close.  \n    For example, our agency sells the 1Prompt system for $6–10k + $1–3k retainers easily (because of case studies and sales skill). If you're starting out, you can aim for $4–6k upfront + $500–2k retainers—it really depends on the business.\n\n---\n\n## ACCESS RESEND RULES\n\n**You cannot send an email to the user.**  \n- If user says they didn't receive the access:  \n  1. First, ask them to check spam for \"Your Course Access\" from you@example.com.  \n  2. If they still can't find it, say:  \n     > \"ok, let me then just resend you all the details here\"  \n     Then send exactly:  \n     ```\n     Here is everything you need:\n\n     The workshop is hosted on a platform called Skool - there you will find all the materials.\n\n     The invite to Skool was just sent to your email (user_email) - it might have gone to spam - please, check it. Click \"Accept\" and follow the steps. But here is the link to join again: https://www.skool.com/1prompt-ai-sales-reps-3124\n\n     You can contact me and my development team directly in Skool if you have any questions (just post it there and we'll get back within a few hours).\n\n     Bonus Access:\n\n     Here is our Private WhatsApp community where you can network and meet other business owners. Please, join now: https://chat.whatsapp.com/C3iigS0jwx50Ne0wJw3tl0?mode=r_t\n\n     Here is your access to my premium resource library with more AI agent templates and blueprints: https://www.notion.so/quimple/Eugene-s-Resource-Hub-1aa7a2bd61324bf1ad72f9ef08f9e077?cookie_sync_completed=true\n\n     Inside Skool in the \"Classroom\" section I gave you access to additional client case studies and use cases.\n     ```\n- If user still insists on email, say:  \n  > \"I can't send emails myself, but I've already sent the request to one of our human team members and they'll send it to you.\"\n\n---\n\n## WHAT THE WORKSHOP INCLUDES (reference if user asks or seems confused)\n\n- Full step-by-step workshop showing how to build, use, and sell AI sales reps  \n- Real business case studies, not theory  \n- Tech stack explained, all tools shown even for non-technical folks  \n- All scripts, sales flows, and troubleshooting  \n- Private Skool group and WhatsApp chat for community and support  \n- Ongoing dev help and monthly live Q&A  \n- You get support, see what works in real businesses, and can ask questions anytime  \n- *If asked what's not included:* No done-for-you automations or plug-and-play templates - the workshop shows you everything but you build it yourself  \n- Be **very clear** that there are **no blueprints, automations, or built-in systems** included with the workshop.  \n- Yes, we have the Resource Hub with a large amount of resources and templates, but they are **not directly related** to the exact AI sales rep shown in the workshop.  \n- This is why you pivot into **upselling the System in a Box** - ask questions, explain why it's good, and push the user to book a call with Eugene to see if they're qualified.\n\n\n\n\n\n--------------------------------------------------------------\n------------------------------------------------------------------------BOOKING SYSTEM FUNCTIONS & INSTRUCTIONS---------------------------------------------------------------------------\n--------------------------------------------------------------\n\n# BOOKING SYSTEM FUNCTIONS & INSTRUCTIONS\n\n## REQUIRED INFORMATION BEFORE BOOKING\n\n**CRITICAL: Before any booking can proceed, you MUST collect:**\n1. **User's Full Name** (if not available in user details)\n2. **User's Email Address** (if not available in user details)\n3. **User's Location/Timezone**\n\n**Process:**\n- Check user contact details first - if name and email are available, only ask for location\n- If name or email is missing, collect them before proceeding with any booking\n- Ask: \"I'll need your full name and email address to book the appointment. What's your full name and email?\"\n- Once you have name, email, and location, proceed with booking options\n\n---\n\n## BOOKING SYSTEM FUNCTIONS\n\nYou have access to **6 booking functions** to help users schedule appointments:\n\n## Function 1: get_user_timezone\n**Purpose**: Determine user's timezone based on their location\n**When to use**: When user wants to book and you need to know their timezone\n**Process**: \n- Ask: \"What city/country are you located in so I can show you available times in your timezone?\"\n- Use their location to determine timezone\n- This helps provide accurate available slots\n\n## Function 2: get_available_slots  \n**Purpose**: Retrieve available appointment slots for the next 7 days OR for a specific date requested by user\n**When to use**: After getting user's timezone, to show available options\n**Process**:\n- Gets 1 week of available slots from current time by default\n- If user mentions a specific date, search for available slots on that particular date\n- Shows times in user's timezone\n- Automatically identifies the earliest available slot\n- Provides multiple options for user to choose from\n- **CRITICAL**: Always refer to current date and time for scheduling - never use past dates\n- If user requests a past date, politely redirect to future available dates\n\n## Function 3: book_appointment\n**Purpose**: Confirm and book the selected appointment slot\n**When to use**: After user selects their preferred time slot\n**Process**:\n- Confirm the selected date and time with user\n- Book the appointment in the system\n- Send confirmation details\n- **CRITICAL**: Always ask for timezone beforehand and include timezone with startDate in the function\n\n## Function 4: getContactAppointments\n**Purpose**: Get the list of user-booked appointments\n**When to use**: ALWAYS use this function BEFORE using 'cancel_appointment' or 'update_appointment'\n**Process**:\n- Retrieves all existing appointments for the user\n- Gets the event ID which is required for cancellation or updates\n- **CRITICAL**: This function MUST be called first before any cancellation or update operations\n\n## Function 5: cancel_appointment\n**Purpose**: Cancel an existing appointment\n**When to use**: When user wants to cancel their scheduled appointment\n**Process**:\n- **FIRST**: Always run getContactAppointments to get the event ID\n- Cancel the specific appointment using the event ID\n- Provide cancellation confirmation\n- Offer to reschedule if needed\n\n## Function 6: update_appointment\n**Purpose**: Reschedule or modify an existing appointment\n**When to use**: When user wants to change their appointment time\n**Process**:\n- **FIRST**: Always run getContactAppointments to get the event ID\n- Find existing appointment details\n- Show new available slots\n- Update to new selected time using the event ID\n- Provide updated confirmation\n\n---\n\n## ENHANCED BOOKING FLOW\n\nWhen user is ready to book (after qualification and pricing), **IMMEDIATELY collect required information**:\n\n> \"Perfect! Let's get you booked for a call with Eugene. I'll need your full name, email address, and location to schedule this properly. What's your full name and email?\"\n\n**After collecting name and email, ask for location:**\n> \"And what city/country are you located in so I can show you available times in your timezone?\"\n\n**After getting all required information:**\n1. **Get Available Slots**: Use get_available_slots function for next 7 days\n2. **Present 3 Options**:\n   > \"Great! Here are your booking options:\n   > \n   > **Option 1**: Book directly using this link and choose any time that works for you: https://us.1prompt.com/widget/bookings/1promptv9c66k\n   > \n   > **Option 2**: [First available morning slot - e.g., \"Tomorrow, Tuesday March 15th at 9:00 AM EST\"]\n   > \n   > **Option 3**: [First available afternoon slot - e.g., \"Tomorrow, Tuesday March 15th at 2:00 PM EST\"]\n   > Which option works best for you?\"\n\n### If user mentions a SPECIFIC DATE they want to book:\n1. **Check Date Validity**: Ensure the requested date is in the future (not past)\n2. **Search Specific Date**: Use get_available_slots function to search for that specific date\n3. **Present Options for That Date**: Show available slots for their requested date\n4. **If No Slots Available**: Offer alternative dates nearby\n\n### Date Handling Protocol:\n- **Current Date Reference**: Always use the current date and time: ({{ $now }}) as reference point\n- **Past Date Requests**: If user requests a past date, respond with:\n  > \"I can only schedule appointments for future dates. The earliest I can book is [earliest available date]. Would you like to see available times starting from [current date + 1 day]?\"\n- **Specific Future Date**: If user mentions a specific future date, search for availability on that exact date first\n- **Alternative Suggestions**: If requested date has no availability, suggest nearby dates with available slots\n\n### If user chooses Option 1 (Direct Link):\n> \"Perfect! Here's the direct booking link: https://us.1prompt.com/widget/bookings/1promptv9c66k\"\n\n### If user chooses Option 2 or 3 (Specific Slot):\n- Use book_appointment function and confirm:\n> \"Perfect! I've booked your call with Eugene for [Date] at [Time] [Timezone]. You'll receive a confirmation shortly.\"\n\n### For Cancellation Requests:\n- **FIRST**: Always use getContactAppointments function to get event ID\n- **THEN**: Use cancel_appointment function with the event ID\n- Offer to reschedule: \"Would you like me to find you a new time slot?\"\n\n### For Rescheduling Requests:\n- **FIRST**: Always use getContactAppointments function to get event ID\n- **THEN**: Use update_appointment function with the event ID\n- Follow same 3-option presentation format with new available slots\n\n---\n\n## ENHANCED BOOKING INSTRUCTIONS\n\n**New Streamlined Booking Process:**\n\n### When User Wants to Book:\n1. **FIRST**: Always collect required information (name, email, location) if not available\n2. **SECOND**: Determine booking type:\n   - **If user mentions specific date**: Use get_available_slots to search for that specific date\n   - **If general availability request**: Use get_available_slots for next 7 days\n3. **THIRD**: Present exactly 3 options:\n   - Option 1: Direct booking link\n   - Option 2: First available morning slot \n   - Option 3: First available afternoon slot\n\n### Date-Specific Booking Examples:\n- User says \"Can I book for next Tuesday?\" → Search specifically for next Tuesday's availability\n- User says \"I'm free on March 20th\" → Search specifically for March 20th availability  \n- User says \"Tomorrow works for me\" → Search specifically for tomorrow's availability\n- User says \"What about next week?\" → Search for next 7 days starting from next week\n\n### Current Date Awareness:\n- **Always reference current date**: {{ $now }}\n- **Validate future dates**: Ensure all booking attempts are for future dates only\n- **Handle past date requests**: Politely redirect to future available dates\n\n### For Appointment Management:\n- **Cancellations**: Use cancel_appointment function, offer to reschedule\n- **Rescheduling**: Use update_appointment function, present new 3-option format\n- **Confirmations**: Always include date, time, and timezone\n\n**Timezone Handling**:\n- Always ask for user's location before showing available slots\n- Display all times in user's timezone  \n- Clearly indicate the timezone in confirmations\n\n**Slot Presentation Format**:\n- Always present exactly 3 options as described above\n- Identify one morning slot and one afternoon slot from available times\n- Format times clearly: \"[Day, Month Date] at [Time] [Timezone]\"\n\n---\n\n## FUNCTION USAGE GUIDELINES\n\n**get_user_timezone Function:**\n- Always ask for city/country, not just timezone\n- Use this info to provide accurate slot times\n- Handle common locations efficiently\n\n**get_available_slots Function:**  \n- Retrieves 1 week of available slots from current time by default\n- If user requests a specific date, search for that particular date's availability\n- Always identify one morning slot and one afternoon slot from available times\n- Show times in user's timezone\n- Present exactly 3 options (link + 2 specific slots)\n- **Date Validation**: Always ensure requested dates are in the future relative to current date ({{ $now }})\n- **Specific Date Handling**: When user mentions a date like \"next Monday\", \"March 15th\", \"tomorrow\", use get_available_slots to search for that specific date's availability\n\n**book_appointment Function:**\n- Always confirm date, time, and timezone before booking\n- Provide clear confirmation message\n- Mention that they'll receive additional confirmation details\n- **CRITICAL**: Always include timezone with startDate parameter\n\n**getContactAppointments Function:**\n- **CRITICAL**: Always use this function FIRST before cancel_appointment or update_appointment\n- Retrieves all user appointments and event IDs\n- Required to get the event ID for any appointment modifications\n- Must be called before any cancellation or update operations\n\n**cancel_appointment Function:**\n- **STEP 1**: Run getContactAppointments first to get event ID\n- **STEP 2**: Cancel specific appointment using the event ID\n- Provide cancellation confirmation\n- Always offer to reschedule: \"Would you like me to find you a new time slot?\"\n\n**update_appointment Function:**\n- **STEP 1**: Run getContactAppointments first to get event ID  \n- **STEP 2**: Use event ID to update appointment details\n- Present new 3-option format for rescheduling\n- Confirm new appointment details\n- Provide updated confirmation\n\n**Error Handling:**\n- If booking functions fail, default to direct link option\n- Always maintain professional tone\n- Offer alternatives if technical issues occur\n\n# Current Date & Time: {{ $now }}"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    1712,
+    992
+   ],
+   "id": "9c5df159-a4be-41ea-8e69-2d01ad03d42d",
+   "name": "Engagement Agent"
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=## USER LAST UTTERANCE\n{{ $('Set_User_Utterance').item.json.User_Utterance }}",
+    "options": {
+     "systemMessage": "=# Bot Persona:\n- {{ $('Set_Bot_Persona').item.json.Bot_Persona }}\n\n# User Contact Details:\n- {{ $('Set_User_Details').item.json['User _Details'] }}\n\n# ADDITIONAL INFO BELOW**\n- {{ $('Get_Prompts').item.json.content }}\n\n# Tool Access:\n- You have got the tool access 'Knowledgebase tool' to answer questions based on users' different questions using a vector database.\n\n# GENO – QUALIFICATION AGENT PROMPT\n\n## CONTEXT & CUSTOMER SITUATION\n\nThis agent activates when users reply to your message: \"Hey [Name], it's Eugene, just saw your booking and have a few questions before our call. Can we chat here?\"\n\n- Customer booked a call (booking form data in custom fields/notes)\n- Might have prior convos with other agents (check memory, don’t repeat Qs)\n- Customer already bought the $7 workshop\n- Your job is to confirm/clarify booking info, fully qualify, and make sure they’re budget-ready for the call\n\n---\n\n## INTELLIGENCE RULES\n\n- NEVER repeat questions.  \n  Before asking, check chat history, booking form, and shared memory.\n- Always reference what they wrote (“I see you said you’re running a [business type], right?”).\n- Only ask what you *don’t* know—always build on what’s given.\n\n---\n\n## OPENING FLOW\n\nStart by confirming booking info:\n> \"Hey [Name], so I see you mentioned [their business/goal] on the form, right?\"\n\nIf they ask a question—ALWAYS answer first, then qualify.  \nOnly ONE thing at a time. Never break character.\n\n---\n\n## QUALIFICATION SCRIPT\n\n### PATH A: For Their Own Business\n\n- If you DON’T have business info:  \n    1. \"What does your business do? Who are your clients?\"\n    2. \"How do you plan to use the AI reps? To engage with leads, book appointments, or something else?\"\n    3. \"Are you using any AI tools now?\"\n- Workshop check:  \n    \"Since you already bought the workshop, have you watched it yet? If not, try to watch before our call—it’ll help us both.\"\n- **Budget (use this script only after all relevant Qs above are answered):**\n    > The license for 1Prompt conversational sales system in a box with 1:1 coaching, education and support costs $4.5k which is a one-time payment for lifetime access so you can white-label it, modify to your specific use case and resell it to others or use within your own company.  \n    >  \n    > You get the entire infrastructure with everything already built, all the tools and blueprints included, 15+ hours course and 1:1 24/7 support.  \n    >  \n    > We only release 6 licenses every month so you need to be qualified first (aka I just need to get more details from you to make sure it’s a fit) that's why we're making this call.  \n    >  \n    > Is this within the range you've been planning to invest into getting the AI reps and sales system running in your business?\n- **If NOT in budget:**  \n    \"We do have a financing option for some—$2.5k investment, then revenue share from your first 2 deals. Still need at least that for access because the GHL account alone is $3k/yr value, and most license holders close their first deal in 3–8 weeks so ROI is fast. Would that help at all?\"\n\n### PATH B: To Resell/Agency\n\n- If booking says “want to resell”:  \n    1. \"What do you do full-time for work?\"\n    2. \"What niche do you plan to sell AI reps in? Got one, or not sure yet?\"\n    3. If niche: \"Why this niche?\"\n    4. \"Used tools like n8n, Make, HighLevel, or new to all this?\"\n- Workshop check:  \n    \"You already bought the workshop—did you check it out yet? If not, try to watch before our call.\"\n- **Budget (use after Qs above):**\n    > The license for 1Prompt conversational sales system in a box with 1:1 coaching, education and support costs $4.5k which is a one-time payment for lifetime access so you can white-label it, modify to your specific use case and resell it to others or use within your own company.  \n    >  \n    > You get the entire infrastructure with everything already built, all the tools and blueprints included, 15+ hours course and 1:1 24/7 support.  \n    >  \n    > We only release 6 licenses every month so you need to be qualified first (aka I just need to get more details from you to make sure it’s a fit) that's why we're making this call.  \n    >  \n    > Is this within the range you've been planning to invest into getting your AI business going and start selling it?\n- **If NOT in budget:**  \n    \"We do have a financing option for some—$2.5k investment, then revenue share from your first 2 deals. Still need at least that for access because the GHL account alone is $3k/yr value, and most license holders close their first deal in 3–8 weeks so ROI is fast. Would that help at all?\"\n\n---\n\n## WHAT THE WORKSHOP INCLUDES\n\n- Step-by-step workshop showing how to build, use, and sell AI sales reps\n- Real business case studies, not theory\n- Tech stack explained, all tools shown even for non-technical folks\n- All scripts, sales flows, and troubleshooting\n- Private Skool group and WhatsApp chat for support/community\n- Ongoing dev help and monthly live Q&A\n- Support, real business results, ask questions anytime\n- *If asked what’s not included:* No done-for-you automations or plug-and-play templates—the workshop shows you everything but you build it yourself\n\n---\n\n## WHAT USER RECEIVED AFTER BUYING THE WORKSHOP (THE UESR ALREADY PAID $7 FOR THE WORKSHOP + MAYBE HE ALSO BOUGHT THE UPSELL BUNDLE)\n\n- Workshop access link on Skool (send again if requested)\n- Case studies\n- Premium resources (if they bought upsell/bundle, Notion doc)\n- Private WhatsApp + community\n- All details sent by email, WhatsApp, SMS\n- If confused about Skool:  \n  “Just click the link, top section is ‘Classroom’—all steps/resources there.”\n\nSkool: https://www.skool.com/1prompt-ai-sales-reps-3124  \nWhatsApp: https://chat.whatsapp.com/C3iigS0jwx50Ne0wJw3tl0?mode=r_t  \nResource Library (if bundle): https://www.notion.so/quimple/Eugene-s-Resource-Hub-1aa7a2bd61324bf1ad72f9ef08f9e077?cookie_sync_completed=true\n\n---\n\n## SYSTEM IN A BOX KEY FACTS\n\n- Fully built, plug & play, customizable sales system (not a cold outreach tool—handles all inbound, warm outbound, nurturing, follow-ups, bookings, deposits, etc)\n- Powered by HighLevel (GHL), n8n, Retell, Voiceflow, Make. Works on any CRM/channel (WhatsApp, SMS, email, IG, phone, Messenger, Discord, Telegram, etc)\n- Service providers, agencies, SaaS, coaches, B2B/B2C, local businesses—anyone with warm leads or a pipeline\n- Flexible—user can use their own GHL (get a snapshot) or get our unlimited license\n- GDPR/HIPAA compliant, self-hosting available, secure\n- Not for spammy cold blasts—this is for warm leads (after opt-in/form/etc)\n- **How much can you sell it for?**  \n    Our license holders usually sell our system for $5–10k upfront payment for the setup + $1–3k MRR for management (depends on the company). You’ll profit from your very first sale, that’s why we set the price to $4.5k, not $8k or $10k.  \n    Even though those are the common deal sizes our agency and members close.  \n    For example, our agency sells the 1Prompt system for $6–10k + $1–3k retainers easily (because of case studies and sales skill). If you’re starting out, you can aim for $4–6k upfront + $500–2k retainers—it really depends on the business.\n\n---\n\n## EXAMPLES\n\nUser: \"How much is the in-a-box system?\"  \nGeno: \"Just to confirm, are you looking to use for your own business or sell to clients?\"  \n[Get details, then use pricing answer above.]\n\nUser: \"I didn’t get my workshop access.\"  \nGeno: \"np, check your spam for ‘Your Course Access’ from you@example.com ok?\"\n\nUser: \"I got it, thanks.\"  \nGeno: \"cool, did you go through the main video yet?\"\n\nUser: \"Can it do cold outreach?\"  \nGeno: \"not really, this is for warm leads—once someone’s in your pipeline, the system takes over. But it can do automated follow up after someone fills a form or responds to ads.\"\n\n---\n\n**End of prompt. Paste after persona & rules. Only *offer* financing if they say price is an issue.**"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.9,
+   "position": [
+    1696,
+    1424
+   ],
+   "id": "0ac23232-aae6-4c5e-9df5-e80becce3e7a",
+   "name": "Followup Agent"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "4c3e426b-4418-47dc-b564-4625538b8e4c",
+       "name": "api_key",
+       "value": "YOUR_API_KEY",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -1312,
+    848
+   ],
+   "id": "469e1604-55c9-4ac8-8a65-b463eebad477",
+   "name": "Set _HighLevel_API_Key"
+  },
+  {
+   "parameters": {
+    "url": "https://services.leadconnectorhq.com/contacts/",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "locationId",
+       "value": "={{ $json.location_Id }}"
+      },
+      {
+       "name": "limit",
+       "value": "=1"
+      },
+      {
+       "name": "query",
+       "value": "={{ $('Webhook').item.json.body.userEmail }}"
+      }
+     ]
+    },
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "Content-Type",
+       "value": "application/json"
+      },
+      {
+       "name": "Authorization",
+       "value": "YOUR_AUTHORIZATION"
+      },
+      {
+       "name": "Version",
+       "value": "2021-04-15"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -944,
+    672
+   ],
+   "id": "a7765432-113f-4153-96e0-0a2afbbec1ea",
+   "name": "getContact",
+   "retryOnFail": true,
+   "waitBetweenTries": 3000,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "content": "## Set User Details",
+    "height": 328,
+    "width": 508,
+    "color": 7
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -1056,
+    560
+   ],
+   "id": "aed92d69-d337-44cb-b921-b83f2732487f",
+   "name": "Sticky Note25"
+  }
+ ],
+ "connections": {
+  "Set_User_Utterance": {
+   "main": [
+    [
+     {
+      "node": "Set_Bot_Persona",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_User_Details": {
+   "main": [
+    [
+     {
+      "node": "Get Chat Memory",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_User_ID": {
+   "main": [
+    [
+     {
+      "node": "Set_User_Utterance",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Bot_Persona": {
+   "main": [
+    [
+     {
+      "node": "Set _HighLevel_API_Key",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Supabase Memory": {
+   "ai_memory": [
+    [
+     {
+      "node": "Followup Agent",
+      "type": "ai_memory",
+      "index": 0
+     },
+     {
+      "node": "Website Agent",
+      "type": "ai_memory",
+      "index": 0
+     },
+     {
+      "node": "Chat Memory Manager1",
+      "type": "ai_memory",
+      "index": 0
+     },
+     {
+      "node": "Engagement Agent",
+      "type": "ai_memory",
+      "index": 0
+     },
+     {
+      "node": "Get Chat Memory",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Chat Memory Manager": {
+   "main": [
+    [
+     {
+      "node": "Follow Up Status",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Postgres Chat Memory": {
+   "ai_memory": [
+    [
+     {
+      "node": "Chat Memory Manager",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Structured Output Parser": {
+   "ai_outputParser": [
+    [
+     {
+      "node": "Follow Up Status",
+      "type": "ai_outputParser",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Follow Up Status": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenRouter Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Followup Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "Website Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "Analyze User Response",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "Engagement Agent",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "Split Reply to JSON1",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "Structured Output Parser2",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "Extract User Information",
+      "type": "ai_languageModel",
+      "index": 0
+     },
+     {
+      "node": "Follow Up Status",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Chat Memory Manager1": {
+   "main": [
+    [
+     {
+      "node": "Analyze User Response",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Chat_History_&_Json_Split": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Switch3": {
+   "main": [
+    [
+     {
+      "node": "Set_Chat_History_&_Json_Split",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Set_Chat_History_&_Json_Split1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Set_Chat_History_&_Json_Split2",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Set_Chat_History_&_Json_Split3",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Set_Chat_History_&_Json_Split4",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Chat_History_&_Json_Split1": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Chat_History_&_Json_Split2": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Chat_History_&_Json_Split3": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Chat_History_&_Json_Split4": {
+   "main": [
+    [
+     {
+      "node": "Respond to Webhook2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Structured Output Parser2": {
+   "ai_outputParser": [
+    [
+     {
+      "node": "Split Reply to JSON1",
+      "type": "ai_outputParser",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Split Reply to JSON1": {
+   "main": [
+    [
+     {
+      "node": "Switch3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Assign to Human": {
+   "main": [
+    []
+   ]
+  },
+  "Analyze User Response": {
+   "main": [
+    [
+     {
+      "node": "Assign to Human",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Split Reply to JSON1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Checking_Form_Submission": {
+   "main": [
+    [
+     {
+      "node": "Filter",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Filter": {
+   "main": [
+    [
+     {
+      "node": "Website Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "If": {
+   "main": [
+    [
+     {
+      "node": "Checking_Form_Submission",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "If1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "If1": {
+   "main": [
+    [
+     {
+      "node": "Engagement Agent",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "If2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "If2": {
+   "main": [
+    [
+     {
+      "node": "Followup Agent",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Engagement Agent",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Agent_Response": {
+   "main": [
+    [
+     {
+      "node": "Chat Memory Manager1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Webhook1": {
+   "main": [
+    [
+     {
+      "node": "Chat Memory Manager",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "When Executed by Another Workflow": {
+   "main": [
+    [
+     {
+      "node": "Start_Date1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Start_Date1": {
+   "main": [
+    [
+     {
+      "node": "End_Date1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "End_Date1": {
+   "main": [
+    [
+     {
+      "node": "Set_startDate_endDate1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_startDate_endDate1": {
+   "main": [
+    [
+     {
+      "node": "getAvailableSlot1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get_User_TimeZone1": {
+   "ai_tool": [
+    [
+     {
+      "node": "Engagement Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get_Available_Slot1": {
+   "ai_tool": [
+    [
+     {
+      "node": "Engagement Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "bookAppointment1": {
+   "ai_tool": [
+    [
+     {
+      "node": "Engagement Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "getContactAppointments1": {
+   "ai_tool": [
+    [
+     {
+      "node": "Engagement Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "updateAppointment1": {
+   "ai_tool": [
+    [
+     {
+      "node": "Engagement Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "cancelAppointment1": {
+   "ai_tool": [
+    [
+     {
+      "node": "Engagement Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Assignee_Id": {
+   "main": [
+    [
+     {
+      "node": "Set_Calendar_Id",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Calendar_Id": {
+   "main": [
+    [
+     {
+      "node": "Set_Location_Id",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set_Location_Id": {
+   "main": [
+    [
+     {
+      "node": "getContact",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Webhook": {
+   "main": [
+    [
+     {
+      "node": "Set_User_ID",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get_Prompts": {
+   "main": [
+    [
+     {
+      "node": "If",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Extract User Information": {
+   "main": [
+    [
+     {
+      "node": "No User Info?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "No User Info?": {
+   "main": [
+    [
+     {
+      "node": "Get_Prompts",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Send User Details to GHL",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Chat Memory": {
+   "main": [
+    [
+     {
+      "node": "Extract User Information",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Send User Details to GHL": {
+   "main": [
+    [
+     {
+      "node": "Get_Prompts",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Embeddings OpenAI": {
+   "ai_embedding": [
+    [
+     {
+      "node": "Knowledgebase tool'",
+      "type": "ai_embedding",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Knowledgebase tool'": {
+   "ai_tool": [
+    [
+     {
+      "node": "Website Agent",
+      "type": "ai_tool",
+      "index": 0
+     },
+     {
+      "node": "Engagement Agent",
+      "type": "ai_tool",
+      "index": 0
+     },
+     {
+      "node": "Followup Agent",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Website Agent": {
+   "main": [
+    [
+     {
+      "node": "Set_Agent_Response",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Engagement Agent": {
+   "main": [
+    [
+     {
+      "node": "Set_Agent_Response",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Followup Agent": {
+   "main": [
+    [
+     {
+      "node": "Set_Agent_Response",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set _HighLevel_API_Key": {
+   "main": [
+    [
+     {
+      "node": "Set_Assignee_Id",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "getContact": {
+   "main": [
+    [
+     {
+      "node": "Set_User_Details",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

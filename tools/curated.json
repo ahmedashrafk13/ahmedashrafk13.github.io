@@ -1,0 +1,711 @@
+[
+ {
+  "own": true,
+  "featured": true,
+  "download": true,
+  "file": "Text Engine (1).json",
+  "title": "Text Engine: Multi-Agent AI Sales Rep for GoHighLevel",
+  "cat": "Sales & CRM",
+  "desc": "Every SMS, WhatsApp or DM from GoHighLevel hits one webhook. A router picks the Website, Engagement or Follow-up agent, loads the persona from Supabase, keeps Postgres memory, books, moves or cancels on the GHL calendar, writes extracted lead data back to the contact and hands off to a human when needed."
+ },
+ {
+  "own": true,
+  "featured": true,
+  "download": true,
+  "file": "VnbfsX7iBl4 - 1.json",
+  "title": "Omnichannel Sales Agent with MCP Sub-Agents",
+  "cat": "Agents & MCP",
+  "desc": "One sales brain for Facebook Messenger, Instagram DMs, WhatsApp and web chat. A main agent delegates to Calendar and CRM sub-agents, calls MCP tools, retrieves sales playbooks from a Supabase vector store and logs every lead to Airtable."
+ },
+ {
+  "own": true,
+  "featured": true,
+  "download": true,
+  "file": "Inbound _ Outbound Booking Function.json",
+  "title": "Voice Agent Booking Backend (GHL Calendar)",
+  "cat": "Voice & Phone",
+  "desc": "The tool layer behind inbound and outbound voice agents: free-slot lookup, timezone resolution, contact search or creation, and book, reschedule and cancel endpoints against GoHighLevel calendars, each returning clean JSON the voice model can speak."
+ },
+ {
+  "own": true,
+  "featured": true,
+  "file": "Whatsapp Agent.json",
+  "title": "WhatsApp Voice and Text Executive Assistant",
+  "cat": "Agents & MCP",
+  "desc": "Accepts text or voice notes on WhatsApp, transcribes audio with Deepgram, and runs an agent that reads and sends Gmail, queries Google Sheets and calls sub-workflows. A second agent labels the inbox and every exchange is logged to Sheets."
+ },
+ {
+  "own": true,
+  "featured": true,
+  "file": "Qualifying leads and Outbound Calls.json",
+  "title": "Lead Qualification and Outbound AI Calling",
+  "cat": "Voice & Phone",
+  "desc": "Form intake, field normalisation and de-duplication, a lead ID in Sheets, then a Vapi outbound call. The workflow polls call state with a max-poll timeout, handles dropped calls, writes the AI call summary back and emails on errors."
+ },
+ {
+  "own": true,
+  "file": "Claude AI Agent.json",
+  "title": "MCP Server and Client Agent",
+  "cat": "Agents & MCP",
+  "desc": "Exposes Gmail, Google Calendar, a calculator and a Pinecone knowledge base through an MCP server trigger, and consumes them from a chat agent through an MCP client."
+ },
+ {
+  "own": true,
+  "file": "oU8K3i5KqEc - 1.json",
+  "title": "Speed-to-Lead Research and Call Agent",
+  "cat": "Voice & Phone",
+  "desc": "New form lead triggers website scraping and a Tavily LinkedIn lookup, an agent writes a lead brief, and Vapi places the call within seconds. Records land in Airtable."
+ },
+ {
+  "own": true,
+  "file": "Eleven labs AI Agent.json",
+  "title": "ElevenLabs Voice Receptionist Tools",
+  "cat": "Voice & Phone",
+  "desc": "Webhook tools for an ElevenLabs conversational agent: Pinecone knowledge retrieval, live calendar availability, appointment booking and Sheets logging."
+ },
+ {
+  "own": true,
+  "file": "Resume_Screening.json",
+  "title": "AI Resume Screening Pipeline",
+  "cat": "Ops, HR & Finance",
+  "desc": "Resumes arrive by Gmail in PDF, DOCX or TXT. Files are normalised, stored in Drive, scored by a recruiter agent against the job description and written to a structured Sheet."
+ },
+ {
+  "own": true,
+  "file": "Invoice Agent.json",
+  "title": "Invoice Extraction Agent",
+  "cat": "Ops, HR & Finance",
+  "desc": "New invoice in Drive is extracted, parsed into structured fields by two agents with output parsers, logged to Sheets and confirmed by email."
+ },
+ {
+  "own": true,
+  "file": "Reddit Search Agent.json",
+  "title": "Reddit Demand Monitor",
+  "cat": "Lead Gen & Data",
+  "desc": "Searches Reddit for buying signals, filters noise, runs sentiment and summary chains, and routes the best threads to Slack, Gmail and Sheets."
+ },
+ {
+  "own": true,
+  "file": "Qdrant Vector Agent.json",
+  "title": "Qdrant RAG Agent",
+  "cat": "RAG & Knowledge",
+  "desc": "Token-split ingestion into Qdrant with OpenAI embeddings, plus a chat agent that answers through a vector-store tool."
+ },
+ {
+  "own": true,
+  "file": "Supabase AI Agent.json",
+  "title": "Google Drive to Supabase RAG",
+  "cat": "RAG & Knowledge",
+  "desc": "Indexes Drive documents into Supabase pgvector and answers questions with a retrieval QA chain."
+ },
+ {
+  "own": true,
+  "file": "Firebase Agent.json",
+  "title": "Research Agent with Brave and Firecrawl MCP",
+  "cat": "Agents & MCP",
+  "desc": "Two cooperating agents that discover and execute MCP tools from Brave Search and Firecrawl to research and scrape on demand."
+ },
+ {
+  "own": true,
+  "file": "Sentiment News Agent.json",
+  "title": "Market Sentiment News Digest",
+  "cat": "Marketing & Content",
+  "desc": "Pulls RSS and scraped articles, scores sentiment, writes three summary variants and sends labelled Gmail digests."
+ },
+ {
+  "own": true,
+  "file": "LinkedIn Outreach.json",
+  "title": "LinkedIn Outreach Writer",
+  "cat": "Lead Gen & Data",
+  "desc": "Chat-driven prospect list: pulls contacts, writes personalised messages with structured output, sends by Gmail and logs every touch in Sheets."
+ },
+ {
+  "own": true,
+  "file": "Customer feedback Agent.json",
+  "title": "Customer Feedback Router",
+  "cat": "Support & Chat",
+  "desc": "Classifies form feedback as compliment, complaint or feature request with a Groq agent, stores it in Airtable and alerts the right team on Slack or Gmail."
+ },
+ {
+  "own": true,
+  "file": "LinkedIn Post Bot.json",
+  "title": "LinkedIn Post Generator and Publisher",
+  "cat": "Marketing & Content",
+  "desc": "Topic in, researched post out: SerpAPI research, structured drafting, image generation and direct publishing to LinkedIn."
+ },
+ {
+  "own": true,
+  "file": "quran_videos_maker_workflow.json",
+  "title": "Automated Recitation Video Renderer",
+  "cat": "Marketing & Content",
+  "desc": "Fetches verse text, reciter and translation audio from public APIs, computes timings, generates an FFmpeg command and renders a captioned video end to end."
+ },
+ {
+  "own": true,
+  "file": "Reviews Scraper Agent.json",
+  "title": "Review Scraper and Sentiment Report",
+  "cat": "Lead Gen & Data",
+  "desc": "Scrapes a business's reviews, runs sentiment analysis and writes an insight report to Google Docs."
+ },
+ {
+  "own": true,
+  "file": "Email Agent.json",
+  "title": "Inbox Triage Agent",
+  "cat": "Support & Chat",
+  "desc": "Classifies each incoming email with structured LLM output and drafts or routes the reply automatically."
+ },
+ {
+  "own": true,
+  "file": "Brand Search.json",
+  "title": "Brand and Competitor Monitor",
+  "cat": "Marketing & Content",
+  "desc": "Merges Google News and TechCrunch feeds, de-duplicates, scores priority and posts to Sheets and Slack."
+ },
+ {
+  "own": true,
+  "file": "Coach Web.json",
+  "title": "Website Coaching Chat Agent",
+  "cat": "Support & Chat",
+  "desc": "Webhook-backed web chat agent with memory and live search, embeddable on any site."
+ },
+ {
+  "own": true,
+  "file": "Calender Automation.json",
+  "title": "Calendar Booking Assistant",
+  "cat": "Sales & CRM",
+  "desc": "Chat assistant that checks Google Calendar availability and books meetings in natural language."
+ },
+ {
+  "own": true,
+  "file": "Gmail Labeling Agent.json",
+  "title": "Gmail Auto-Labeler",
+  "cat": "Ops, HR & Finance",
+  "desc": "Text classifier that sorts incoming mail into work, education, travel and other labels."
+ },
+ {
+  "own": true,
+  "file": "Prompt To Json.json",
+  "title": "Prompt to Structured JSON",
+  "cat": "Agents & MCP",
+  "desc": "Turns free-text form input into validated JSON with a structured output parser and stores it in Sheets."
+ },
+ {
+  "own": true,
+  "file": "Slack Automation.json",
+  "title": "Slack Research Bot",
+  "cat": "Support & Chat",
+  "desc": "Answers Slack mentions with an agent that searches the web and replies in thread."
+ },
+ {
+  "own": true,
+  "download": true,
+  "file": "Get Contact Details from HighLevel.json",
+  "title": "GoHighLevel Contact Lookup Tool",
+  "cat": "Sales & CRM",
+  "desc": "Webhook tool that finds a contact in HighLevel and returns a clean profile to a voice or chat agent mid-conversation."
+ },
+ {
+  "own": true,
+  "file": "Make PhoneCall From Retell.json",
+  "title": "Retell Outbound Call Trigger",
+  "cat": "Voice & Phone",
+  "desc": "Webhook that launches a Retell AI outbound call with dynamic variables from any CRM event."
+ },
+ {
+  "own": true,
+  "file": "Instagram lead scraper Agent.json",
+  "title": "Instagram Lead Scraper",
+  "cat": "Lead Gen & Data",
+  "desc": "Form-triggered scrape of Instagram profiles into a lead sheet."
+ },
+ {
+  "own": false,
+  "file": "1897_Webhook_Filter_Sync_Webhook.json",
+  "title": "Realtime Notion and Todoist Two-Way Sync",
+  "cat": "Ops, HR & Finance",
+  "desc": "Webhook-driven bidirectional sync with conflict checks, dataset comparison and signature verification."
+ },
+ {
+  "own": false,
+  "file": "0971_Limit_Splitout_Automation_Webhook.json",
+  "title": "YouTube Playlist Knowledge Base",
+  "cat": "RAG & Knowledge",
+  "desc": "Turns playlists into a searchable Gemini and Qdrant knowledge base with per-video summaries and chat."
+ },
+ {
+  "own": false,
+  "file": "1342_Linkedin_Telegram_Automate_Webhook.json",
+  "title": "Social Media Content Factory",
+  "cat": "Marketing & Content",
+  "desc": "Multi-agent system that researches, writes and publishes to LinkedIn, X, Facebook and Telegram from composed system prompts."
+ },
+ {
+  "own": false,
+  "file": "0668_Wait_Splitout_Create_Webhook.json",
+  "title": "API Documentation Research Pipeline",
+  "cat": "Agents & MCP",
+  "desc": "Three linked sub-workflows: find API docs on the web, extract operations through Qdrant retrieval, and generate a custom schema per service."
+ },
+ {
+  "own": false,
+  "file": "1352_Splitout_Filter_Automate_Triggered.json",
+  "title": "HR Policies and Benefits Chatbot",
+  "cat": "RAG & Knowledge",
+  "desc": "BambooHR-connected agent that answers policy and benefits questions from company files and finds the right contact."
+ },
+ {
+  "own": false,
+  "file": "0600_Code_Extractfromfile_Create_Webhook.json",
+  "title": "Pitch Deck Analyzer",
+  "cat": "RAG & Knowledge",
+  "desc": "Airtable-triggered pipeline that splits PDF decks into images, extracts data with vision and builds a queryable vector store."
+ },
+ {
+  "own": false,
+  "file": "1836_Code_Googledocs_Automation_Webhook.json",
+  "title": "Tech Radar SQL and RAG Agent",
+  "cat": "Agents & MCP",
+  "desc": "Answers questions over a technology radar by combining MySQL queries with document retrieval across Claude, Gemini and Groq."
+ },
+ {
+  "own": false,
+  "file": "1905_Telegram_Googleanalytics_Automation_Webhook.json",
+  "title": "Weekly Marketing Report Agent",
+  "cat": "Marketing & Content",
+  "desc": "GA4 and Meta Ads data summarised by agents and delivered every week by email and Telegram."
+ },
+ {
+  "own": false,
+  "file": "0719_Stopanderror_Splitout_Create_Webhook.json",
+  "title": "Deep Research Agent",
+  "cat": "Agents & MCP",
+  "desc": "Asks clarifying questions, runs recursive web research with reasoning models and writes the report straight into Notion."
+ },
+ {
+  "own": false,
+  "file": "1752_Postgres_Wordpress_Automation_Webhook.json",
+  "title": "WordPress RAG App",
+  "cat": "RAG & Knowledge",
+  "desc": "Syncs WordPress content into Supabase pgvector with change detection and serves a chat agent with Postgres memory."
+ },
+ {
+  "own": false,
+  "file": "1955_Wait_Splitout_Automation_Scheduled.json",
+  "title": "LinkedIn ICP Prospecting Agent",
+  "cat": "Lead Gen & Data",
+  "desc": "Finds leads matching an ideal customer profile on LinkedIn, researches them and runs the message sequence."
+ },
+ {
+  "own": false,
+  "file": "1185_Telegram_Wait_Automate_Webhook.json",
+  "title": "Google Drive Docs RAG Chatbot",
+  "cat": "RAG & Knowledge",
+  "desc": "Drive documents processed into Qdrant with metadata extraction and a Gemini chat agent on Telegram."
+ },
+ {
+  "own": false,
+  "file": "0894_Splitout_Redis_Create_Triggered.json",
+  "title": "Outcome-Driven MCP Server",
+  "cat": "Agents & MCP",
+  "desc": "MCP server trigger exposing high-level tools backed by Redis and n8n sub-workflows, designed so agents make fewer calls."
+ },
+ {
+  "own": false,
+  "file": "1829_Summarize_Respondtowebhook_Automation_Webhook.json",
+  "title": "Adaptive RAG Router",
+  "cat": "RAG & Knowledge",
+  "desc": "Classifies each query as factual, analytical, opinion or contextual and adapts the retrieval strategy over Qdrant."
+ },
+ {
+  "own": false,
+  "file": "0735_Telegram_GoogleCalendar_Automation_Webhook.json",
+  "title": "Retell AI Phone Receptionist",
+  "cat": "Voice & Phone",
+  "desc": "Retell phone agent backend with Qdrant knowledge, Google Calendar booking and Telegram notifications."
+ },
+ {
+  "own": false,
+  "file": "1575_Telegramtool_Woocommercetool_Automate_Webhook.json",
+  "title": "WooCommerce Post-Sales Support Agent",
+  "cat": "Support & Chat",
+  "desc": "Verifies the customer, pulls order and tracking data and answers from a policy vector store."
+ },
+ {
+  "own": false,
+  "file": "0714_Splitout_Zendesk_Update_Triggered.json",
+  "title": "Zendesk Knowledge Agent",
+  "cat": "Support & Chat",
+  "desc": "Embeds Zendesk tickets and help content into Qdrant to power a support answer agent."
+ },
+ {
+  "own": false,
+  "file": "1184_Debughelper_HTTP_Create_Webhook.json",
+  "title": "Calendar MCP Server",
+  "cat": "Agents & MCP",
+  "desc": "Reference MCP server exposing calendar and utility tools to any MCP-compatible client."
+ },
+ {
+  "own": false,
+  "file": "1427_Emailreadimap_Manual_Send_Webhook.json",
+  "title": "AI Email Triage with Human Approval",
+  "cat": "Support & Chat",
+  "desc": "Reads IMAP mail, summarises it, drafts RAG-grounded replies and waits for human approval before sending."
+ },
+ {
+  "own": false,
+  "file": "1599_Woocommercetool_Manual_Automation_Webhook.json",
+  "title": "AI Personal Shopper",
+  "cat": "Sales & CRM",
+  "desc": "Extracts shopping intent from chat, filters WooCommerce products and answers store-policy questions from RAG."
+ },
+ {
+  "own": false,
+  "file": "1361_GoogleCalendar_Webhook_Create_Webhook.json",
+  "title": "Chat, Voice and Phone Agent on One Backend",
+  "cat": "Voice & Phone",
+  "desc": "One n8n backend powering a Voiceflow chatbot, a voice agent and a Twilio phone agent with calendar booking."
+ },
+ {
+  "own": false,
+  "file": "1277_Emailreadimap_Manual_Send_Webhook.json",
+  "title": "Email Auto-Responder with Reviewer Model",
+  "cat": "Support & Chat",
+  "desc": "Classifies mail, answers from a vector database and passes each draft through a reviewer model before sending."
+ },
+ {
+  "own": false,
+  "file": "1856_Telegram_Stickynote_Automation_Webhook.json",
+  "title": "Agent Access Control",
+  "cat": "Agents & MCP",
+  "desc": "Per-user tool permissions stored in Airtable; denied tools are swapped for a safe refusal at runtime."
+ },
+ {
+  "own": false,
+  "file": "1881_Webhook_Code_Automate_Webhook.json",
+  "title": "Resume Chatbot for Recruiters",
+  "cat": "RAG & Knowledge",
+  "desc": "Portfolio chatbot that answers recruiter questions from a CV indexed with Gemini embeddings."
+ },
+ {
+  "own": false,
+  "file": "1539_Telegram_Splitout_Automation_Triggered.json",
+  "title": "Telegram Document Assistant",
+  "cat": "RAG & Knowledge",
+  "desc": "Upload files to a Telegram bot and query them through a Supabase vector store."
+ },
+ {
+  "own": false,
+  "file": "1487_Telegram_Extractfromfile_Automate_Webhook.json",
+  "title": "HR and IT Helpdesk Bot",
+  "cat": "Support & Chat",
+  "desc": "Telegram helpdesk with voice-note transcription and Postgres-backed retrieval."
+ },
+ {
+  "own": false,
+  "file": "1496_Telegram_Webhook_Automation_Webhook.json",
+  "title": "Perplexity Research to Web Page",
+  "cat": "Marketing & Content",
+  "desc": "Researches a topic with Perplexity and publishes a styled HTML page from a Telegram command."
+ },
+ {
+  "own": false,
+  "file": "0819_Splitout_Schedule_Create_Scheduled.json",
+  "title": "Jira Resolved-Issue Knowledge Base",
+  "cat": "Ops, HR & Finance",
+  "desc": "Summarises resolved Jira issues into Supabase embeddings so new tickets get answers from past fixes."
+ },
+ {
+  "own": false,
+  "file": "1950_Telegram_Googledocs_Automate_Triggered.json",
+  "title": "Long-Term Memory Agent",
+  "cat": "Agents & MCP",
+  "desc": "Tool router that saves and recalls user memories in Google Docs across sessions."
+ },
+ {
+  "own": false,
+  "file": "1639_Wait_Webhook_Automation_Webhook.json",
+  "title": "Resume Screening and AI Voice Interviews",
+  "cat": "Ops, HR & Finance",
+  "desc": "Screens applicants with Gemini and runs behavioural interviews through ElevenLabs, all tracked in a Notion ATS."
+ },
+ {
+  "own": false,
+  "file": "0649_Splitout_GoogleCalendar_Create_Webhook.json",
+  "title": "Sales Meeting Prep Briefings",
+  "cat": "Sales & CRM",
+  "desc": "Finds upcoming meetings, researches attendees from email history and sends a briefing over WhatsApp."
+ },
+ {
+  "own": false,
+  "file": "1561_Webhook_Respondtowebhook_Automate_Webhook.json",
+  "title": "WhatsApp Business RAG Chatbot",
+  "cat": "Support & Chat",
+  "desc": "Meta webhook verification, message filtering and Qdrant-grounded replies on WhatsApp."
+ },
+ {
+  "own": false,
+  "file": "0780_Splitout_Filter_Process_Webhook.json",
+  "title": "Company Research Agent",
+  "cat": "Lead Gen & Data",
+  "desc": "Scrapes and structures company intel such as pricing, market and integrations into Airtable with auto-fixing parsers."
+ },
+ {
+  "own": false,
+  "file": "0601_Extractfromfile_Manual_Create_Webhook.json",
+  "title": "WhatsApp Product Catalog Agent",
+  "cat": "Sales & CRM",
+  "desc": "Loads a product brochure into vectors and answers buyer questions on WhatsApp."
+ },
+ {
+  "own": false,
+  "file": "1762_Form_Aggregate_Automation_Triggered.json",
+  "title": "SEO Blog Generator",
+  "cat": "Marketing & Content",
+  "desc": "Form-to-article pipeline with Perplexity research, GPT-4o drafting and Telegram delivery."
+ },
+ {
+  "own": false,
+  "file": "1711_Limit_Code_Automate_Webhook.json",
+  "title": "Selenium Scraper with AI Extraction",
+  "cat": "Lead Gen & Data",
+  "desc": "Collects data from any page, logged in or not, and extracts structured fields with an LLM."
+ },
+ {
+  "own": false,
+  "file": "1341_Telegram_Splitout_Automate_Webhook.json",
+  "title": "Automated Research Report Generator",
+  "cat": "Agents & MCP",
+  "desc": "Builds a PDF research report from Wikipedia, Google and SerpAPI and delivers it by Telegram and Gmail."
+ },
+ {
+  "own": false,
+  "file": "1894_Stopanderror_Clickup_Automation_Webhook.json",
+  "title": "Zoom Meeting Assistant",
+  "cat": "Ops, HR & Finance",
+  "desc": "Pulls Zoom transcripts, writes summaries, creates ClickUp tasks and schedules follow-ups in Outlook."
+ },
+ {
+  "own": false,
+  "file": "1558_HTTP_Stickynote_Automate_Webhook.json",
+  "title": "Multi-Agent SQL and Charts Analyst",
+  "cat": "Agents & MCP",
+  "desc": "Agents that write SQL against Postgres or Supabase and render QuickChart visualisations on request."
+ },
+ {
+  "own": false,
+  "file": "0604_Jiratool_Schedule_Create_Scheduled.json",
+  "title": "Stale Jira Issue Triage",
+  "cat": "Ops, HR & Finance",
+  "desc": "Daily sweep of long-lived issues with sentiment, classification and escalation to Slack and Notion."
+ },
+ {
+  "own": false,
+  "file": "1263_Webhook_Respondtowebhook_Automate_Webhook.json",
+  "title": "Voice RAG Agent with ElevenLabs",
+  "cat": "Voice & Phone",
+  "desc": "ElevenLabs conversational agent grounded on a Qdrant knowledge base."
+ },
+ {
+  "own": false,
+  "file": "1813_Code_GoogleCalendar_Automation_Triggered.json",
+  "title": "AI Interview Scheduler",
+  "cat": "Ops, HR & Finance",
+  "desc": "Chat assistant that checks calendar availability and books candidate interviews."
+ },
+ {
+  "own": false,
+  "file": "1643_Slack_Manual_Automate_Webhook.json",
+  "title": "Slack Staff Helpdesk with RAG",
+  "cat": "Support & Chat",
+  "desc": "Claude-powered Slack bot that answers company questions from Qdrant."
+ },
+ {
+  "own": false,
+  "file": "1141_Stickynote_GoogleDrive_Automate_Triggered.json",
+  "title": "Company Docs RAG on Google Drive",
+  "cat": "RAG & Knowledge",
+  "desc": "Auto-indexes Drive changes into vectors and answers questions with Gemini."
+ },
+ {
+  "own": false,
+  "file": "0920_HubSpot_Splitout_Create_Webhook.json",
+  "title": "HubSpot New-Contact Meeting Booker",
+  "cat": "Sales & CRM",
+  "desc": "HubSpot-triggered agent that emails new contacts and books meetings in Google Calendar."
+ },
+ {
+  "own": false,
+  "file": "1146_Splitout_Code_Automation_Webhook.json",
+  "title": "LinkedIn Lead Scraping and Enrichment",
+  "cat": "Lead Gen & Data",
+  "desc": "Sheet-driven LinkedIn search, profile enrichment and AI-written personalisation."
+ },
+ {
+  "own": false,
+  "file": "0539_Schedule_Twilio_Create_Webhook.json",
+  "title": "SMS Appointment Agent",
+  "cat": "Sales & CRM",
+  "desc": "Twilio SMS conversations with session memory in Airtable that book Cal.com appointments."
+ },
+ {
+  "own": false,
+  "file": "1488_Extractfromfile_Form_Automation_Triggered.json",
+  "title": "AI Job Posting and Candidate Evaluation",
+  "cat": "Ops, HR & Finance",
+  "desc": "Application form, CV extraction, AI scoring against the role and interview scheduling with Airtable as ATS."
+ },
+ {
+  "own": false,
+  "file": "1282_Wait_Code_Import_Webhook.json",
+  "title": "Short-Form Video Generator",
+  "cat": "Marketing & Content",
+  "desc": "Flux images, Kling video and ElevenLabs voice assembled into short-form clips from a Sheet of ideas."
+ },
+ {
+  "own": false,
+  "file": "1904_Telegram_Limit_Process_Webhook.json",
+  "title": "LlamaParse Document Intelligence",
+  "cat": "Ops, HR & Finance",
+  "desc": "Classifies and parses incoming documents from Gmail and Drive and logs extracted fields to Sheets."
+ },
+ {
+  "own": false,
+  "file": "1930_Splitout_Code_Automate_Webhook.json",
+  "title": "SEO Keyword Research Agent",
+  "cat": "Marketing & Content",
+  "desc": "DataForSEO keyword research clustered by an agent into NocoDB with Slack alerts."
+ },
+ {
+  "own": false,
+  "file": "0933_Manual_Stickynote_Create_Webhook.json",
+  "title": "AI-Ready Vector Dataset Builder",
+  "cat": "RAG & Knowledge",
+  "desc": "Bright Data scraping, Gemini extraction and Pinecone indexing for LLM-ready datasets."
+ },
+ {
+  "own": false,
+  "file": "1823_Stopanderror_Wait_Create_Webhook.json",
+  "title": "Google Maps Lead Generator",
+  "cat": "Lead Gen & Data",
+  "desc": "Zip code by category Google Maps scraping into Sheets with de-duplication and guard rails."
+ },
+ {
+  "own": false,
+  "file": "0700_Code_Respondtowebhook_Send_Webhook.json",
+  "title": "Branded Website Chat Widget",
+  "cat": "Support & Chat",
+  "desc": "Embeddable branded chat agent with Outlook and HTTP tools behind it."
+ },
+ {
+  "own": false,
+  "file": "0777_Code_Filter_Automation_Webhook.json",
+  "title": "Email to Notion Agent",
+  "cat": "Ops, HR & Finance",
+  "desc": "Turns labelled emails into structured Notion pages using per-user configuration."
+ },
+ {
+  "own": false,
+  "file": "1745_Wait_Code_Automation_Webhook.json",
+  "title": "Service Page SEO Blueprint",
+  "cat": "Marketing & Content",
+  "desc": "Competitor and search-intent analysis turned into a downloadable SEO blueprint for a service page."
+ },
+ {
+  "own": false,
+  "file": "1765_Code_Filter_Process_Triggered.json",
+  "title": "E-Invoice Processing (XML and PDF)",
+  "cat": "Ops, HR & Finance",
+  "desc": "Extracts e-invoices from Gmail ZIP attachments, parses XML and PDF, and files them to Sheets and Drive."
+ },
+ {
+  "own": false,
+  "file": "1929_Odoo_Schedule_Automate_Scheduled.json",
+  "title": "Odoo Sales ERP Chatbot",
+  "cat": "Sales & CRM",
+  "desc": "Chat over Odoo sales data with summaries and file exports."
+ },
+ {
+  "own": false,
+  "file": "2033_Code_Extractfromfile_Automate_Webhook.json",
+  "title": "Multimodal WhatsApp Chatbot",
+  "cat": "Support & Chat",
+  "desc": "Handles text, voice, images and PDFs in a single WhatsApp agent."
+ },
+ {
+  "own": false,
+  "file": "1668_GoogleCalendar_Filter_Automation_Triggered.json",
+  "title": "Appointment Request Detector",
+  "cat": "Sales & CRM",
+  "desc": "Detects appointment requests in Gmail and books them straight onto Google Calendar."
+ },
+ {
+  "own": false,
+  "file": "0826_Wait_Splitout_Automation_Webhook.json",
+  "title": "Claude Batch Prompt Runner",
+  "cat": "Agents & MCP",
+  "desc": "Sends batched prompts to the Anthropic Message Batches API, polls for completion and maps results back by id."
+ },
+ {
+  "own": false,
+  "file": "1534_Stickynote_Googlecalendartool_Automation_Triggered.json",
+  "title": "Personal Assistant MCP Server",
+  "cat": "Agents & MCP",
+  "desc": "Exposes Gmail, Calendar and Sheets tools to any agent through MCP."
+ },
+ {
+  "own": false,
+  "file": "0945_Error_Code_Send_Triggered.json",
+  "title": "Error Alert Summarizer",
+  "cat": "Ops, HR & Finance",
+  "desc": "Global error workflow: an LLM explains each failed execution and emails a fix-first summary."
+ },
+ {
+  "own": false,
+  "file": "1521_Whatsapp_Stickynote_Automation_Webhook.json",
+  "title": "WhatsApp Customer Support Assistant",
+  "cat": "Support & Chat",
+  "desc": "Support agent on WhatsApp with Postgres chat memory and HTTP tools."
+ },
+ {
+  "own": false,
+  "file": "0892_Webhook_Code_Create_Webhook.json",
+  "title": "Gmail Invoice and Receipt Classifier",
+  "cat": "Ops, HR & Finance",
+  "desc": "Reads PDF attachments, classifies invoices and receipts and files them into Drive."
+ },
+ {
+  "own": false,
+  "file": "1362_Wait_Webhook_Create_Webhook.json",
+  "title": "Retell Lead Qualification Calls",
+  "cat": "Voice & Phone",
+  "desc": "Schedules outbound qualification calls from a lead sheet, handles inbound booking calls and emails post-call summaries."
+ },
+ {
+  "own": false,
+  "file": "0655_Code_Postgres_Update_Scheduled.json",
+  "title": "HubSpot Lifecycle Stage Reporting",
+  "cat": "Sales & CRM",
+  "desc": "Syncs HubSpot lead status into Postgres and Sheets for campaign reporting."
+ },
+ {
+  "own": false,
+  "file": "0090_Wait_Lemlist_Create_Scheduled.json",
+  "title": "LinkedIn Engagers to Email Campaign",
+  "cat": "Lead Gen & Data",
+  "desc": "Phantombuster pulls post engagers, Dropcontact enriches them and they are pushed to HubSpot and a lemlist campaign."
+ },
+ {
+  "own": false,
+  "file": "0821_Manual_Noop_Create_Triggered.json",
+  "title": "Customer Research from Email History",
+  "cat": "Sales & CRM",
+  "desc": "Mines Gmail history with Gemini to enrich HubSpot contacts for truly personalised outreach."
+ },
+ {
+  "own": false,
+  "file": "0760_Splitout_Code_Send_Webhook.json",
+  "title": "CallForge Sales Call Processor",
+  "cat": "Sales & CRM",
+  "desc": "Gong call transcripts processed into Salesforce insights for sales, marketing and product."
+ }
+]
