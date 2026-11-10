@@ -65,7 +65,10 @@ section[id] { scroll-margin-top: 70px; }
 /* nav */
 .nav { position: sticky; top: 0; z-index: 50; background: rgba(15, 15, 17, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule); }
 .nav__inner { display: flex; align-items: center; gap: 28px; height: 64px; }
-.brand { font-family: var(--head); font-weight: 700; font-size: 19px; color: var(--ink); letter-spacing: -0.02em; white-space: nowrap; }
+.brand { display: inline-flex; align-items: center; gap: 11px; font-family: var(--head); font-weight: 700; font-size: 19px; color: var(--ink); letter-spacing: -0.02em; white-space: nowrap; }
+.brand__mark { width: 33px; height: 30px; flex: none; }
+.brand__mark--sm { width: 22px; height: 20px; }
+.footer__brand { display: inline-flex; align-items: center; gap: 10px; }
 .nav__links { display: none; gap: 26px; margin-left: auto; font-size: 14.5px; color: var(--muted); }
 .nav__links a { white-space: nowrap; }
 .nav__links a:hover, .nav__links a[aria-current="true"] { color: var(--ink); }
